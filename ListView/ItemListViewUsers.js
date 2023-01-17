@@ -217,12 +217,24 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter 
     );
 
     const checkcart = () => {
-        Alert.alert('Total Amount', `${totalamount} Rs`, [
-            {
-               text: 'OK',
-            },
-         ])
-        navigation.navigate("Confirm Order", { OrderId: OrderId })
+
+        if(totalamount<=0)
+        {
+            Alert.alert('No Items In Cart', `Please select atleast one item to order`, [
+                {
+                   text: 'OK',
+                },
+             ])
+        }
+        else 
+        {
+            Alert.alert('Total Amount', `${totalamount} Rs`, [
+                {
+                   text: 'OK',
+                },
+             ])
+            navigation.navigate("Confirm Order", { OrderId: OrderId })
+        }
     }
 
     return (
