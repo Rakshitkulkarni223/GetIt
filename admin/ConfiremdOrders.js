@@ -37,6 +37,8 @@ const ConfirmedOrders = () => {
             var totalamount = 0;
             items = [];
             var Location= '';
+            var Longitude = ''
+            var Latitude = ''
             child.forEach((it)=>{
                it.forEach((item)=>{
                   flag = true;
@@ -45,6 +47,8 @@ const ConfirmedOrders = () => {
                      totalamount += eachitem.val().ItemPrice*eachitem.val().ItemQuantity;
 
                      Location = eachitem.val().Location;
+                     Longitude =eachitem.val().Longitude,
+                     Latitude = eachitem.val().Latitude,
 
                      items.push({
                         key:eachitem.key,
@@ -68,7 +72,7 @@ const ConfirmedOrders = () => {
                })
             })
             data = items;
-            orders.push({key: child.key,value: data, toggle: false,  totalamount: totalamount, Location: Location});
+            orders.push({key: child.key,value: data, toggle: false,  totalamount: totalamount, Location: Location ,Longitude: Longitude,Latitude: Latitude});
          })
 
          setAllItems(items);
@@ -83,7 +87,8 @@ const ConfirmedOrders = () => {
 
    return (
       // <></>
-      <ItemsListViewConfirmedOrders AllItems={AllItems} AllOrders={AllOrders}></ItemsListViewConfirmedOrders>
+      <ItemsListViewConfirmedOrders AllItems={AllItems} AllOrders={AllOrders}
+      ></ItemsListViewConfirmedOrders>
    );
 }
 

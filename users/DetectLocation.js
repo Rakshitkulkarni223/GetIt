@@ -104,10 +104,9 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
 };
 
 
-const DetectLocation = ({ displayCurrentAddress, setDisplayCurrentAddress }) => {
+const DetectLocation = ({ displayCurrentAddress, setDisplayCurrentAddress ,longitude,setlongitude,latitude,setlatitude}) => {
 
-    const [longitude, setlongitude] = useState('');
-    const [latitude, setlatitude] = useState('');
+    
 
     const [visible, setVisible] = useState(false);
     const [housename, sethousename] = useState('');

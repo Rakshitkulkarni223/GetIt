@@ -19,7 +19,7 @@ import { app, auth, db, database } from "./Firebase";
 import { ref, set, update, onValue } from "firebase/database";
 
 
-const PaymentGateway = ({ navigation, route,totalamount, AllConfirmedItems, OrderId, displayCurrentAddress, setDisplayCurrentAddress }) => {
+const PaymentGateway = ({ navigation, route,totalamount, AllConfirmedItems, OrderId, displayCurrentAddress, setDisplayCurrentAddress,longitude,setlongitude,latitude,setlatitude }) => {
 
 
     useEffect(() => {
@@ -47,6 +47,8 @@ const PaymentGateway = ({ navigation, route,totalamount, AllConfirmedItems, Orde
                     ItemQuantity: AllConfirmedItems[i]["ItemQuantity"],
                     ItemAddedDate: AllConfirmedItems[i]["ItemAddedDate"],
                     Location: displayCurrentAddress,
+                    Longitude: longitude,
+                    Latitude: latitude,
                     AuthId: auth.currentUser.uid,
                     OrderId: OrderId,
                     OrderConfirmed: true,

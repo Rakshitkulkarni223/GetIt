@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity } from 'react-native';
-import { AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
+import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert } from 'react-native';
+import { AntDesign, MaterialCommunityIcons, Entypo, MaterialIcons } from '@expo/vector-icons';
 import UpdateItem from '../admin/UpdateItem';
 import { app, auth, db, database } from "../Firebase";
 import { ref, set, update } from "firebase/database";
+import GoogleMap from '../GoogleMap';
 
 
-const Item = ({ id, AuthId, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, Location }) => (
+const Item = ({ id, AuthId, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, Location, Longitude, Latitude }) => (
     <>
         {displayCategory ? <Text style={{
             fontSize: 15,
@@ -48,6 +49,8 @@ const Item = ({ id, AuthId, OrderId, title, image_url, price, description, categ
                         ItemQuantity: quantity,
                         ItemAddedDate: ItemAddedDate,
                         Location: Location,
+                        Longitude: Longitude,
+                        Latitude: Latitude,
                         OrderConfirmed: true,
                         OrderConfirmedByAdmin: true,
                         OrderPending: true,
@@ -78,6 +81,11 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
     const [ItemImage, setItemImage] = useState("");
     const [ItemId, setItemId] = useState("");
     const [toggle, setToggle] = useState(true);
+
+    const [visibleMap, setvisibleMap] = useState(false);
+
+    const [latitude, setlatitude] = useState('');
+   const [longitude, setlongitude] = useState('');
 
     const toggleFunction = (index) => {
         AllOrders[index].toggle = !AllOrders[index].toggle;
@@ -112,6 +120,59 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                         }}>{AllOrders[index].totalamount}/-</Text>
                 </View>
                 <View>
+                    <MaterialIcons name="location-pin" size={24} color="red"
+                        onPress={() => {
+
+                            // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
+
+                            setlongitude(AllOrders[index].Longitude);
+
+                            setlatitude( AllOrders[index].Latitude);
+
+                            if (!AllOrders[index].Longitude && !AllOrders[index].Latitude && AllOrders[index].Location !== '') {
+                                Alert.alert('Exact Location Not Found', `But Location Address is mentioned as ${AllOrders[index].Location}`, [
+                                    {
+                                        text: 'Want to Call?',
+                                        // onPress: () => console.log("call.."),
+                                        style: 'cancel',
+                                    },
+                                    {
+                                        text: 'Want to Continue', 
+                                        // onPress: () =>
+                                        //     console.log("continue..")
+                                    },
+                                ])
+                            }
+
+                            if (AllOrders[index].Longitude && AllOrders[index].Latitude && AllOrders[index].Location !== '') {
+                                setvisibleMap(true);
+                            }
+                            //     flag=false;
+                            // }
+
+                            // if (longitude !== '' && latitude !== '' && AllOrders[index].Location !== '') {
+                            //     setvisibleMap(true);
+                            //     flag=false
+                            // }
+                            // if(longitude === '' && latitude === '' && AllOrders[index].Location === ''){
+                            //     Alert.alert('Correct Location Not Found', 'Please call the person to confirm the Location...', [
+                            //         {
+                            //             text: 'Want to Call?',
+                            //             onPress: () => console.log("call.."),
+                            //             style: 'cancel',
+                            //          },
+                            //          {
+                            //             text: 'Want to Continue', onPress: () =>
+                            //             console.log("continue..")
+                            //          },
+                            //     ])
+                            // }
+                            
+                        }
+                        }
+                    />
+                </View>
+                <View>
                     <MaterialCommunityIcons name="checkbox-marked-circle" size={25} color="green"
                         onPress={() => {
                             alert("select all...");
@@ -137,6 +198,8 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                             quantity={item.ItemQuantity}
                             ItemAddedDate={item.ItemAddedDate}
                             Location={AllOrders[index].Location}
+                            Longitude={AllOrders[index].Longitude}
+                            Latitude={AllOrders[index].Latitude}
                         />
                     </View>
                 )
@@ -148,14 +211,17 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
     );
 
     return (
+        <>
+            {visibleMap ? <GoogleMap Longitude={longitude} Latitude={latitude} /> :
 
-        <SafeAreaView style={styles.container}>
-            <FlatList
-                data={AllOrders}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => String(index)}
-            />
-        </SafeAreaView>
+                <SafeAreaView style={styles.container}>
+                    <FlatList
+                        data={AllOrders}
+                        renderItem={renderItem}
+                        keyExtractor={(item, index) => String(index)}
+                    />
+                </SafeAreaView>}
+        </>
 
     )
 }

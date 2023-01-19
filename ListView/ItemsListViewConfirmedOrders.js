@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity } from 'react-native';
-import { AntDesign, MaterialCommunityIcons, Entypo, FontAwesome } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert } from 'react-native';
+import { AntDesign, MaterialCommunityIcons, Entypo, MaterialIcons } from '@expo/vector-icons';
 import UpdateItem from '../admin/UpdateItem';
 import { app, auth, db, database } from "../Firebase";
 import { ref, set, update } from "firebase/database";
 
 import QRCode from 'react-native-qrcode-svg';
+import GoogleMap from '../GoogleMap';
 
 
 
@@ -51,7 +52,7 @@ const Item = ({ id, OrderId, title, image_url, price, description, category, dis
     </>
 );
 
-const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders }) => {
+const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders,  }) => {
 
     const [update, setupdate] = useState(false);
 
@@ -68,6 +69,15 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders }) => {
     const [totalamount, settotalamount] = useState('');
 
     const [index, setindex] = useState("");
+
+    const [visibleMap, setvisibleMap] = useState(false);
+
+    const [latitude, setlatitude] = useState('');
+   const [longitude, setlongitude] = useState('');
+
+    useEffect(()=>{
+        setvisibleMap(false);
+    },[])
 
     const toggleFunction = (index) => {
         AllOrders[index].toggle = !AllOrders[index].toggle;
@@ -107,6 +117,56 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders }) => {
                             fontSize: 20,
                             fontWeight: "bold",
                         }}>{AllOrders[index].totalamount}/-</Text>
+                </View>
+                <View>
+                    <MaterialIcons name="location-pin" size={24} color="red"
+                        onPress={() => {
+
+                            // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
+
+                            setlongitude(AllOrders[index].Longitude);
+
+                            setlatitude( AllOrders[index].Latitude);
+
+                            if (!AllOrders[index].Longitude && !AllOrders[index].Latitude && AllOrders[index].Location !== '') {
+                                Alert.alert('Exact Location Not Found', `But Location Address is mentioned as ${AllOrders[index].Location}`, [
+                                    {
+                                        text: 'Want to Call?',
+                                        // onPress: () => console.log("call.."),
+                                        style: 'cancel',
+                                    },
+                                    {
+                                        text: 'Want to Continue', 
+                                        // onPress: () =>
+                                        //     console.log("continue..")
+                                    },
+                                ])
+                            }
+
+                            if (AllOrders[index].Longitude && AllOrders[index].Latitude && AllOrders[index].Location !== '') {
+                                setvisibleMap(true);
+                            }
+
+                            // if (longitude !== '' && latitude !== '' && AllOrders[index].Location !== '') {
+                            //     setvisibleMap(true)
+                            // }
+                            // else {
+                            //     Alert.alert('Correct Location Not Found', 'Please call the person to confirm the Location...', [
+                            //         {
+                            //             text: 'Want to Call?',
+                            //             onPress: () => console.log("call.."),
+                            //             style: 'cancel',
+                            //         },
+                            //         {
+                            //             text: 'Want to Continue', onPress: () =>
+                            //                 console.log("continue..")
+                            //         },
+                            //     ])
+                            // }
+
+                        }
+                        }
+                    />
                 </View>
                 <View>
                     <MaterialCommunityIcons name="checkbox-marked-circle" size={25} color="green"
@@ -164,93 +224,97 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders }) => {
 
     return (
 
-        <SafeAreaView style={styles.container}>
-            {displayQRCode ? <>
-                <View style={{
-                    flex: 1,
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    marginBottom: 10,
-                    padding: 20,
-                    borderRadius: 5,
-                    // backgroundColor: 'pink',
-                }}>
-                    <View style={{
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
-                        padding: 10,
-                        borderRadius: 5,
-                        elevation: 2,
-                        backgroundColor: 'lightblue'
-                    }}
-                    >
-                        <View style={{
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            padding: 5,
-                            borderRadius: 5,
-                            // elevation: 2,
-                            // backgroundColor: 'lightgreen'
-                        }}
-                        >
-                            <Text style={{
-                                fontSize: 20,
-                                fontWeight: "bold",
-                            }}>Order Id : {AllOrders[index].value[0].OrderId}</Text>
-                        </View>
+        <>
+            {visibleMap ? <GoogleMap Longitude={longitude} Latitude={latitude} /> :
 
+                <SafeAreaView style={styles.container}>
+                    {displayQRCode ? <>
                         <View style={{
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            padding: 5,
+                            flex: 1,
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            marginBottom: 10,
+                            padding: 20,
                             borderRadius: 5,
-                            // elevation: 2,
-                            // backgroundColor: 'lightgreen'
-                        }}
-                        >
-                            <Text style={{
-                                fontSize: 20,
-                                fontWeight: "bold",
-                            }}>Total Amount : {AllOrders[index].totalamount}</Text>
-                        </View>
+                            // backgroundColor: 'pink',
+                        }}>
+                            <View style={{
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                padding: 10,
+                                borderRadius: 5,
+                                elevation: 2,
+                                backgroundColor: 'lightblue'
+                            }}
+                            >
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    padding: 5,
+                                    borderRadius: 5,
+                                    // elevation: 2,
+                                    // backgroundColor: 'lightgreen'
+                                }}
+                                >
+                                    <Text style={{
+                                        fontSize: 20,
+                                        fontWeight: "bold",
+                                    }}>Order Id : {AllOrders[index].value[0].OrderId}</Text>
+                                </View>
 
-                    </View>
-                    <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        padding: 10,
-                        borderRadius: 5,
-                    }}
-                    >
-                        <QRCode
-                            value={`upi://pay?pa=9480527929@ybl&pn=Rakshit Kulkarni&tn=Note&am=${AllOrders[index].totalamount}&cu=INR`}
-                            size={300}
-                        // getRef={(c) => console.log(c)}
-                        />
-                    </View>
-                    <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        padding: 10,
-                        borderRadius: 5,
-                        elevation: 2,
-                        backgroundColor: 'lightgreen'
-                    }}
-                    >
-                        <Text style={{
-                            fontSize: 20,
-                            fontWeight: "bold",
-                        }}
-                            onPress={() => handlePressQRcode(index)}>Payment Done ?</Text>
-                    </View>
-                </View>
-            </>
-                : <FlatList
-                    data={AllOrders}
-                    renderItem={renderItem}
-                    keyExtractor={(item, index) => String(index)}
-                />}
-        </SafeAreaView>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    padding: 5,
+                                    borderRadius: 5,
+                                    // elevation: 2,
+                                    // backgroundColor: 'lightgreen'
+                                }}
+                                >
+                                    <Text style={{
+                                        fontSize: 20,
+                                        fontWeight: "bold",
+                                    }}>Total Amount : {AllOrders[index].totalamount}</Text>
+                                </View>
+
+                            </View>
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                padding: 10,
+                                borderRadius: 5,
+                            }}
+                            >
+                                <QRCode
+                                    value={`upi://pay?pa=9480527929@ybl&pn=Rakshit Kulkarni&tn=Note&am=${AllOrders[index].totalamount}&cu=INR`}
+                                    size={300}
+                                // getRef={(c) => console.log(c)}
+                                />
+                            </View>
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                padding: 10,
+                                borderRadius: 5,
+                                elevation: 2,
+                                backgroundColor: 'lightgreen'
+                            }}
+                            >
+                                <Text style={{
+                                    fontSize: 20,
+                                    fontWeight: "bold",
+                                }}
+                                    onPress={() => handlePressQRcode(index)}>Payment Done ?</Text>
+                            </View>
+                        </View>
+                    </>
+                        : <FlatList
+                            data={AllOrders}
+                            renderItem={renderItem}
+                            keyExtractor={(item, index) => String(index)}
+                        />}
+                </SafeAreaView>}
+        </>
 
     )
 }
