@@ -52,7 +52,7 @@ const Item = ({ id, OrderId, title, image_url, price, description, category, dis
     </>
 );
 
-const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders,  }) => {
+const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
 
     const [update, setupdate] = useState(false);
 
@@ -73,11 +73,11 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders,  }) => {
     const [visibleMap, setvisibleMap] = useState(false);
 
     const [latitude, setlatitude] = useState('');
-   const [longitude, setlongitude] = useState('');
+    const [longitude, setlongitude] = useState('');
 
-    useEffect(()=>{
+    useEffect(() => {
         setvisibleMap(false);
-    },[])
+    }, [])
 
     const toggleFunction = (index) => {
         AllOrders[index].toggle = !AllOrders[index].toggle;
@@ -124,9 +124,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders,  }) => {
 
                             // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
 
-                            setlongitude(AllOrders[index].Longitude);
 
-                            setlatitude( AllOrders[index].Latitude);
 
                             if (!AllOrders[index].Longitude && !AllOrders[index].Latitude && AllOrders[index].Location !== '') {
                                 Alert.alert('Exact Location Not Found', `But Location Address is mentioned as ${AllOrders[index].Location}`, [
@@ -136,7 +134,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders,  }) => {
                                         style: 'cancel',
                                     },
                                     {
-                                        text: 'Want to Continue', 
+                                        text: 'Want to Continue',
                                         // onPress: () =>
                                         //     console.log("continue..")
                                     },
@@ -144,6 +142,9 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders,  }) => {
                             }
 
                             if (AllOrders[index].Longitude && AllOrders[index].Latitude && AllOrders[index].Location !== '') {
+                                setlongitude(AllOrders[index].Longitude);
+
+                                setlatitude(AllOrders[index].Latitude);
                                 setvisibleMap(true);
                             }
 

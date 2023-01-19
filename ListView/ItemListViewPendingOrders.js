@@ -85,7 +85,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
     const [visibleMap, setvisibleMap] = useState(false);
 
     const [latitude, setlatitude] = useState('');
-   const [longitude, setlongitude] = useState('');
+    const [longitude, setlongitude] = useState('');
 
     const toggleFunction = (index) => {
         AllOrders[index].toggle = !AllOrders[index].toggle;
@@ -125,9 +125,6 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
 
                             // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
 
-                            setlongitude(AllOrders[index].Longitude);
-
-                            setlatitude( AllOrders[index].Latitude);
 
                             if (!AllOrders[index].Longitude && !AllOrders[index].Latitude && AllOrders[index].Location !== '') {
                                 Alert.alert('Exact Location Not Found', `But Location Address is mentioned as ${AllOrders[index].Location}`, [
@@ -137,7 +134,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                                         style: 'cancel',
                                     },
                                     {
-                                        text: 'Want to Continue', 
+                                        text: 'Want to Continue',
                                         // onPress: () =>
                                         //     console.log("continue..")
                                     },
@@ -145,6 +142,10 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                             }
 
                             if (AllOrders[index].Longitude && AllOrders[index].Latitude && AllOrders[index].Location !== '') {
+                                setlongitude(AllOrders[index].Longitude);
+
+                                setlatitude(AllOrders[index].Latitude);
+
                                 setvisibleMap(true);
                             }
                             //     flag=false;
@@ -167,7 +168,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                             //          },
                             //     ])
                             // }
-                            
+
                         }
                         }
                     />
