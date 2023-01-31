@@ -20,7 +20,7 @@ import { admins, app, auth, database } from "./Firebase";
 import { ref, set, update, onValue } from "firebase/database";
 
 
-const Login = ({ navigation }) => {
+const LoginWithEmail = ({ navigation }) => {
     const [userEmail, setUserEmail] = useState("");
     const [userPassword, setUserPassword] = useState("");
     const [errortext, setErrortext] = useState("");
@@ -44,10 +44,16 @@ const Login = ({ navigation }) => {
                 // If server response message same as Data Matched
                 if (user) {
                     if (admins.includes(userEmail)) {
-                        navigation.replace("Dashboard Admin");
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: "Dashboard Admin" }],
+                        });
                     }
                     else {
-                        navigation.replace("Home");
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'Home' }],
+                        });
                     }
                 }
             })
@@ -145,7 +151,7 @@ const Login = ({ navigation }) => {
         </SafeAreaView>
     );
 };
-export default Login;
+export default LoginWithEmail;
 
 const styles = StyleSheet.create({
     mainBody: {
@@ -203,3 +209,5 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
 });
+
+

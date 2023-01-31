@@ -3,7 +3,7 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore'
 import { getDatabase } from "firebase/database";
 
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyBJGV363J9OL1upLK9Yzy_O51y4zW6vEBc",
     authDomain: "getit-d33e8.firebaseapp.com",
     projectId: "getit-d33e8",
@@ -15,7 +15,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export default app;
+
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const database = getDatabase();
-export const admins = ["rakshitkulkarni2002@gmail.com"]
+export const admins = ["rakshitkulkarni2002@gmail.com","+919480527929"]

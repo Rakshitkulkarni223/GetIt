@@ -101,7 +101,7 @@ const DashboardAdmin = ({ navigation, route }) => {
                 headerRight: () => (
                     <AntDesign name="logout" size={24} color="black" onPress={() => signOut(auth).then(() => {
                         alert(`${email}, you have successfully logged out!`);
-                        navigation.navigate("Home")
+                        navigation.replace("Home")
                     }).catch((error) => {
                         alert(`${email}, Logout Unsuccessfull!`);
                     })} />
@@ -141,7 +141,7 @@ export default DashboardAdmin;
 const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
-        bottom: 4,
+        bottom: '0.5%',
         justifyContent: "center",
         backgroundColor: "#307ecc",
         alignContent: "center",

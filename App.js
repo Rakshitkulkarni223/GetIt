@@ -27,11 +27,12 @@ import { NativeRouter, Route, Link, Routes } from "react-router-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from "./Home";
-import Login from "./Login";
 import SignUp from "./Signup";
 import DashboardAdmin from "./DashboardAdmin";
 import DashboardUser from "./DashboardUser";
 import ConfiremdOrders from "./users/ConfiremdOrders";
+import LoginWithEmail from "./LoginWithEmail";
+import LoginWithOTP from "./LoginWithOTP";
 
 const Stack = createNativeStackNavigator();
 
@@ -62,10 +63,10 @@ const App = () => (
   <NavigationContainer>
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Home" component={Home}/>
-      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="LoginWithEmail" component={LoginWithEmail} />
+      <Stack.Screen name="LoginWithOTP" component={LoginWithOTP} />
       <Stack.Screen name="Signup" component={SignUp} />
       <Stack.Screen name="Dashboard Admin" component={DashboardAdmin} />
-      <Stack.Screen name="Dashboard User" component={DashboardUser} />
       <Stack.Screen name="Confirm Order" component={ConfiremdOrders} />
     </Stack.Navigator>
   </NavigationContainer>

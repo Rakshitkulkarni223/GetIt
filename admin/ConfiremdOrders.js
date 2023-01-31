@@ -39,6 +39,7 @@ const ConfirmedOrders = () => {
             var Location= '';
             var Longitude = ''
             var Latitude = ''
+            var date = ''
             child.forEach((it)=>{
                it.forEach((item)=>{
                   flag = true;
@@ -47,8 +48,10 @@ const ConfirmedOrders = () => {
                      totalamount += eachitem.val().ItemPrice*eachitem.val().ItemQuantity;
 
                      Location = eachitem.val().Location;
-                     Longitude =eachitem.val().Longitude,
-                     Latitude = eachitem.val().Latitude,
+                     Longitude =eachitem.val().Longitude;
+                     Latitude = eachitem.val().Latitude;
+
+                     date = eachitem.val().ItemAddedDate;
 
                      items.push({
                         key:eachitem.key,
@@ -72,8 +75,21 @@ const ConfirmedOrders = () => {
                })
             })
             data = items;
-            orders.push({key: child.key,value: data, toggle: false,  totalamount: totalamount, Location: Location ,Longitude: Longitude,Latitude: Latitude});
+            orders.push({key: child.key,value: data, toggle: false,  
+               totalamount: totalamount, Location: Location
+               ,Longitude: Longitude,Latitude: Latitude,
+               Date: date
+            });
          })
+
+
+         orders.sort(function(item1, item2) {
+            var val1 = new Date(item1['Date']);
+            var val2 = new Date(item2['Date']);
+            if (val1 < val2) return 1;
+            if (val1 > val2) return -1;
+            return 0;
+          });
 
          setAllItems(items);
          setAllOrders(orders);

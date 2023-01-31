@@ -27,9 +27,49 @@ import ViewItems from "./users/ViewItems";
 
 import { app, auth, db, database } from "./Firebase";
 import { ref, set, update, onValue } from "firebase/database";
+import UsersCompletedOrders from "./users/UsersCompletedOrders";
 
 
-const DashboardUser = ({ navigation, route }) => {
+
+const Tab = createBottomTabNavigator();
+
+function MyTabs({ navigation, OrderId }) {
+
+    return (
+        <Tab.Navigator
+            initialRouteName="All Items"
+            screenOptions={{
+                tabBarActiveTintColor: '#e91e63',
+                headerShown: false
+            }}
+        >
+            <Tab.Screen
+                name="All Items"
+                children={() => <ViewItems navigation={navigation} OrderId={OrderId} />}
+                options={{
+                    tabBarLabel: "All Items",
+                    tabBarIcon: ({ color, size }) => (
+                        <MaterialIcons name="preview" color={color} size={size} />
+                    ),
+                }}
+            />
+
+            <Tab.Screen
+                name="Your Orders"
+                children={() => <UsersCompletedOrders navigation={navigation} OrderId={OrderId} />}
+                options={{
+                    tabBarLabel: "Your Orders",
+                    tabBarIcon: ({ color, size }) => (
+                        <MaterialIcons name="preview" color={color} size={size} />
+                    ),
+                }}
+            />
+        </Tab.Navigator>
+    );
+}
+
+
+const DashboardUser = ({ navigation, OrderId }) => {
 
     const [user, setUser] = useState({ loggedIn: false });
 
@@ -43,7 +83,7 @@ const DashboardUser = ({ navigation, route }) => {
                 headerRight: () => (
                     <AntDesign name="logout" size={24} color="black" onPress={() => signOut(auth).then(() => {
                         alert(`${email}, you have successfully logged out!`);
-                        navigation.navigate("Home")
+                        navigation.replace("Home")
                     }).catch((error) => {
                         alert(`${email}, Logout Unsuccessfull!`);
                     })} />
@@ -70,39 +110,21 @@ const DashboardUser = ({ navigation, route }) => {
         }
     }, [])
 
-
-    
-
     return (
+
         <SafeAreaView style={styles.mainBody}>
-            <ViewItems navigation={navigation} OrderId={route.params.OrderId}/>
+            <NavigationContainer independent={true}>
+                <MyTabs navigation={navigation} OrderId={OrderId} />
+            </NavigationContainer>
         </SafeAreaView>
     );
 };
 export default DashboardUser;
 
 const styles = StyleSheet.create({
-    fab: {
-        position: 'absolute',
-        width: 150,
-        height: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-        right: 20,
-        left: 30,
-        bottom: 30,
-        backgroundColor: 'orange',
-        borderRadius: 5,
-        borderColor: "black",
-        elevation: 8
-    },
-    fabIcon: {
-        fontSize: 20,
-        color: 'black',
-        fontWeight: 'bold'
-    },
     mainBody: {
         flex: 1,
+        bottom: '0.60%',
         justifyContent: "center",
         backgroundColor: "#307ecc",
         alignContent: "center",

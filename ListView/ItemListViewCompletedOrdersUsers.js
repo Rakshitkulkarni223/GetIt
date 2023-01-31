@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert } from 'react-native';
 import { AntDesign, MaterialCommunityIcons, Entypo, MaterialIcons } from '@expo/vector-icons';
 import UpdateItem from '../admin/UpdateItem';
 import { app, auth, db, database } from "../Firebase";
 import { ref, set, update } from "firebase/database";
+
+import QRCode from 'react-native-qrcode-svg';
 import GoogleMap from '../GoogleMap';
 
 
-const Item = ({ id, AuthId, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, Location, Longitude, Latitude }) => (
+
+const Item = ({ id, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate }) => (
     <>
         {displayCategory ? <Text style={{
             fontSize: 15,
@@ -36,41 +39,20 @@ const Item = ({ id, AuthId, OrderId, title, image_url, price, description, categ
                 </Text>
             </View>
             <View style={styles.container_update}>
-                <AntDesign name="checkcircleo" size={24} color="green" onPress={() => {
-                    set(ref(database, `admin/confirmedOrdersByAdmin/${OrderId}/items/${category}/` + id), {
-                        ItemId: id,
-                        AuthId: AuthId,
-                        OrderId: OrderId,
-                        ItemName: title,
-                        ItemPrice: price,
-                        ItemDesc: description,
-                        ItemImage: image_url,
-                        ItemCategory: category,
-                        ItemQuantity: quantity,
-                        ItemAddedDate: ItemAddedDate,
-                        Location: Location,
-                        Longitude: Longitude,
-                        Latitude: Latitude,
-                        OrderConfirmed: true,
-                        OrderConfirmedByAdmin: true,
-                        OrderPending: true,
-                        OrderDelivered: false
-                    });
-                    set(ref(database, `users/confirmedOrders/${OrderId}/items/${category}/` + id), {
-                    });
-                }} />
+                {/* <AntDesign name="checkcircleo" size={24} color="green" onPress={()=>{
+                }}/> */}
             </View>
             <View style={styles.container_update}>
-                <Entypo name="cross" size={24} color="red" onPress={() => {
-                    set(ref(database, `users/confirmedOrders/${OrderId}/items/${category}/` + id), {
+                {/* <Entypo name="cross" size={24} color="red" onPress={()=>{
+                    set(ref(database, `users/confirmedOrders/${OrderID}/items/${category}/` + id), {
                     });
-                }} />
+                }}/> */}
             </View>
         </View>
     </>
 );
 
-const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
+const ItemListViewCompletedOrdersUsers = ({ AllOrders }) => {
 
     const [update, setupdate] = useState(false);
 
@@ -82,10 +64,20 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
     const [ItemId, setItemId] = useState("");
     const [toggle, setToggle] = useState(true);
 
+    const [displayQRCode, setdisplayQRCode] = useState(false);
+
+    const [totalamount, settotalamount] = useState('');
+
+    const [index, setindex] = useState("");
+
     const [visibleMap, setvisibleMap] = useState(false);
 
     const [latitude, setlatitude] = useState('');
     const [longitude, setlongitude] = useState('');
+
+    useEffect(() => {
+        setvisibleMap(false);
+    }, [])
 
     const toggleFunction = (index) => {
         AllOrders[index].toggle = !AllOrders[index].toggle;
@@ -94,7 +86,6 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
 
     const renderItem = ({ item, index }) => (
         <View>
-
             <View style={{
                 flex: 1,
                 flexDirection: 'row',
@@ -102,7 +93,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                 marginBottom: 10,
                 padding: 20,
                 borderRadius: 5,
-                backgroundColor: 'orange',
+                backgroundColor: 'pink',
                 elevation: 2,
             }}>
                 <View>
@@ -113,7 +104,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                         }}>{index + 1}. {item.key}</Text>
                 </View>
                 <View>
-                    <Text onPress={() => toggleFunction(index)}
+                    <Text
                         style={{
                             fontSize: 20,
                             fontWeight: "bold",
@@ -126,46 +117,35 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                             // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
 
 
+
                             if (!AllOrders[index].Longitude && !AllOrders[index].Latitude && AllOrders[index].Location !== '') {
-                                Alert.alert('Exact Location Not Found', `But Location Address is mentioned as ${AllOrders[index].Location}`, [
+                                Alert.alert('Order Delivered', `Exact Location is not found. But Order Delivered to ${AllOrders[index].Location}`, [
                                     {
-                                        text: 'Want to Call?',
-                                        // onPress: () => console.log("call.."),
-                                        style: 'cancel',
-                                    },
-                                    {
-                                        text: 'Want to Continue',
-                                        // onPress: () =>
-                                        //     console.log("continue..")
+                                        text: 'OK',
                                     },
                                 ])
                             }
 
                             if (AllOrders[index].Longitude && AllOrders[index].Latitude && AllOrders[index].Location !== '') {
                                 setlongitude(AllOrders[index].Longitude);
-
                                 setlatitude(AllOrders[index].Latitude);
-
                                 setvisibleMap(true);
                             }
-                            //     flag=false;
-                            // }
 
                             // if (longitude !== '' && latitude !== '' && AllOrders[index].Location !== '') {
-                            //     setvisibleMap(true);
-                            //     flag=false
+                            //     setvisibleMap(true)
                             // }
-                            // if(longitude === '' && latitude === '' && AllOrders[index].Location === ''){
+                            // else {
                             //     Alert.alert('Correct Location Not Found', 'Please call the person to confirm the Location...', [
                             //         {
                             //             text: 'Want to Call?',
                             //             onPress: () => console.log("call.."),
                             //             style: 'cancel',
-                            //          },
-                            //          {
+                            //         },
+                            //         {
                             //             text: 'Want to Continue', onPress: () =>
-                            //             console.log("continue..")
-                            //          },
+                            //                 console.log("continue..")
+                            //         },
                             //     ])
                             // }
 
@@ -176,11 +156,14 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                 <View>
                     <MaterialCommunityIcons name="checkbox-marked-circle" size={25} color="green"
                         onPress={() => {
-                            alert("select all...");
+                            alert(`Order Delivered To ${AllOrders[index].Location}`);
                         }}
                     />
                 </View>
+
             </View>
+
+
             {AllOrders[index].toggle ? <FlatList
                 data={item.value}
                 renderItem={({ item }) => (
@@ -189,18 +172,14 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                             id={item.key}
                             displayCategory={item.displayCategory}
                             displayUser={item.displayUser}
-                            OrderId={item.OrderId}
+                            OrderID={item.OrderID}
                             title={item.ItemName}
                             image_url={item.ItemImage}
                             description={item.ItemDesc}
                             price={item.ItemPrice}
-                            AuthId={item.AuthId}
                             category={item.ItemCategory}
                             quantity={item.ItemQuantity}
                             ItemAddedDate={item.ItemAddedDate}
-                            Location={AllOrders[index].Location}
-                            Longitude={AllOrders[index].Longitude}
-                            Latitude={AllOrders[index].Latitude}
                         />
                     </View>
                 )
@@ -212,14 +191,96 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
     );
 
     return (
+
         <>
             {visibleMap ? <GoogleMap Longitude={longitude} Latitude={latitude} setvisibleMap={setvisibleMap} /> :
+
                 <SafeAreaView style={styles.container}>
-                    <FlatList
-                        data={AllOrders}
-                        renderItem={renderItem}
-                        keyExtractor={(item, index) => String(index)}
-                    />
+                    {displayQRCode ? <>
+                        <View style={{
+                            flex: 1,
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            marginBottom: 10,
+                            padding: 20,
+                            borderRadius: 5,
+                            // backgroundColor: 'pink',
+                        }}>
+                            <View style={{
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                padding: 10,
+                                borderRadius: 5,
+                                elevation: 2,
+                                backgroundColor: 'lightblue'
+                            }}
+                            >
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    padding: 5,
+                                    borderRadius: 5,
+                                    // elevation: 2,
+                                    // backgroundColor: 'lightgreen'
+                                }}
+                                >
+                                    <Text style={{
+                                        fontSize: 20,
+                                        fontWeight: "bold",
+                                    }}>Order Id : {AllOrders[index].value[0].OrderId}</Text>
+                                </View>
+
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    padding: 5,
+                                    borderRadius: 5,
+                                    // elevation: 2,
+                                    // backgroundColor: 'lightgreen'
+                                }}
+                                >
+                                    <Text style={{
+                                        fontSize: 20,
+                                        fontWeight: "bold",
+                                    }}>Total Amount : {AllOrders[index].totalamount}</Text>
+                                </View>
+
+                            </View>
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                padding: 10,
+                                borderRadius: 5,
+                            }}
+                            >
+                                <QRCode
+                                    value={`upi://pay?pa=9480527929@ybl&pn=Rakshit Kulkarni&tn=Note&am=${AllOrders[index].totalamount}&cu=INR`}
+                                    size={300}
+                                // getRef={(c) => console.log(c)}
+                                />
+                            </View>
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                padding: 10,
+                                borderRadius: 5,
+                                elevation: 2,
+                                backgroundColor: 'lightgreen'
+                            }}
+                            >
+                                <Text style={{
+                                    fontSize: 20,
+                                    fontWeight: "bold",
+                                }}
+                                    onPress={() => handlePressQRcode(index)}>Payment Done ?</Text>
+                            </View>
+                        </View>
+                    </>
+                        : <FlatList
+                            data={AllOrders}
+                            renderItem={renderItem}
+                            keyExtractor={(item, index) => String(index)}
+                        />}
                 </SafeAreaView>}
         </>
 
@@ -272,4 +333,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ItemsListViewPendingOrders;
+export default ItemListViewCompletedOrdersUsers;

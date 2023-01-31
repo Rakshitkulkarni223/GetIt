@@ -11,7 +11,11 @@ import {
     ScrollView,
 } from "react-native";
 
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign, Feather } from '@expo/vector-icons';
+
+
+
+import * as ImagePicker from 'expo-image-picker';
 
 import { app, auth, db, database } from "../Firebase";
 import { ref, set, update } from "firebase/database";
@@ -26,31 +30,31 @@ const SaveItem = async (ItemCategory, ItemName, ItemPrice, ItemDesc, ItemImage, 
     ItemDesc = ItemDesc.trim();
     ItemPrice = ItemPrice.trim();
 
-    updated?
+    updated ?
 
-    update(ref(database, `admin/items/${ItemCategory}/` + id), {
-        ItemId: id,
-        ItemName: ItemName,
-        ItemPrice: ItemPrice,
-        ItemDesc: ItemDesc,
-        ItemImage: ItemImage,
-        ItemCategory: ItemCategory,
-        ItemUpdatedDate : new Date().toLocaleString(),
-    }) :
+        update(ref(database, `admin/items/${ItemCategory}/` + id), {
+            ItemId: id,
+            ItemName: ItemName,
+            ItemPrice: ItemPrice,
+            ItemDesc: ItemDesc,
+            ItemImage: ItemImage,
+            ItemCategory: ItemCategory,
+            ItemUpdatedDate: new Date().toLocaleString(),
+        }) :
 
-    update(ref(database, `admin/items/${ItemCategory}/` + id), {
-        ItemId: id,
-        ItemName: ItemName,
-        ItemPrice: ItemPrice,
-        ItemDesc: ItemDesc,
-        ItemImage: ItemImage,
-        ItemCategory: ItemCategory,
-        ItemAddedDate : new Date().toLocaleString(),
-    })
+        update(ref(database, `admin/items/${ItemCategory}/` + id), {
+            ItemId: id,
+            ItemName: ItemName,
+            ItemPrice: ItemPrice,
+            ItemDesc: ItemDesc,
+            ItemImage: ItemImage,
+            ItemCategory: ItemCategory,
+            ItemAddedDate: new Date().toLocaleString(),
+        })
 
 };
 
-const UpdateItem = ({ title, description, image_url, price,category,id }) => {
+const UpdateItem = ({ title, description, image_url, price, category, id }) => {
 
     const [ItemName, setItemName] = useState(title);
     const [ItemDesc, setItemDesc] = useState(description);
@@ -61,10 +65,40 @@ const UpdateItem = ({ title, description, image_url, price,category,id }) => {
     const [errortext, setErrortext] = useState("");
     const [updated, setupdated] = useState(false);
 
-    // useEffect(()=>{
-    //     // set(ref(database, `admin/items/${ItemCategory}/` + ItemId), {
-    //     // });
-    // },[])
+    // This function is triggered when the "Select an image" button pressed
+    const showImagePicker = async () => {
+        // Ask the user for the permission to access the media library 
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+            alert("You've refused to allow this appp to access your photos!");
+            return;
+        }
+
+        const result = await ImagePicker.launchImageLibraryAsync();
+
+        if (!result['canceled']) {
+            setItemImage(result['assets'][0]["uri"]);
+        }
+    }
+
+    // This function is triggered when the "Open camera" button pressed
+    const openCamera = async () => {
+        // Ask the user for the permission to access the camera
+        const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+            alert("You've refused to allow this appp to access your camera!");
+            return;
+        }
+
+        const result = await ImagePicker.launchCameraAsync();
+
+        if (!result['canceled']) {
+            setItemImage(result['assets'][0]["uri"]);
+        }
+    }
+
 
 
     const handleSubmitButton = async () => {
@@ -75,12 +109,12 @@ const UpdateItem = ({ title, description, image_url, price,category,id }) => {
         if (!ItemImage) return alert("Please upload Item Image.");
 
         try {
-            ItemCategory.trim()!==category?
-            set(ref(database, `admin/items/${category}/` + ItemId),{
-       
-            }):false
+            ItemCategory.trim() !== category ?
+                set(ref(database, `admin/items/${category}/` + ItemId), {
 
-            await SaveItem(ItemCategory, ItemName, ItemPrice, ItemDesc, ItemImage, ItemCategory.trim()===category)
+                }) : false
+
+            await SaveItem(ItemCategory, ItemName, ItemPrice, ItemDesc, ItemImage, ItemCategory.trim() === category)
             alert(`${ItemName} ${ItemDesc} - ${ItemPrice} rs has been updated to ${ItemCategory} Category Successfully.`);
             setupdated(true);
 
@@ -93,7 +127,7 @@ const UpdateItem = ({ title, description, image_url, price,category,id }) => {
 
     return (
         <>
-            {updated ? <ViewItems/> :
+            {updated ? <ViewItems /> :
                 <SafeAreaView
                     style={styles.root}
                 >
@@ -165,7 +199,39 @@ const UpdateItem = ({ title, description, image_url, price,category,id }) => {
                             />
                         </View>
 
-                        <View style={styles.sectionStyle}>
+                        <View style={styles.imageContainer}>
+                            {
+                                ItemImage !== '' && <Image
+                                    source={{ uri: ItemImage }}
+                                    style={styles.image}
+                                />
+                            }
+                        </View>
+
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                        }}>
+                            <View style={{ paddingLeft: '28%', paddingTop: '2%' }}>
+                                <Feather name="image" size={30} color="black" onPress={
+                                    showImagePicker
+                                } />
+                            </View>
+                            <View style={{ paddingRight: '0%', paddingTop: '2%' }}>
+                                <Feather name="camera" size={30} color="black" onPress={
+                                    openCamera
+                                } />
+                            </View>
+
+                            <View style={{ paddingRight: '30%', paddingTop: '2%' }}>
+                                <AntDesign name="delete" size={30} color="black" onPress={() => {
+                                    setItemImage('');
+                                }} />
+                            </View>
+
+                        </View>
+
+                        {/* <View style={styles.sectionStyle}>
                             <TextInput
                                 style={styles.inputStyle}
                                 onChangeText={(ItemImage) =>
@@ -181,7 +247,7 @@ const UpdateItem = ({ title, description, image_url, price,category,id }) => {
                                 blurOnSubmit={false}
                             // ref={ItemImageref}
                             />
-                        </View>
+                        </View> */}
 
                         {errortext != "" ? (
                             <Text style={styles.errorTextStyle}>
@@ -213,8 +279,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     container: {
-        height: 500,
-        width: 350,
+        height: '80%',
+        width: '90%',
         borderRadius: 16,
         padding: 16,
         borderWidth: 8,
@@ -297,6 +363,14 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontSize: 14,
     },
+    imageContainer: {
+        paddingLeft: '24%'
+    },
+    image: {
+        width: 180,
+        height: 180,
+        resizeMode: 'cover'
+    }
 });
 
 export default UpdateItem

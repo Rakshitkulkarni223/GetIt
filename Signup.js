@@ -49,7 +49,10 @@ const SignUp = ({ navigation }) => {
       .then((user) => {
         if (user) {
           SaveInfo(user["user"]["uid"], userName, userEmail, userPassword);
-          navigation.navigate("Home");
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+        });
         }
       })
       .catch((error) => {

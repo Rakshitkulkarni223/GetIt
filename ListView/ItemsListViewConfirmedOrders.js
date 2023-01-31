@@ -173,23 +173,29 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                     <MaterialCommunityIcons name="checkbox-marked-circle" size={25} color="green"
                         onPress={() => {
                             alert(`Order Delivered To ${AllOrders[index].Location}`);
-                            set(ref(database, `users/completedOrders/${AllOrders[index].value[0].AuthId}/${AllOrders[index].value[0].OrderId}/items/${AllOrders[index].value[0].ItemCategory}/` + AllOrders[index].value[0].key), {
-                                ItemId: AllOrders[index].value[0].key,
-                                AuthId: AllOrders[index].value[0].AuthId,
-                                OrderId: AllOrders[index].value[0].OrderId,
-                                ItemName: AllOrders[index].value[0].ItemName,
-                                ItemPrice: AllOrders[index].value[0].ItemPrice,
-                                ItemDesc: AllOrders[index].value[0].ItemDesc,
-                                ItemImage: AllOrders[index].value[0].ItemImage,
-                                ItemCategory: AllOrders[index].value[0].ItemCategory,
-                                ItemQuantity: AllOrders[index].value[0].ItemQuantity,
-                                ItemAddedDate: AllOrders[index].value[0].ItemAddedDate,
-                                Location: AllOrders[index].Location,
-                                OrderConfirmed: true,
-                                OrderConfirmedByAdmin: true,
-                                OrderPending: false,
-                                OrderDelivered: true
-                            });
+                            for(var i=0;i<AllOrders[index].value.length;i++)
+                            {
+                                set(ref(database, `users/completedOrders/${AllOrders[index].value[i].AuthId}/${AllOrders[index].value[i].OrderId}/items/${AllOrders[index].value[i].ItemCategory}/` + AllOrders[index].value[i].key), {
+                                    ItemId: AllOrders[index].value[i].key,
+                                    AuthId: AllOrders[index].value[i].AuthId,
+                                    OrderId: AllOrders[index].value[i].OrderId,
+                                    ItemName: AllOrders[index].value[i].ItemName,
+                                    ItemPrice: AllOrders[index].value[i].ItemPrice,
+                                    ItemDesc: AllOrders[index].value[i].ItemDesc,
+                                    ItemImage: AllOrders[index].value[i].ItemImage,
+                                    ItemCategory: AllOrders[index].value[i].ItemCategory,
+                                    ItemQuantity: AllOrders[index].value[i].ItemQuantity,
+                                    ItemAddedDate: AllOrders[index].value[i].ItemAddedDate,
+                                    Latitude: AllOrders[index].Latitude,
+                                    Longitude: AllOrders[index].Longitude,
+                                    Location: AllOrders[index].Location,
+                                    OrderConfirmed: true,
+                                    OrderConfirmedByAdmin: true,
+                                    OrderPending: false,
+                                    OrderDelivered: true
+                                });
+                            }
+                            
                         }}
                     />
                 </View>
@@ -226,7 +232,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
     return (
 
         <>
-            {visibleMap ? <GoogleMap Longitude={longitude} Latitude={latitude} /> :
+            {visibleMap ? <GoogleMap Longitude={longitude} Latitude={latitude} setvisibleMap={setvisibleMap}/> :
 
                 <SafeAreaView style={styles.container}>
                     {displayQRCode ? <>

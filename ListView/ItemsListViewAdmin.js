@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
     photo: {
         height: 50,
         width: 50,
+        resizeMode: 'contain'
     },
 });
 

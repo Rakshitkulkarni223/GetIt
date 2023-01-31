@@ -13,7 +13,7 @@ import MapView from 'react-native-maps';
 
 
 
-const GoogleMap = ({ Longitude, Latitude }) => {
+const GoogleMap = ({ Longitude, Latitude ,setvisibleMap}) => {
 
   const [latitude, setlatitude] = useState('');
   const [longitude, setlongitude] = useState('');
@@ -43,7 +43,9 @@ const GoogleMap = ({ Longitude, Latitude }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={{color: 'black', fontSize: 40, padding: 10}}>i</Text>
+      <Text style={{color: 'black', fontSize: 40, padding: 10}} onPress={()=>{
+        setvisibleMap(false);
+      }}>Go back</Text>
       <View>
      <MapView
         style={styles.map}

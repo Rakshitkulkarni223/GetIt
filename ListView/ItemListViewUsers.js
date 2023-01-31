@@ -218,21 +218,19 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter 
 
     const checkcart = () => {
 
-        if(totalamount<=0)
-        {
+        if (totalamount <= 0) {
             Alert.alert('No Items In Cart', `Please select atleast one item to order`, [
                 {
-                   text: 'OK',
+                    text: 'OK',
                 },
-             ])
+            ])
         }
-        else 
-        {
+        else {
             Alert.alert('Total Amount', `${totalamount} Rs`, [
                 {
-                   text: 'OK',
+                    text: 'OK',
                 },
-             ])
+            ])
             navigation.navigate("Confirm Order", { OrderId: OrderId })
         }
     }
@@ -248,33 +246,41 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter 
             {showfooter ? <View style={{
                 justifyContent: 'space-between',
                 flexDirection: 'row',
-                height: 55,
+                height: '6%',
             }}>
-                <View><Text style={{
-                    paddingHorizontal: 43,
-                    paddingVertical: 15,
-                    textAlign: 'center',
-                    borderRadius: 5,
-                    borderColor: 'black',
-                    backgroundColor: "#ffa07a",
-                    borderWidth: 3,
-                    height: 60,
-                    fontSize: 20,
-                    color: '#fdf5e6',
-                    fontWeight: 'bold'
-                }} onPress={checkcart}>Order Now</Text></View>
 
-                <View><Text style={{
-                    paddingHorizontal: 20,
-                    paddingVertical: 15,
-                    textAlign: 'center',
-                    borderColor: 'black',
-                    backgroundColor: 'white',
-                    height: 60,
-                    fontSize: 23,
+
+                <View
+                    style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        width: '50%', borderColor: 'black',
+                        backgroundColor: 'white',
+                    }}
+                ><Text style={{
+                    paddingLeft: '1.5%',
+                    fontSize: 20,
+                    paddingLeft: '5%',
                     color: 'black',
                     fontWeight: 'bold'
                 }} >Total Amount : {totalamount}/-</Text></View>
+
+                <View
+                    style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        width: '50%',
+                        borderWidth: 2,
+                        borderColor: 'black',
+                        backgroundColor: "#ffa07a",
+                        borderRadius: 5,
+                    }}
+                ><Text style={{
+                    textAlign: 'center',
+                    fontSize: 25,
+                    color: '#fdf5e6',
+                    fontWeight: 'bold'
+                }} onPress={checkcart}>Order Now</Text></View>
 
             </View> : <></>}
         </SafeAreaView>

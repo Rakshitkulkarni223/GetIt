@@ -19,8 +19,9 @@ import { app, auth, db, database } from "./Firebase";
 import { ref, set, update, onValue } from "firebase/database";
 
 
-const PaymentGateway = ({ navigation, route,totalamount, AllConfirmedItems, OrderId, displayCurrentAddress, setDisplayCurrentAddress,longitude,setlongitude,latitude,setlatitude }) => {
+const PaymentGateway = ({ navigation, route,setData, totalamount, AllConfirmedItems, OrderId, displayCurrentAddress, setDisplayCurrentAddress, longitude, setlongitude, latitude, setlatitude }) => {
 
+    const [paymentDone, setpaymentDone] = useState(false);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('tabPress', (e) => {
@@ -57,10 +58,12 @@ const PaymentGateway = ({ navigation, route,totalamount, AllConfirmedItems, Orde
                 });
             }
 
-            set(ref(database, `users/orders/${OrderId}/items/`), {
+            await set(ref(database, `users/orders/${OrderId}/items/`), {
             })
-
-            navigation.navigate("Home");
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Home' }],
+              });
         }
         catch (err) {
             alert(err);
@@ -69,11 +72,11 @@ const PaymentGateway = ({ navigation, route,totalamount, AllConfirmedItems, Orde
     }
 
     return (
-        <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
-            <Button title='PAY ONLINE' onPress={() => openPaymentApp('online')} />
-            <Text>Or</Text>
-            <Button title='Cash on Delivery' onPress={() => openPaymentApp('offline')} />
-        </View>
+                <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
+                    <Button title='PAY ONLINE' onPress={() => openPaymentApp('online')} />
+                    <Text>Or</Text>
+                    <Button title='Cash on Delivery' onPress={() => openPaymentApp('offline')} />
+                </View>
 
     );
 

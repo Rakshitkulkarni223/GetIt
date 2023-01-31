@@ -33,14 +33,18 @@ const PendingOrders = () => {
             var totalamount = 0;
             var Longitude = ''
             var Latitude = ''
+
+            var date = ''
+
             child.forEach((it)=>{
                it.forEach((item)=>{
                   flag = true;
                   item.forEach((eachitem)=>{
                      totalamount += eachitem.val().ItemPrice*eachitem.val().ItemQuantity;
                      Location = eachitem.val().Location;
-                     Longitude =eachitem.val().Longitude,
-                     Latitude = eachitem.val().Latitude,
+                     Longitude =eachitem.val().Longitude;
+                     Latitude = eachitem.val().Latitude;
+                     date = eachitem.val().ItemAddedDate;
 
                      items.push({
                         key:eachitem.key,
@@ -64,8 +68,20 @@ const PendingOrders = () => {
                })
             })
             data = items;
-            orders.push({key: child.key,value: data, toggle: false, totalamount: totalamount, Location: Location ,Longitude: Longitude,Latitude: Latitude});
+            orders.push({key: child.key,value: data, toggle: false,
+                totalamount: totalamount, Location: Location ,
+                Longitude: Longitude,Latitude: Latitude,
+                Date : date
+               });
          })
+
+         orders.sort(function(item1, item2) {
+            var val1 = new Date(item1['Date']);
+            var val2 = new Date(item2['Date']);
+            if (val1 < val2) return 1;
+            if (val1 > val2) return -1;
+            return 0;
+          });
 
          // items.push({ "ItemAddedDate": "Sat Jan 14 21:48:32 2023", "ItemCategory": "Breakfast", "ItemDesc": "Masala dosa", "ItemImage": "Test", "ItemName": "Dosa", "ItemPrice": "50", "ItemQuantity": 1, "displayCategory": true, "key": "BreakfastDosaMasaladosa" }, { "ItemAddedDate": "Sat Jan 14 21:48:34 2023", "ItemCategory": "Breakfast", "ItemDesc": "2 pieces", "ItemImage": "https://images.healthshots.com/healthshots/hi/uploads/2021/11/29201838/Idli-vs-vada-1-1600x900.jpg", "ItemName": "Idly", "ItemPrice": "30", "ItemQuantity": 2, "displayCategory": false, "key": "BreakfastIdly2pieces" }, { "ItemAddedDate": "Sat Jan 14 21:48:35 2023", "ItemCategory": "Breakfast", "ItemDesc": "2 pieces", "ItemImage": "Test", "ItemName": "Vada", "ItemPrice": "30", "ItemQuantity": 2, "displayCategory": false, "key": "BreakfastVada2pieces" }, { "ItemAddedDate": "Sat Jan 14 21:48:36 2023", "ItemCategory": "Cold Beverages", "ItemDesc": "50 ml", "ItemImage": "https://images.healthshots.com/healthshots/hi/uploads/2021/11/29201838/Idli-vs-vada-1-1600x900.jpg", "ItemName": "Frooti", "ItemPrice": "15", "ItemQuantity": 2, "displayCategory": true, "key": "ColdBeveragesFrooti50ml" }, { "ItemAddedDate": "Sat Jan 14 21:48:37 2023", "ItemCategory": "Ice cream", "ItemDesc": "Butter scotch", "ItemImage": "Test", "ItemName": "Ice cream", "ItemPrice": "30", "ItemQuantity": 1, "displayCategory": true, "key": "IcecreamIcecreamButterscotch" }, { "ItemAddedDate": "Sat Jan 14 21:48:38 2023", "ItemCategory": "Snacks", "ItemDesc": "2 pieces", "ItemImage": "Test", "ItemName": "Samosa", "ItemPrice": "30", "ItemQuantity": 2, "displayCategory": true, "key": "SnacksSamosa2pieces" }, { "ItemAddedDate": "Sat Jan 14 21:48:39 2023", "ItemCategory": "Test", "ItemDesc": "Test", "ItemImage": "Test", "ItemName": "Test", "ItemPrice": "30", "ItemQuantity": 2, "displayCategory": true, "key": "TestTestTest" })
          setAllItems(items);
