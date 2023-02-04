@@ -10,7 +10,7 @@ const UsersCompletedOrders = ({navigation}) => {
 
    const [AllOrders, setAllOrders] = useState([]);
 
-   const [itemsList,setitemsList] = useState(ref(database, `users/completedOrders/${auth.currentUser.uid}/`));
+   const [itemsList,setitemsList] = useState(ref(database, `users/completedOrders/${auth.currentUser.phoneNumber}/`));
    
    
    useEffect(() => {

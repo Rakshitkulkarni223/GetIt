@@ -19,4 +19,4 @@ export default app;
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const database = getDatabase();
-export const admins = ["rakshitkulkarni2002@gmail.com","+919480527929"]
+export const admins = ["rakshitkulkarni2002@gmail.com","9480597929"]

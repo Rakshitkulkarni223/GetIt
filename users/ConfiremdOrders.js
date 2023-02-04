@@ -29,7 +29,7 @@ function MyTabs({ navigation, AllConfirmedItems, totalamount, OrderId, displayCu
       >
          <Tab.Screen
             name="View Confirmed Items"
-            children={() => <ItemsListViewUsers DATA={AllConfirmedItems} OrderId={OrderId} totalamount={totalamount} qtyhandler={false} showfooter={false}/>}
+            children={() => <ItemsListViewUsers DATA={AllConfirmedItems} OrderId={OrderId} totalamount={totalamount} qtyhandler={true} showfooter={false}/>}
             options={{
                tabBarLabel: 'View Confirmed Items',
                tabBarIcon: ({ color, size }) => (
@@ -40,6 +40,7 @@ function MyTabs({ navigation, AllConfirmedItems, totalamount, OrderId, displayCu
          <Tab.Screen
             name="Detect Location"
             children={() => <DetectLocation
+               navigation={navigation}
                displayCurrentAddress={displayCurrentAddress}
                setDisplayCurrentAddress={setDisplayCurrentAddress}
                longitude={longitude}

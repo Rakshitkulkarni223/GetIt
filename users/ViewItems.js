@@ -10,6 +10,8 @@ const ViewItems = ({navigation, OrderId}) => {
    const [AllItems, setAllItems] = useState([]);
 
    const [itemsList,setitemsList] = useState(ref(database, 'admin/items/'));
+
+   const [totalamount, settotalamount] = useState(0);
    
    
    useEffect(() => {
@@ -43,7 +45,7 @@ const ViewItems = ({navigation, OrderId}) => {
    }, [])
 
    return (
-      <ItemsListViewUsers navigation={navigation} OrderId={OrderId} DATA={AllItems} qtyhandler={true} showfooter={true}></ItemsListViewUsers>
+      <ItemsListViewUsers navigation={navigation} OrderId={OrderId} DATA={AllItems} qtyhandler={true} showfooter={true} totalamount={totalamount} settotalamount={settotalamount}></ItemsListViewUsers>
    );
 }
 

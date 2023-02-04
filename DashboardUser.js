@@ -15,7 +15,7 @@ import {
 
 import { onAuthStateChanged, signOut } from "firebase/auth";
 
-import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, FontAwesome , Ionicons , MaterialIcons } from '@expo/vector-icons';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -28,6 +28,7 @@ import ViewItems from "./users/ViewItems";
 import { app, auth, db, database } from "./Firebase";
 import { ref, set, update, onValue } from "firebase/database";
 import UsersCompletedOrders from "./users/UsersCompletedOrders";
+import UserAccountDetails from "./UserAccountDetails";
 
 
 
@@ -58,9 +59,20 @@ function MyTabs({ navigation, OrderId }) {
                 name="Your Orders"
                 children={() => <UsersCompletedOrders navigation={navigation} OrderId={OrderId} />}
                 options={{
-                    tabBarLabel: "Your Orders",
+                    tabBarLabel: "Orders",
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="preview" color={color} size={size} />
+                        <Ionicons name="basket" color={color} size={size} />
+                    ),
+                }}
+            />
+
+<Tab.Screen
+                name="Profile"
+                children={() => <UserAccountDetails navigation={navigation}/>}
+                options={{
+                    tabBarLabel: "Profile",
+                    tabBarIcon: ({ color, size }) => (
+                        <MaterialIcons name="account-circle" color={color} size={size} />
                     ),
                 }}
             />

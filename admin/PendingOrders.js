@@ -52,7 +52,7 @@ const PendingOrders = () => {
                         displayCategory: flag,
                         displayUser: showuser,
                         OrderId: child.key,
-                        AuthId: eachitem.val().AuthId,
+                        phoneNumber: eachitem.val().phoneNumber,
                         ItemName: eachitem.val().ItemName,
                         ItemDesc: eachitem.val().ItemDesc,
                         ItemCategory: eachitem.val().ItemCategory,

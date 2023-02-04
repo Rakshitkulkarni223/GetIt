@@ -59,7 +59,7 @@ const ConfirmedOrders = () => {
                         displayCategory: flag,
                         displayUser: showuser,
                         OrderId: child.key,
-                        AuthId: eachitem.val().AuthId,
+                        // AuthId: eachitem.val().AuthId,
                         ItemName: eachitem.val().ItemName,
                         ItemDesc: eachitem.val().ItemDesc,
                         ItemCategory: eachitem.val().ItemCategory,

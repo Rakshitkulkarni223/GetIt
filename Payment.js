@@ -13,13 +13,16 @@ import {
     Keyboard,
     TouchableOpacity,
     KeyboardAvoidingView,
+    Pressable,
 } from "react-native";
 
 import { app, auth, db, database } from "./Firebase";
 import { ref, set, update, onValue } from "firebase/database";
 
+import { scale, moderateScale, verticalScale } from './Dimensions';
 
-const PaymentGateway = ({ navigation, route,setData, totalamount, AllConfirmedItems, OrderId, displayCurrentAddress, setDisplayCurrentAddress, longitude, setlongitude, latitude, setlatitude }) => {
+
+const PaymentGateway = ({ navigation, route, setData, totalamount, AllConfirmedItems, OrderId, displayCurrentAddress, setDisplayCurrentAddress, longitude, setlongitude, latitude, setlatitude }) => {
 
     const [paymentDone, setpaymentDone] = useState(false);
 
@@ -48,9 +51,9 @@ const PaymentGateway = ({ navigation, route,setData, totalamount, AllConfirmedIt
                     ItemQuantity: AllConfirmedItems[i]["ItemQuantity"],
                     ItemAddedDate: AllConfirmedItems[i]["ItemAddedDate"],
                     Location: displayCurrentAddress,
+                    phoneNumber: auth.currentUser.phoneNumber,
                     Longitude: longitude,
                     Latitude: latitude,
-                    AuthId: auth.currentUser.uid,
                     OrderId: OrderId,
                     OrderConfirmed: true,
                     OrderPending: true,
@@ -63,7 +66,7 @@ const PaymentGateway = ({ navigation, route,setData, totalamount, AllConfirmedIt
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'Home' }],
-              });
+            });
         }
         catch (err) {
             alert(err);
@@ -72,17 +75,64 @@ const PaymentGateway = ({ navigation, route,setData, totalamount, AllConfirmedIt
     }
 
     return (
-                <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
-                    <Button title='PAY ONLINE' onPress={() => openPaymentApp('online')} />
-                    <Text>Or</Text>
-                    <Button title='Cash on Delivery' onPress={() => openPaymentApp('offline')} />
+        <SafeAreaView style={{flex: 1}}>
+            <View style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'center',
+                // margin: scale(25),
+            }}>
+
+                <View style={{ margin: scale(10), }}>
+                    <Pressable style={styles.button} onPress={() => openPaymentApp('online')}>
+                        <Text style={styles.text}>PAY ONLINE</Text>
+                    </Pressable>
                 </View>
+
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                }}>
+                    <Text style={{ color: 'black', fontWeight: 'bold', letterSpacing: scale(0.3),
+                     marginBottom: verticalScale(10),
+                     marginTop: verticalScale(10)
+                     }}>OR</Text>
+                </View>
+
+                <View style={{ margin: scale(10), }}>
+                    <Pressable style={styles.button} onPress={() => openPaymentApp('offline')} >
+                        <Text style={styles.text}>CASH ON DELIVERY</Text>
+                    </Pressable>
+                </View>
+            </View>
+        </SafeAreaView>
 
     );
 
 }
 
 export default PaymentGateway;
+
+
+
+const styles = StyleSheet.create({
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: verticalScale(7),
+        paddingHorizontal: scale(30),
+        borderRadius: scale(4),
+        elevation: scale(18),
+        backgroundColor: 'black',
+    },
+    text: {
+        fontSize: moderateScale(16),
+        lineHeight: scale(18),
+        fontWeight: 'bold',
+        letterSpacing: scale(0.75),
+        color: 'white',
+    },
+})
 
 
 

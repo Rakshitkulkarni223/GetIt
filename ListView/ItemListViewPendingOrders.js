@@ -39,7 +39,6 @@ const Item = ({ id, AuthId, OrderId, title, image_url, price, description, categ
                 <AntDesign name="checkcircleo" size={24} color="green" onPress={() => {
                     set(ref(database, `admin/confirmedOrdersByAdmin/${OrderId}/items/${category}/` + id), {
                         ItemId: id,
-                        AuthId: AuthId,
                         OrderId: OrderId,
                         ItemName: title,
                         ItemPrice: price,
@@ -194,7 +193,6 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                             image_url={item.ItemImage}
                             description={item.ItemDesc}
                             price={item.ItemPrice}
-                            AuthId={item.AuthId}
                             category={item.ItemCategory}
                             quantity={item.ItemQuantity}
                             ItemAddedDate={item.ItemAddedDate}

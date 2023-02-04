@@ -175,9 +175,8 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                             alert(`Order Delivered To ${AllOrders[index].Location}`);
                             for(var i=0;i<AllOrders[index].value.length;i++)
                             {
-                                set(ref(database, `users/completedOrders/${AllOrders[index].value[i].AuthId}/${AllOrders[index].value[i].OrderId}/items/${AllOrders[index].value[i].ItemCategory}/` + AllOrders[index].value[i].key), {
+                                set(ref(database, `users/completedOrders/${auth.currentUser.phoneNumber}/${AllOrders[index].value[i].OrderId}/items/${AllOrders[index].value[i].ItemCategory}/` + AllOrders[index].value[i].key), {
                                     ItemId: AllOrders[index].value[i].key,
-                                    AuthId: AllOrders[index].value[i].AuthId,
                                     OrderId: AllOrders[index].value[i].OrderId,
                                     ItemName: AllOrders[index].value[i].ItemName,
                                     ItemPrice: AllOrders[index].value[i].ItemPrice,

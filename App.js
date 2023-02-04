@@ -33,6 +33,8 @@ import DashboardUser from "./DashboardUser";
 import ConfiremdOrders from "./users/ConfiremdOrders";
 import LoginWithEmail from "./LoginWithEmail";
 import LoginWithOTP from "./LoginWithOTP";
+import UserProfile from "./UserProfile";
+import UserChangePassword from "./UserChangePassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -68,6 +70,8 @@ const App = () => (
       <Stack.Screen name="Signup" component={SignUp} />
       <Stack.Screen name="Dashboard Admin" component={DashboardAdmin} />
       <Stack.Screen name="Confirm Order" component={ConfiremdOrders} />
+      <Stack.Screen name="User Profile" component={UserProfile} />
+      <Stack.Screen name="Change Password" component={UserChangePassword} />
     </Stack.Navigator>
   </NavigationContainer>
 );
