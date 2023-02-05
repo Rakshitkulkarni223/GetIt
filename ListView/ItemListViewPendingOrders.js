@@ -47,7 +47,7 @@ const Item = ({ id, AuthId, OrderId, title, image_url, price, description, categ
             fontWeight: "600",
             marginLeft: scale(15),
             marginTop: scale(10),
-            color: 'black',
+            color: 'white',
             letterSpacing: scale(0.5),
             paddingRight: scale(15),
         }}>{category.toUpperCase()}</Text> : <></>}
@@ -278,7 +278,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                 <SafeAreaView style={{
                     flex: 1,
                     padding: scale(15),
-                    backgroundColor: '#dcdcdc',
+                    backgroundColor: '#3B3636',
                 }}>
                     <FlatList
                         data={AllOrders}
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
         marginBottom: scale(9),
         marginVertical: verticalScale(0),
         borderRadius: scale(10),
-        backgroundColor: '#ffe4e1',
+        backgroundColor: '#ffb6c1',
         elevation: scale(5),
     },
     title_item: {

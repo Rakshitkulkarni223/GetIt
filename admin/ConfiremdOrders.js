@@ -37,6 +37,7 @@ const ConfirmedOrders = () => {
             var totalamount = 0;
             items = [];
             var Location= '';
+            var phoneNumber = '';
             var Longitude = ''
             var Latitude = ''
             var date = ''
@@ -48,8 +49,10 @@ const ConfirmedOrders = () => {
                      totalamount += eachitem.val().ItemPrice*eachitem.val().ItemQuantity;
 
                      Location = eachitem.val().Location;
-                     Longitude =eachitem.val().Longitude;
+                     Longitude = eachitem.val().Longitude;
                      Latitude = eachitem.val().Latitude;
+
+                     phoneNumber = eachitem.val().phoneNumber;
 
                      date = eachitem.val().ItemAddedDate;
 
@@ -78,6 +81,7 @@ const ConfirmedOrders = () => {
             orders.push({key: child.key,value: data, toggle: false,  
                totalamount: totalamount, Location: Location
                ,Longitude: Longitude,Latitude: Latitude,
+               phoneNumber: phoneNumber,
                Date: date
             });
          })

@@ -8,12 +8,12 @@ import { scale, moderateScale, verticalScale} from './Dimensions';
 const UserAccountDetails = ({ navigation }) => {
 
     return (
-        <>
             <SafeAreaView
-                style={{ flex: 1,margin: scale(25) }}
+                style={{ flex: 1, backgroundColor: '#3B3636' }}
             >
                 <View
                     style={{
+                        margin: scale(25),
                         flex: 0.1,
                         flexDirection: 'column',
                         justifyContent: 'space-between',
@@ -25,12 +25,13 @@ const UserAccountDetails = ({ navigation }) => {
                         justifyContent: 'flex-start',
                         padding: scale(10),
                         borderWidth: scale(0.5),
+                        borderColor: 'white'
                     }}
                     >
                         <View style={{
                             justifyContent: 'center'
                         }}>
-                        <FontAwesome5 name="user" size={verticalScale(18)} color="black" />
+                        <FontAwesome5 name="user" size={verticalScale(18)} color="white" />
                         </View>
                         <View style={{
                             justifyContent: 'center'
@@ -38,8 +39,9 @@ const UserAccountDetails = ({ navigation }) => {
                             <Text
                             style={{
                                 textAlignVertical: 'center',
-                                fontSize: verticalScale(18),
+                                fontSize: verticalScale(16),
                                 marginLeft: scale(10),
+                                color: 'white'
                             }}
                             onPress={()=>{
                                 navigation.navigate('User Profile')
@@ -53,12 +55,13 @@ const UserAccountDetails = ({ navigation }) => {
                         justifyContent: 'flex-start',
                         padding: scale(10),
                         borderWidth: scale(0.5),
+                        borderColor: 'white'
                     }}
                     >
                         <View style={{
                             justifyContent: 'center'
                         }}>
-                        <MaterialCommunityIcons name="information-outline" size={verticalScale(18)} color="black" />
+                        <MaterialCommunityIcons name="information-outline" size={verticalScale(18)} color="white" />
                         </View>
                         <View style={{
                             justifyContent: 'center'
@@ -66,8 +69,9 @@ const UserAccountDetails = ({ navigation }) => {
                             <Text
                             style={{
                                 textAlignVertical: 'center',
-                                fontSize: verticalScale(18),
+                                fontSize: verticalScale(16),
                                 marginLeft: scale(10),
+                                color: 'white'
                             }}
                             >About us</Text>
                         </View>
@@ -77,13 +81,14 @@ const UserAccountDetails = ({ navigation }) => {
                         flexDirection: 'row',
                         justifyContent: 'flex-start',
                         padding: scale(10),
+                        borderColor: 'white',
                         borderWidth: scale(0.5),
                     }}
                     >
                         <View style={{
                             justifyContent: 'center'
                         }}>
-                        <MaterialIcons name="contact-support" size={verticalScale(18)} color="black" />
+                        <MaterialIcons name="contact-support" size={verticalScale(18)} color="white" />
                         </View>
                         <View style={{
                             justifyContent: 'center'
@@ -91,15 +96,15 @@ const UserAccountDetails = ({ navigation }) => {
                             <Text
                             style={{
                                 textAlignVertical: 'center',
-                                fontSize: verticalScale(18),
+                                fontSize: verticalScale(16),
                                 marginLeft: scale(10),
+                                color: 'white'
                             }}
                             >Contact us</Text>
                         </View>
                     </View>
                 </View>
             </SafeAreaView>
-        </>
     )
 }
 

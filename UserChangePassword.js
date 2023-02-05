@@ -12,6 +12,7 @@ import {
     Keyboard,
     TouchableOpacity,
     KeyboardAvoidingView,
+    Pressable,
 } from "react-native";
 
 import { updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth"
@@ -20,11 +21,14 @@ import { updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthPro
 import { admins, app, auth, database } from "./Firebase";
 import { ref, set, update, onValue } from "firebase/database";
 
+import { scale, moderateScale, verticalScale } from './Dimensions';
+
+import { normalize } from "./FontResize";
 
 const UserChangePassword = ({ navigation }) => {
     const [NewPassword, setNewPassword] = useState("");
     const [ConfirmNewPassword, setConfirmNewPassword] = useState("");
-    const [errortext, setErrortext] = useState("");
+    const [message, showMessage] = useState("");
 
     const [currentPassword, setcurrentPassword] = useState('');
 
@@ -43,10 +47,8 @@ const UserChangePassword = ({ navigation }) => {
         })
     }, [])
 
-    const passwordInputRef = createRef();
-
     const handleSubmitPress = async () => {
-        setErrortext("");
+        showMessage("");
         if (!NewPassword) {
             alert("Please fill Email");
             return;
@@ -57,7 +59,7 @@ const UserChangePassword = ({ navigation }) => {
         }
 
         if (NewPassword !== ConfirmNewPassword) {
-            setErrortext('Passwords Do Not Matched!!');
+            showMessage('Passwords Do Not Matched!!');
             return;
         }
 
@@ -70,7 +72,7 @@ const UserChangePassword = ({ navigation }) => {
         }
         catch (error) {
             alert(error)
-            setErrortext("Password not updated.")
+            showMessage("Password not updated.")
         }
 
         // const credential = EmailAuthProvider.credential(email, currentPassword)
@@ -93,130 +95,87 @@ const UserChangePassword = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={styles.mainBody}>
-            <ScrollView
-                keyboardShouldPersistTaps="handled"
-                contentContainerStyle={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignContent: "center",
-                }}
-            >
-                <View>
-                    <KeyboardAvoidingView enabled>
-                        <View style={{ alignItems: "center" }}>
-                        </View>
-                        <View style={styles.sectionStyle}>
-                            <TextInput
-                                style={styles.inputStyle}
-                                onChangeText={(NewPassword) =>
-                                    setNewPassword(NewPassword)
-                                }
-                                placeholder="New Password"
-                                placeholderTextColor="#8b9cb5"
-                                autoCapitalize="none"
-                                keyboardType="email-address"
-                                returnKeyType="next"
-                                onSubmitEditing={() =>
-                                    passwordInputRef.current &&
-                                    passwordInputRef.current.focus()
-                                }
-                                underlineColorAndroid="#f000"
-                                blurOnSubmit={false}
-                            />
-                        </View>
-                        <View style={styles.sectionStyle}>
-                            <TextInput
-                                style={styles.inputStyle}
-                                onChangeText={(ConfirmNewPassword) =>
-                                    setConfirmNewPassword(ConfirmNewPassword)
-                                }
-                                placeholder="Confirm Password"
-                                placeholderTextColor="#8b9cb5"
-                                keyboardType="default"
-                                ref={passwordInputRef}
-                                onSubmitEditing={Keyboard.dismiss}
-                                blurOnSubmit={false}
-                                underlineColorAndroid="#f000"
-                                returnKeyType="next"
-                            />
-                        </View>
-                        {errortext != "" ? (
-                            <Text style={styles.errorTextStyle}>
-                                {" "}
-                                {errortext}{" "}
-                            </Text>
-                        ) : null}
-                        <TouchableOpacity
-                            style={styles.buttonStyle}
-                            activeOpacity={0.5}
-                            onPress={handleSubmitPress}
-                        >
-                            <Text style={styles.buttonTextStyle}>
-                                Update Password
-                            </Text>
-                        </TouchableOpacity>
-                    </KeyboardAvoidingView>
+
+        <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
+            <View style={{ padding: scale(18), marginTop: verticalScale(20) }}>
+                <View
+                    style={{
+                        borderWidth: scale(0.5),
+                        borderRadius: scale(5),
+                        marginTop: verticalScale(10),
+                    }}
+                >
+                    <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}
+                    >New password</Text>
+                    <TextInput
+                        style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                        placeholder="Enter new password"
+                        autoFocus
+                        keyboardType="default"
+                        onChangeText={(NewPassword) => {
+                            setNewPassword(NewPassword)
+                        }}
+                    />
+
                 </View>
-            </ScrollView>
+                <View style={{
+                    //   borderTopWidth: scale(0.5)
+                    borderWidth: scale(0.5),
+                    borderRadius: scale(5),
+                    marginTop: verticalScale(10),
+                }}>
+                    <Text style={{
+                        marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light'
+                    }}>Confirm password</Text>
+                    <TextInput
+                        style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                        placeholder="Confirm password"
+                        keyboardType="default"
+                        onChangeText={(ConfirmNewPassword) => {
+                            setConfirmNewPassword(ConfirmNewPassword)
+                        }}
+                    />
+                </View>
+                {message ? (
+                    <Text
+                        style={{
+                            color: 'red',
+                            fontSize: normalize(16),
+                            textAlign: 'center',
+                            marginTop: scale(20),
+                        }}>
+                        {message}
+                    </Text>
+                ) : undefined}
+                <View style={{
+                    marginTop: verticalScale(20),
+                }}>
+                    <Pressable style={styles.button} onPress={handleSubmitPress}>
+                        <Text style={styles.text}>Change Password</Text>
+                    </Pressable>
+                </View>
+            </View>
         </SafeAreaView>
     );
 };
 export default UserChangePassword;
 
+
 const styles = StyleSheet.create({
-    mainBody: {
-        flex: 1,
-        justifyContent: "center",
-        backgroundColor: "white",
-        alignContent: "center",
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: verticalScale(8),
+        paddingHorizontal: scale(32),
+        borderRadius: scale(4),
+        elevation: scale(10),
+        backgroundColor: 'black',
     },
-    sectionStyle: {
-        flexDirection: "row",
-        height: 40,
-        marginTop: 20,
-        marginLeft: 35,
-        marginRight: 35,
-        margin: 10,
-    },
-    buttonStyle: {
-        backgroundColor: "#7DE24E",
-        borderWidth: 0,
-        color: "#FFFFFF",
-        borderColor: "#7DE24E",
-        height: 40,
-        alignItems: "center",
-        borderRadius: 30,
-        marginLeft: 35,
-        marginRight: 35,
-        marginTop: 20,
-        marginBottom: 25,
-    },
-    buttonTextStyle: {
-        color: "#FFFFFF",
-        paddingVertical: 10,
-        fontSize: 16,
-    },
-    inputStyle: {
-        flex: 1,
-        color: "black",
-        paddingLeft: 15,
-        paddingRight: 15,
-        borderWidth: 1,
-        borderRadius: 30,
-        borderColor: "#dadae8",
-    },
-    registerTextStyle: {
-        color: "#FFFFFF",
-        textAlign: "center",
-        fontWeight: "bold",
-        fontSize: 14,
-        alignSelf: "center",
-        padding: 10,
-    },
-    errorTextStyle: {
-        color: "red",
-        textAlign: "center",
-        fontSize: 14,
+    text: {
+        fontSize: normalize(16),
+        lineHeight: verticalScale(20),
+        fontWeight: '600',
+        letterSpacing: scale(0.5),
+        color: 'white',
     },
 });

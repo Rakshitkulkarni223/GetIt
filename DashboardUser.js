@@ -15,22 +15,22 @@ import {
 
 import { onAuthStateChanged, signOut } from "firebase/auth";
 
-import { AntDesign, FontAwesome , Ionicons , MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, Feather , Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { scale, moderateScale, verticalScale } from './Dimensions';
 
+import { normalize } from "./FontResize";
 
-import PendingOrders from "./users/PendingOrders";
-import ConfiremdOrders from "./users/ConfiremdOrders";
 import ViewItems from "./users/ViewItems";
 
 import { app, auth, db, database } from "./Firebase";
 import { ref, set, update, onValue } from "firebase/database";
 import UsersCompletedOrders from "./users/UsersCompletedOrders";
 import UserAccountDetails from "./UserAccountDetails";
+import UserPendingOrders from "./users/UserPendingOrders";
 
 
 
@@ -52,7 +52,19 @@ function MyTabs({ navigation, OrderId }) {
                 options={{
                     tabBarLabel: "All Items",
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="preview" color={color} size={size} />
+                        <MaterialIcons name="preview" color={color} size={normalize(size-6)} />
+                    ),
+                }}
+            />
+
+            <Tab.Screen
+                name="Pending Orders"
+                children={() => <UserPendingOrders navigation={navigation} />}
+                options={{
+                    tabBarLabel: "Pending Orders",
+                    tabBarIcon: ({ color, size }) => (
+                        // <Ionicons name="basket" color={color} size={size} />
+                        <Feather name="shopping-bag" color={color} size={normalize(size-8)} />
                     ),
                 }}
             />
@@ -61,20 +73,20 @@ function MyTabs({ navigation, OrderId }) {
                 name="Your Orders"
                 children={() => <UsersCompletedOrders navigation={navigation} OrderId={OrderId} />}
                 options={{
-                    tabBarLabel: "Orders",
+                    tabBarLabel: "Your Orders",
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="basket" color={color} size={size} />
+                        <Ionicons name="basket" color={color} size={normalize(size-3)} />
                     ),
                 }}
             />
 
-<Tab.Screen
+            <Tab.Screen
                 name="Profile"
-                children={() => <UserAccountDetails navigation={navigation}/>}
+                children={() => <UserAccountDetails navigation={navigation} />}
                 options={{
                     tabBarLabel: "Profile",
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="account-circle" color={color} size={size} />
+                        <MaterialIcons name="account-circle" color={color} size={normalize(size-5)} />
                     ),
                 }}
             />

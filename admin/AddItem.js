@@ -309,6 +309,7 @@ import {
     Platform,
     Pressable,
     Image,
+    Alert,
 } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -408,7 +409,7 @@ const AddItem = ({ navigation }) => {
 
         try {
             await SaveItem(ItemCategory, ItemName, ItemPrice, ItemDesc, ItemImage);
-            alert(`${ItemName} ${ItemDesc} - ${ItemPrice} rs has been added to ${ItemCategory} Category Successfully.`);
+            Alert.alert('Item Added',`${ItemName} ${ItemDesc} - ${ItemPrice} rs has been added to ${ItemCategory} Category Successfully.`);
             ItemDescref.current.clear();
             ItemPriceref.current.clear();
             ItemCategoryref.current.clear();
@@ -426,21 +427,23 @@ const AddItem = ({ navigation }) => {
 
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#3B3636'}}>
             <View style={{ padding: scale(18), marginTop: verticalScale(20) }}>
                 <View
                     style={{
                         borderWidth: scale(0.5),
                         borderRadius: scale(5),
+                        borderColor: 'white'
                         // marginTop: verticalScale(10),
                     }}
                 >
-                    <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item name</Text>
+                    <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' ,color: '#B0F8F2'}}>Item name</Text>
                     <TextInput
-                        style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                        style={{ marginLeft: scale(10), color: 'white',marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light'}}
                         placeholder="Enter item name e.g Idli/Dosa"
                         autoFocus
                         keyboardType="default"
+                        placeholderTextColor='white'
                         cursorColor='#778899'
                         ref={ItemNameref}
                         onChangeText={(ItemName) => {
@@ -448,15 +451,20 @@ const AddItem = ({ navigation }) => {
                         }}
                     />
                     <View style={{
-                        borderTopWidth: scale(0.5)
+                        borderTopWidth: scale(0.5),
+                        borderColor: 'white'
                     }}>
                         <Text style={{
-                            marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light'
+                            marginLeft: scale(10), 
+                            marginTop: verticalScale(5), 
+                            fontFamily: 'sans-serif-light',
+                            color: '#B0F8F2'
                         }}>Item description</Text>
                         <TextInput
-                            style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                            style={{ marginLeft: scale(10), color: 'white',marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
                             placeholder="Enter item description"
                             keyboardType="default"
+                            placeholderTextColor='white'
                             cursorColor='#778899'
                             ref={ItemDescref}
                             onChangeText={(ItemDesc) => {
@@ -471,13 +479,15 @@ const AddItem = ({ navigation }) => {
                         borderWidth: scale(0.5),
                         borderRadius: scale(5),
                         marginTop: verticalScale(10),
+                        borderColor: 'white'
                     }}
                 >
-                    <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item category</Text>
+                    <Text style={{ marginLeft: scale(10), color: '#B0F8F2',marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item category</Text>
                     <TextInput
-                        style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                        style={{ marginLeft: scale(10), color: 'white',marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
                         placeholder="Enter item category e.g Breakfast,Snacks..."
                         keyboardType="default"
+                        placeholderTextColor='white'
                         cursorColor='#778899'
                         ref={ItemCategoryref}
                         onChangeText={(ItemCategory) => {
@@ -491,17 +501,19 @@ const AddItem = ({ navigation }) => {
                         borderWidth: scale(0.5),
                         borderRadius: scale(5),
                         marginTop: verticalScale(10),
+                        borderColor: 'white'
                     }}
                 >
-                    <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>
+                    <Text style={{ marginLeft: scale(10), color: '#B0F8F2',marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>
                         Item price
                     </Text>
                     <TextInput
-                        style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                        style={{ marginLeft: scale(10),color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
                         placeholder="Enter item price per plate"
                         autoCompleteType="tel"
                         cursorColor='#778899'
                         keyboardType="phone-pad"
+                        placeholderTextColor='white'
                         textContentType="telephoneNumber"
                         ref={ItemPriceref}
                         onChangeText={(ItemPrice) => {
@@ -517,9 +529,10 @@ const AddItem = ({ navigation }) => {
                         borderRadius: scale(5),
                         marginTop: verticalScale(10),
                         paddingBottom: scale(2),
+                        borderColor: 'white'
                     }}
                 >
-                    <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item Image</Text>
+                    <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' , color: '#B0F8F2'}}>Item Image</Text>
                     <View style={{
                         flexDirection: 'row',
                         justifyContent: 'center',
@@ -540,7 +553,7 @@ const AddItem = ({ navigation }) => {
                         <View
                         // style={{ paddingLeft: scale(80), paddingTop: verticalScale(5) }}
                         >
-                            <Feather name="image" size={scale(25)} color="black" onPress={
+                            <Feather name="image" size={scale(25)} color="white" onPress={
                                 showImagePicker
                             } />
                             {/* <MaterialIcons name="add-photo-alternate" size={scale(25)} color="black" onPress={
@@ -550,14 +563,14 @@ const AddItem = ({ navigation }) => {
                         <View
                         // style={{ paddingRight: scale(10), paddingTop: verticalScale(5) }}
                         >
-                            <Feather name="camera" size={scale(25)} color="black" onPress={
+                            <Feather name="camera" size={scale(25)} color="white" onPress={
                                 openCamera} />
                         </View>
 
                         {ItemImage ? <View
                         // style={{ paddingRight: scale(90), paddingTop: verticalScale(5)  }}
                         >
-                            <AntDesign name="delete" size={scale(25)} color="black" onPress={() => {
+                            <AntDesign name="delete" size={scale(25)} color="red" onPress={() => {
                                 setItemImage('');
                             }} />
                         </View> : <></>}
@@ -599,12 +612,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: scale(32),
         borderRadius: scale(4),
         elevation: scale(10),
-        backgroundColor: 'black',
+        backgroundColor: '#6A89B1',
     },
     text: {
         fontSize: normalize(16),
         lineHeight: verticalScale(20),
-        fontWeight: 'bold',
+        fontWeight: '700',
         letterSpacing: scale(0.5),
         color: 'white',
     },

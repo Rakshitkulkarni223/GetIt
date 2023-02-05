@@ -17,7 +17,7 @@ const Item = ({ setItemId, setupdate, setItemCategory, setItemName, setItemImage
         paddingRight: scale(15),
         marginLeft: scale(15),
         marginTop: scale(10),
-        color: 'black',
+        color: 'white',
         letterSpacing: scale(0.5),
     }}>{category.toUpperCase()}</Text> : <></>}
         <View style={styles.container}>
@@ -199,7 +199,7 @@ const ItemsListViewAdmin = ({ DATA }) => {
                 :
                 <SafeAreaView style={{
                     flex: 1,
-                    backgroundColor: '#d3d3d3'
+                    backgroundColor: '#3B3636'
                 }} keyboardShouldPersistTaps="handled"
                 >
                     <KeyboardAvoidingView enabled>

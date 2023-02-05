@@ -61,6 +61,26 @@ const PaymentGateway = ({ navigation, route, setData, totalamount, AllConfirmedI
                     OrderPending: true,
                     OrderDelivered: false
                 });
+
+
+                set(ref(database, `users/userpendingOrders/${auth.currentUser.phoneNumber}/${OrderId}/items/${AllConfirmedItems[i]["ItemCategory"]}/` + AllConfirmedItems[i]["key"]), {
+                    ItemId: AllConfirmedItems[i]["key"],
+                    ItemName: AllConfirmedItems[i]["ItemName"],
+                    ItemPrice: AllConfirmedItems[i]["ItemPrice"],
+                    ItemDesc: AllConfirmedItems[i]["ItemDesc"],
+                    ItemImage: AllConfirmedItems[i]["ItemImage"],
+                    ItemCategory: AllConfirmedItems[i]["ItemCategory"],
+                    ItemQuantity: AllConfirmedItems[i]["ItemQuantity"],
+                    ItemAddedDate: AllConfirmedItems[i]["ItemAddedDate"],
+                    Location: displayCurrentAddress,
+                    phoneNumber: auth.currentUser.phoneNumber,
+                    Longitude: longitude,
+                    Latitude: latitude,
+                    OrderId: OrderId,
+                    OrderConfirmed: true,
+                    OrderPending: true,
+                    OrderDelivered: false
+                });
             }
 
             await set(ref(database, `users/orders/${OrderId}/items/`), {

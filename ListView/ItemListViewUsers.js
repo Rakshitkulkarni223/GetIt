@@ -399,7 +399,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
     return (
         <SafeAreaView style={{
             flex: 1,
-            backgroundColor: '#778899'
+            backgroundColor: '#3B3636'
             // backgroundColor: ''
         }}>
 
@@ -434,7 +434,9 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                         justifyContent: 'center',
                         paddingLeft: scale(28),
                         paddingRight: scale(28),
-                        borderWidth: scale(1),
+                        borderLeftWidth: scale(1),
+                        borderBottomWidth: scale(1),
+                        borderRightWidth: scale(1),
                         borderColor: 'black',
                         backgroundColor: "#fa8072",
                         borderRadius: scale(5),

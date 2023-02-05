@@ -7,6 +7,7 @@ import { app, auth, db, database } from "./Firebase";
 import { ref, set, update, onValue } from "firebase/database";
 
 import { scale, moderateScale, verticalScale} from './Dimensions';
+import { normalize } from "./FontResize";
 
 const UserProfile = ({ navigation }) => {
 
@@ -41,11 +42,12 @@ const UserProfile = ({ navigation }) => {
     return (
         <>
             <SafeAreaView
-                style={{ flex: 1, margin: scale(20) }}
+                style={{ flex: 1, backgroundColor: '#3B3636' }}
             >
                 <View
                     style={{
                         flex: 0.1,
+                        margin: scale(20),
                         flexDirection: 'column',
                         justifyContent: 'space-between',
                     }}
@@ -77,6 +79,7 @@ const UserProfile = ({ navigation }) => {
                             justifyContent: 'flex-start',
                             padding: scale(5),
                             borderBottomWidth: scale(0.5),
+                            borderColor: 'white'
                         }}
                     >
                         <View
@@ -89,16 +92,18 @@ const UserProfile = ({ navigation }) => {
                             <View style={{marginBottom: scale(3)}}>
                                 <Text
                                     style={{
-                                        fontSize: moderateScale(15),
-                                        fontFamily: 'sans-serif-thin'
+                                        fontSize: normalize(14),
+                                        fontFamily: 'sans-serif-thin',
+                                        color: 'white'
                                     }}
                                 >Legal name</Text>
                             </View>
                             <View>
                                 <Text
                                     style={{
-                                        fontSize: moderateScale(16),
+                                        fontSize: normalize(15),
                                         fontFamily: 'sans-serif-light',
+                                        color: 'white'
                                     }}
                                 >{firstName+' '+lastName}</Text>
                             </View>
@@ -112,6 +117,7 @@ const UserProfile = ({ navigation }) => {
                             justifyContent: 'flex-start',
                             padding: scale(5),
                             borderBottomWidth: scale(0.5),
+                            borderColor: 'white'
                         }}
                     >
                         <View
@@ -124,18 +130,20 @@ const UserProfile = ({ navigation }) => {
                             <View style={{marginBottom: scale(3)}}>
                                 <Text
                                     style={{
-                                        fontSize: moderateScale(15),
+                                        fontSize: normalize(14),
                                         fontFamily: 'sans-serif-thin',
+                                        color: 'white'
                                     }}
-                                >{auth.currentUser.email ? 'Email' : 'Phone Number'}</Text>
+                                >Phone Number</Text>
                             </View>
                             <View>
                                 <Text
                                     style={{
-                                        fontSize: moderateScale(16),
+                                        fontSize: normalize(15),
                                         fontFamily: 'sans-serif-light',
+                                        color: 'white'
                                     }}
-                                >{auth.currentUser.email ? auth.currentUser.email : auth.currentUser.phoneNumber}</Text>
+                                >{auth.currentUser.phoneNumber.slice(0,3) + ' ' + auth.currentUser.phoneNumber.slice(3)}</Text>
                             </View>
                         </View>
                     </View>
@@ -145,6 +153,7 @@ const UserProfile = ({ navigation }) => {
                             justifyContent: 'flex-start',
                             padding: scale(5),
                             borderBottomWidth: scale(0.5),
+                            borderColor: 'white'
                         }}
                     >
                         <View
@@ -157,16 +166,18 @@ const UserProfile = ({ navigation }) => {
                             <View style={{marginBottom: scale(3)}}>
                                 <Text
                                     style={{
-                                        fontSize: moderateScale(15),
+                                        fontSize: normalize(14),
                                         fontFamily: 'sans-serif-thin',
+                                        color: 'white'
                                     }}
                                 >Password</Text>
                             </View>
                             <View>
                                 <Text
                                     style={{
-                                        fontSize: moderateScale(16),
+                                        fontSize: normalize(15),
                                         fontFamily: 'sans-serif-light',
+                                        color: 'white'
                                     }}
                                 >{password}</Text>
                             </View>
@@ -179,7 +190,9 @@ const UserProfile = ({ navigation }) => {
                             flexDirection: 'row',
                             justifyContent: 'flex-start',
                             padding: scale(5),
+                            paddingTop: verticalScale(7),
                             borderBottomWidth: scale(0.5),
+                            borderColor: 'white'
                         }}
                     >
                         <View
@@ -192,8 +205,9 @@ const UserProfile = ({ navigation }) => {
                             <View style={{marginBottom: scale(3)}}>
                                 <Text
                                     style={{
-                                        fontSize: moderateScale(16),
+                                        fontSize: normalize(15),
                                         fontFamily: 'sans-serif-light',
+                                        color: 'white'
                                     }}
                                     onPress={()=>{
                                         navigation.navigate('Change Password')
@@ -201,7 +215,7 @@ const UserProfile = ({ navigation }) => {
                                 >Change Password</Text>
                             </View>
                             <View>
-                                <AntDesign name="right" size={20} color="black" 
+                                <AntDesign name="right" size={normalize(16)} color="white" 
                                 onPress={()=>{
                                     navigation.navigate('Change Password')
                                 }}

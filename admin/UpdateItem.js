@@ -10,6 +10,7 @@ import {
     Keyboard,
     TouchableOpacity,
     ScrollView,
+    Alert,
 } from "react-native";
 
 import { AntDesign, Feather } from '@expo/vector-icons';
@@ -123,7 +124,7 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
                 }) : false
 
             await SaveItem(ItemCategory, ItemName, ItemPrice, ItemDesc, ItemImage, ItemCategory.trim() === category)
-            alert(`${ItemName} ${ItemDesc} - ${ItemPrice} rs has been updated to ${ItemCategory} Category Successfully.`);
+            Alert.alert("Item Updated",`${ItemName} ${ItemDesc} - ${ItemPrice} rs has been updated to ${ItemCategory} Category Successfully.`);
             setupdated(true);
         }
         catch (e) {
@@ -135,20 +136,22 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
     return (
         <>
             {updated ? <ViewItems /> :
-                <SafeAreaView style={{ flex: 1 }}>
+                <SafeAreaView style={{ flex: 1, backgroundColor: '#3B3636'}}>
                     <View style={{ padding: scale(18), marginTop: verticalScale(20) }}>
                         <View
                             style={{
                                 borderWidth: scale(0.5),
                                 borderRadius: scale(5),
+                                borderColor: 'white'
                                 // marginTop: verticalScale(10),
                             }}
                         >
-                            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item name</Text>
+                            <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item name</Text>
                             <TextInput
-                                style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                                style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
                                 placeholder="Enter item name e.g Idli/Dosa"
                                 defaultValue={ItemName}
+                                placeholderTextColor='white'
                                 keyboardType="default"
                                 cursorColor='#778899'
                                 onChangeText={(ItemName) => {
@@ -156,15 +159,18 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
                                 }}
                             />
                             <View style={{
-                                borderTopWidth: scale(0.5)
+                                borderTopWidth: scale(0.5),
+                                borderColor: 'white'
+                                
                             }}>
                                 <Text style={{
-                                    marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light'
+                                    marginLeft: scale(10),  color: '#1FD4A5',marginTop: verticalScale(5), fontFamily: 'sans-serif-light'
                                 }}>Item description</Text>
                                 <TextInput
-                                    style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                                    style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
                                     placeholder="Enter item description"
                                     keyboardType="default"
+                                    placeholderTextColor='white'
                                     defaultValue={ItemDesc}
                                     cursorColor='#778899'
                                     onChangeText={(ItemDesc) => {
@@ -179,13 +185,15 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
                                 borderWidth: scale(0.5),
                                 borderRadius: scale(5),
                                 marginTop: verticalScale(10),
+                                borderColor: 'white'
                             }}
                         >
-                            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item category</Text>
+                            <Text style={{ marginLeft: scale(10),  color: '#1FD4A5',marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item category</Text>
                             <TextInput
-                                style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                                style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
                                 placeholder="Enter item category e.g Breakfast,Snacks..."
                                 keyboardType="default"
+                                placeholderTextColor='white'
                                 cursorColor='#778899'
                                 defaultValue={ItemCategory}
                                 onChangeText={(ItemCategory) => {
@@ -199,16 +207,18 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
                                 borderWidth: scale(0.5),
                                 borderRadius: scale(5),
                                 marginTop: verticalScale(10),
+                                borderColor: 'white'
                             }}
                         >
-                            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>
+                            <Text style={{ marginLeft: scale(10),  color: '#1FD4A5',marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>
                                 Item price
                             </Text>
                             <TextInput
-                                style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                                style={{ marginLeft: scale(10),color: 'white',  marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
                                 placeholder="Enter item price per plate"
                                 autoCompleteType="tel"
                                 cursorColor='#778899'
+                                placeholderTextColor='white'
                                 keyboardType="phone-pad"
                                 defaultValue={ItemPrice}
                                 textContentType="telephoneNumber"
@@ -225,9 +235,10 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
                                 borderRadius: scale(5),
                                 marginTop: verticalScale(10),
                                 paddingBottom: scale(2),
+                                borderColor: 'white'
                             }}
                         >
-                            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item Image</Text>
+                            <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item Image</Text>
                             <View style={{
                                 flexDirection: 'row',
                                 justifyContent: 'center',
@@ -248,7 +259,7 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
                                 <View
                                 // style={{ paddingLeft: scale(80), paddingTop: verticalScale(5) }}
                                 >
-                                    <Feather name="image" size={scale(25)} color="black" onPress={
+                                    <Feather name="image" size={scale(25)} color="white" onPress={
                                         showImagePicker
                                     } />
                                     {/* <MaterialIcons name="add-photo-alternate" size={scale(25)} color="black" onPress={
@@ -258,14 +269,14 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
                                 <View
                                 // style={{ paddingRight: scale(10), paddingTop: verticalScale(5) }}
                                 >
-                                    <Feather name="camera" size={scale(25)} color="black" onPress={
+                                    <Feather name="camera" size={scale(25)} color="white" onPress={
                                         openCamera} />
                                 </View>
 
                                 {ItemImage ? <View
                                 // style={{ paddingRight: scale(90), paddingTop: verticalScale(5)  }}
                                 >
-                                    <AntDesign name="delete" size={scale(25)} color="black" onPress={() => {
+                                    <AntDesign name="delete" size={scale(25)} color="red" onPress={() => {
                                         setItemImage('');
                                     }} />
                                 </View> : <></>}
@@ -305,12 +316,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: scale(32),
         borderRadius: scale(4),
         elevation: scale(10),
-        backgroundColor: 'black',
+        backgroundColor: '#2F7BB6',
     },
     text: {
         fontSize: normalize(16),
         lineHeight: verticalScale(20),
-        fontWeight: 'bold',
+        fontWeight: '700',
         letterSpacing: scale(0.5),
         color: 'white',
     },

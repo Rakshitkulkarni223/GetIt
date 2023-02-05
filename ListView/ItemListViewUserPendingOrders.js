@@ -79,7 +79,7 @@ const Item = ({ id, OrderId, title, image_url, price, description, category, dis
     </>
 );
 
-const ItemListViewCompletedOrdersUsers = ({ AllOrders }) => {
+const ItemListViewUserPendingOrders = ({ AllOrders }) => {
 
     const [update, setupdate] = useState(false);
 
@@ -120,7 +120,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders }) => {
                 marginTop: scale(10),
                 padding: scale(16),
                 borderRadius: scale(5),
-                backgroundColor: '#778899',
+                backgroundColor: '#dcdcdc',
                 elevation: scale(5),
             }}>
                 <View>
@@ -128,7 +128,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders }) => {
                         style={{
                             fontSize: normalize(16),
                             fontWeight: "600",
-                            color: 'white'
+                            color: '#000'
                         }}>{index + 1}. {item.key}</Text>
                 </View>
                 <View>
@@ -136,11 +136,11 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders }) => {
                         style={{
                             fontSize: normalize(16),
                             fontWeight: "600",
-                            color: 'white'
+                            color: '#000'
                         }}>{AllOrders[index].totalamount}/-</Text>
                 </View>
                 <View>
-                    <MaterialIcons name="location-pin" size={normalize(20)} color="#dc143c"
+                    <MaterialIcons name="location-pin" size={normalize(20)} color="#FA2E2E"
                         onPress={() => {
 
                             // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
@@ -148,7 +148,6 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders }) => {
 
 
                             if (!AllOrders[index].Longitude && !AllOrders[index].Latitude && AllOrders[index].Location !== '') {
-
                                 Alert.alert('Order Delivered', `Exact Location is not found. But Order Delivered to ${AllOrders[index].Location}`, [
                                     {
                                         text: 'OK',
@@ -256,7 +255,7 @@ const styles = StyleSheet.create({
         marginBottom: scale(9),
         marginVertical: verticalScale(0),
         borderRadius: scale(10),
-        backgroundColor: '#8DBEA2',
+        backgroundColor: '#ffb6c1',
         elevation: scale(5),
     },
     title_item: {
@@ -281,4 +280,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ItemListViewCompletedOrdersUsers;
+export default ItemListViewUserPendingOrders;

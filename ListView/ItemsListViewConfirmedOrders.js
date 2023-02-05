@@ -20,7 +20,7 @@ const Item = ({ id, OrderId, title, image_url, price, description, category, dis
             fontWeight: "600",
             marginLeft: scale(15),
             marginTop: scale(10),
-            color: 'black',
+            color: 'white',
             letterSpacing: scale(0.5),
             paddingRight: scale(15),
         }}>{category.toUpperCase()}</Text> : <></>}
@@ -56,7 +56,7 @@ const Item = ({ id, OrderId, title, image_url, price, description, category, dis
                 alignItems: 'center',
             }}>
 
-                <View  style={{
+                <View style={{
                     marginLeft: scale(2),
                 }}>
                     <Text style={styles.title_price}>
@@ -123,7 +123,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                 marginTop: scale(10),
                 padding: scale(16),
                 borderRadius: scale(5),
-                backgroundColor: '#778899',
+                backgroundColor: '#a9a9a9',
                 elevation: scale(5),
             }}>
                 <View>
@@ -131,7 +131,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                         style={{
                             fontSize: normalize(16),
                             fontWeight: "600",
-                            color: '#fff'
+                            color: '#000'
                         }}>{index + 1}. {item.key}</Text>
                 </View>
                 <View>
@@ -141,17 +141,13 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                         style={{
                             fontSize: normalize(16),
                             fontWeight: "600",
-                            color: '#fff'
+                            color: '#000'
                         }}>{AllOrders[index].totalamount}/-</Text>
                 </View>
                 <View>
                     <MaterialIcons name="location-pin" size={normalize(20)} color="#dc143c"
                         onPress={() => {
-
-                            // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
-
-
-
+                            
                             if (!AllOrders[index].Longitude && !AllOrders[index].Latitude && AllOrders[index].Location !== '') {
                                 Alert.alert('Exact Location Not Found', `But Location Address is mentioned as ${AllOrders[index].Location}`, [
                                     {
@@ -161,11 +157,11 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                                     },
                                     {
                                         text: 'Want to Continue',
-                                        // onPress: () =>
-                                        //     console.log("continue..")
                                     },
                                 ])
                             }
+
+                            
 
                             if (AllOrders[index].Longitude && AllOrders[index].Latitude && AllOrders[index].Location !== '') {
                                 setlongitude(AllOrders[index].Longitude);
@@ -173,24 +169,6 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                                 setlatitude(AllOrders[index].Latitude);
                                 setvisibleMap(true);
                             }
-
-                            // if (longitude !== '' && latitude !== '' && AllOrders[index].Location !== '') {
-                            //     setvisibleMap(true)
-                            // }
-                            // else {
-                            //     Alert.alert('Correct Location Not Found', 'Please call the person to confirm the Location...', [
-                            //         {
-                            //             text: 'Want to Call?',
-                            //             onPress: () => console.log("call.."),
-                            //             style: 'cancel',
-                            //         },
-                            //         {
-                            //             text: 'Want to Continue', onPress: () =>
-                            //                 console.log("continue..")
-                            //         },
-                            //     ])
-                            // }
-
                         }
                         }
                     />
@@ -198,7 +176,11 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                 <View>
                     <MaterialCommunityIcons name="checkbox-marked-circle" size={normalize(20)} color="green"
                         onPress={() => {
-                            alert(`Order Delivered To ${AllOrders[index].Location}`);
+                            
+                            set(ref(database, `users/userpendingOrders/${AllOrders[index].phoneNumber}/${AllOrders[index].key}/`), {
+                            });
+
+                            Alert.alert(`Delivered Location : ${AllOrders[index].Location}`);
                             for (var i = 0; i < AllOrders[index].value.length; i++) {
                                 set(ref(database, `users/completedOrders/${AllOrders[index].value[i].phoneNumber}/${AllOrders[index].value[i].OrderId}/items/${AllOrders[index].value[i].ItemCategory}/` + AllOrders[index].value[i].key), {
                                     ItemId: AllOrders[index].value[i].key,
@@ -262,32 +244,36 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                 <SafeAreaView style={{
                     flex: 1,
                     padding: scale(15),
-                    backgroundColor: '#dcdcdc',
+                    backgroundColor: '#3B3636',
                 }}>
-                    {displayQRCode ? <>
+                    {displayQRCode ? <View style={{
+                        flex: 1,
+                        // padding: scale(15),
+                        borderRadius: scale(8),
+                        backgroundColor: '#fff',
+                    }}>
                         <View style={{
                             flex: 1,
                             flexDirection: 'column',
                             justifyContent: 'space-between',
-                            marginBottom: 10,
-                            padding: 20,
-                            borderRadius: 5,
+                            marginBottom: verticalScale(10),
+                            padding: scale(18),
                             // backgroundColor: 'pink',
                         }}>
                             <View style={{
                                 flexDirection: 'column',
                                 justifyContent: 'space-between',
-                                padding: 10,
-                                borderRadius: 5,
-                                elevation: 2,
+                                padding: scale(10),
+                                borderRadius: scale(5),
+                                elevation: scale(5),
                                 backgroundColor: 'lightblue'
                             }}
                             >
                                 <View style={{
                                     flexDirection: 'row',
                                     justifyContent: 'center',
-                                    padding: 5,
-                                    borderRadius: 5,
+                                    padding: scale(5),
+                                    borderRadius: scale(5),
                                     // elevation: 2,
                                     // backgroundColor: 'lightgreen'
                                 }}
@@ -301,8 +287,8 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                                 <View style={{
                                     flexDirection: 'row',
                                     justifyContent: 'center',
-                                    padding: 5,
-                                    borderRadius: 5,
+                                    padding: scale(5),
+                                    borderRadius: scale(5),
                                     // elevation: 2,
                                     // backgroundColor: 'lightgreen'
                                 }}
@@ -317,8 +303,10 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                             <View style={{
                                 flexDirection: 'row',
                                 justifyContent: 'center',
-                                padding: 10,
-                                borderRadius: 5,
+                                padding: scale(10),
+                                borderRadius: scale(5),
+                                borderWidth: scale(1),
+                                borderRadius: scale(8),
                             }}
                             >
                                 <QRCode
@@ -330,9 +318,9 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                             <View style={{
                                 flexDirection: 'row',
                                 justifyContent: 'center',
-                                padding: 10,
-                                borderRadius: 5,
-                                elevation: 2,
+                                padding: scale(10),
+                                borderRadius: scale(5),
+                                elevation: scale(2),
                                 backgroundColor: 'lightgreen'
                             }}
                             >
@@ -343,7 +331,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                                     onPress={() => handlePressQRcode(index)}>Payment Done ?</Text>
                             </View>
                         </View>
-                    </>
+                    </View>
                         : <FlatList
                             data={AllOrders}
                             renderItem={renderItem}
@@ -370,7 +358,7 @@ const styles = StyleSheet.create({
         marginBottom: scale(9),
         marginVertical: verticalScale(0),
         borderRadius: scale(10),
-        backgroundColor: '#ffb6c1',
+        backgroundColor: '#8DBEA2',
         elevation: scale(5),
     },
     title_item: {
