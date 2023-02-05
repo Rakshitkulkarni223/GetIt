@@ -35,7 +35,7 @@ function MyTabs() {
 
     return (
         <Tab.Navigator
-            initialRouteName="Add Item"
+            initialRouteName="View Items"
             screenOptions={{
                 tabBarActiveTintColor: '#e91e63',
                 headerShown: false

@@ -17,7 +17,7 @@ const Item = ({ id, OrderId, title, image_url, price, description, category, dis
     <>
         {displayCategory ? <Text style={{
             fontSize: normalize(13),
-            fontWeight: "bold",
+            fontWeight: "600",
             marginLeft: scale(15),
             marginTop: scale(10),
             color: 'black',
@@ -123,14 +123,15 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                 marginTop: scale(10),
                 padding: scale(16),
                 borderRadius: scale(5),
-                backgroundColor: 'pink',
+                backgroundColor: '#778899',
                 elevation: scale(5),
             }}>
                 <View>
                     <Text onPress={() => toggleFunction(index)}
                         style={{
                             fontSize: normalize(16),
-                            fontWeight: "bold",
+                            fontWeight: "600",
+                            color: '#fff'
                         }}>{index + 1}. {item.key}</Text>
                 </View>
                 <View>
@@ -139,11 +140,12 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                     }
                         style={{
                             fontSize: normalize(16),
-                            fontWeight: "bold",
+                            fontWeight: "600",
+                            color: '#fff'
                         }}>{AllOrders[index].totalamount}/-</Text>
                 </View>
                 <View>
-                    <MaterialIcons name="location-pin" size={normalize(20)} color="red"
+                    <MaterialIcons name="location-pin" size={normalize(20)} color="#dc143c"
                         onPress={() => {
 
                             // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
@@ -292,7 +294,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                                 >
                                     <Text style={{
                                         fontSize: normalize(16),
-                                        fontWeight: "bold",
+                                        fontWeight: "600",
                                     }}>Order Id : {AllOrders[index].value[0].OrderId}</Text>
                                 </View>
 
@@ -307,7 +309,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                                 >
                                     <Text style={{
                                         fontSize: normalize(16),
-                                        fontWeight: "bold",
+                                        fontWeight: "600",
                                     }}>Total Amount : {AllOrders[index].totalamount}</Text>
                                 </View>
 
@@ -336,7 +338,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                             >
                                 <Text style={{
                                     fontSize: normalize(16),
-                                    fontWeight: "bold",
+                                    fontWeight: "600",
                                 }}
                                     onPress={() => handlePressQRcode(index)}>Payment Done ?</Text>
                             </View>
@@ -368,16 +370,18 @@ const styles = StyleSheet.create({
         marginBottom: scale(9),
         marginVertical: verticalScale(0),
         borderRadius: scale(10),
-        backgroundColor: '#ffe4e1',
+        backgroundColor: '#ffb6c1',
         elevation: scale(5),
     },
     title_item: {
         fontSize: normalize(13),
         color: '#000',
+        fontWeight: "600",
     },
     title_price: {
         fontSize: normalize(13),
         color: '#000',
+        fontWeight: "600",
         // paddingTop: 40
     },
     total_item_price: {

@@ -44,7 +44,7 @@ const Item = ({ id, AuthId, OrderId, title, image_url, price, description, categ
     <>
         {displayCategory ? <Text style={{
             fontSize: normalize(13),
-            fontWeight: "bold",
+            fontWeight: "600",
             marginLeft: scale(15),
             marginTop: scale(10),
             color: 'black',
@@ -97,7 +97,7 @@ const Item = ({ id, AuthId, OrderId, title, image_url, price, description, categ
                 </View>
 
                 <View >
-                    <Text style={[styles.title_price, { fontWeight: 'bold' }]}>
+                    <Text style={[styles.title_price, { fontWeight: '600' }]}>
                         {quantity * price}/-
                     </Text>
                 </View>
@@ -161,27 +161,27 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                 marginTop: scale(10),
                 padding: scale(16),
                 borderRadius: scale(5),
-                backgroundColor: '#778080',
+                backgroundColor: '#a9a9a9',
                 elevation: scale(2),
             }}>
                 <View>
                     <Text onPress={() => toggleFunction(index)}
                         style={{
                             fontSize: normalize(16),
-                            fontWeight: "bold",
-                            color: 'white'
+                            fontWeight: "600",
+                            color: 'black'
                         }}>{index + 1}. {item.key}</Text>
                 </View>
                 <View>
                     <Text onPress={() => toggleFunction(index)}
                         style={{
                             fontSize: normalize(16),
-                            fontWeight: "bold",
-                            color: 'white'
+                            fontWeight: "600",
+                            color: 'black'
                         }}>{AllOrders[index].totalamount}/-</Text>
                 </View>
                 <View>
-                    <MaterialIcons name="location-pin" size={normalize(20)} color="red"
+                    <MaterialIcons name="location-pin" size={normalize(20)} color="#dc143c"
                         onPress={() => {
 
                             // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
@@ -312,10 +312,12 @@ const styles = StyleSheet.create({
     title_item: {
         fontSize: normalize(13),
         color: '#000',
+        fontWeight: '600'
     },
     title_price: {
         fontSize: normalize(13),
         color: '#000',
+        fontWeight: '600'
         // paddingTop: 40
     },
     total_item_price: {

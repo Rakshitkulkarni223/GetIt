@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image } from 'react-native';
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { createRef, useEffect, useState } from 'react';
+import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, TextInput, StatusBar, Image, Keyboard, KeyboardAvoidingView } from 'react-native';
+import { AntDesign, Ionicons, EvilIcons ,MaterialCommunityIcons } from '@expo/vector-icons';
 import UpdateItem from '../admin/UpdateItem';
 import { app, auth, db, database } from "../Firebase";
 import { ref, set } from "firebase/database";
@@ -13,7 +13,7 @@ import { scale, moderateScale, verticalScale } from '../Dimensions';
 const Item = ({ setItemId, setupdate, setItemCategory, setItemName, setItemImage, setItemDesc, setItemPrice, id, title, image_url, price, description, category, displaycategory }) => (
     <>{displaycategory ? <Text style={{
         fontSize: normalize(13),
-        fontWeight: "bold",
+        fontWeight: "600",
         paddingRight: scale(15),
         marginLeft: scale(15),
         marginTop: scale(10),
@@ -21,11 +21,11 @@ const Item = ({ setItemId, setupdate, setItemCategory, setItemName, setItemImage
         letterSpacing: scale(0.5),
     }}>{category.toUpperCase()}</Text> : <></>}
         <View style={styles.container}>
-            <View style={{ 
+            <View style={{
                 flex: 1,
-                flexDirection: 'column', 
+                flexDirection: 'column',
                 justifyContent: 'space-between',
-                }}>
+            }}>
                 <View>
                     <Text style={styles.title_item}>
                         {title.toUpperCase()}
@@ -48,7 +48,7 @@ const Item = ({ setItemId, setupdate, setItemCategory, setItemName, setItemImage
                 </View>
             </View>
 
-            <View style={{flex: 1, flexDirection: 'column', alignItems: 'center',justifyContent: 'space-between' }}>
+            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View>
                     <Text style={styles.title_price}>
                         {price}/-
@@ -70,9 +70,95 @@ const Item = ({ setItemId, setupdate, setItemCategory, setItemName, setItemImage
     </>
 );
 
+const renderHeader = (query, DATA, setData, setQuery, searchRef) => {
+    return (
+        <View
+            style={{
+                backgroundColor: '#fff',
+                padding: scale(5),
+                marginTop: verticalScale(10),
+                marginHorizontal: scale(12),
+                borderRadius: scale(5),
+                borderColor: 'black',
+                borderWidth: scale(1),
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                justifyContent: 'flex-start'
+            }}
+        >
+            <View>
+                <Ionicons name="search" size={scale(16)} color="black" />
+            </View>
+            <View>
+                <TextInput
+                    style={{
+                        // flex: 1,
+                        // backgroundColor: '#fff',
+                        paddingHorizontal: scale(10),
+                        marginRight: scale(40),
+                        // // marginLeft: scale(10),
+                        // // marginBottom: verticalScale(5),
+                        fontSize: normalize(12),
+                        // fontFamily: 'sans-serif-light'
+                    }}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    ref={searchRef}
+                    onSubmitEditing={Keyboard.dismiss}
+                    returnKeyType="next"
+                    cursorColor='#778899'
+                    clearButtonMode="always"
+                    onChangeText={queryText => handleSearch(queryText, DATA, setData, setQuery)}
+                    placeholder="Search Items"
+                />
+            </View>
+            {query ?
+                <View style={{
+                    // flex: 1,
+                    // flexDirection: 'row',
+                    // justifyContent: 'flex-end',
+                    marginLeft: scale(300),
+                    position: 'absolute'
+                }}>
+                    <Ionicons  name="close" size={scale(18)} color="black" 
+                    onPress={()=>{
+                        Keyboard.dismiss
+                        setQuery('');
+                        setData(DATA)
+                        searchRef.current.clear();
+                    }}/>
+                </View>
+                : <></>}
+        </View>
+    );
+}
+
+const handleSearch = (text, DATA, setData, setQuery) => {
+    const formattedQuery = text.toLowerCase();
+    const filteredData = DATA.filter((items) => {
+        return contains(items, formattedQuery);
+    });
+    setData(filteredData);
+    setQuery(text);
+};
+
+const contains = (items, query) => {
+
+    if (items.ItemName.toLowerCase().includes(query) || items.ItemCategory.toLowerCase().includes(query) ||
+        items.ItemDesc.toLowerCase().includes(query)) {
+        return true;
+    }
+
+    return false;
+};
+
+
 const ItemsListViewAdmin = ({ DATA }) => {
 
     const [update, setupdate] = useState(false);
+
+    const [query, setQuery] = useState('');
 
     const [ItemName, setItemName] = useState("");
     const [ItemDesc, setItemDesc] = useState("");
@@ -80,6 +166,12 @@ const ItemsListViewAdmin = ({ DATA }) => {
     const [ItemPrice, setItemPrice] = useState("");
     const [ItemImage, setItemImage] = useState("");
     const [ItemId, setItemId] = useState("");
+
+    const searchRef = createRef();
+
+
+    const [data, setData] = useState(DATA);
+    useEffect(() => { setData(DATA) }, [DATA])
 
     const renderItem = ({ item }) => (
         <Item
@@ -105,12 +197,19 @@ const ItemsListViewAdmin = ({ DATA }) => {
             {update ?
                 <UpdateItem title={ItemName} description={ItemDesc} image_url={ItemImage} price={ItemPrice} category={ItemCategory} id={ItemId} />
                 :
-                <SafeAreaView style={{ flex: 1 }}>
+                <SafeAreaView style={{
+                    flex: 1,
+                    backgroundColor: '#d3d3d3'
+                }} keyboardShouldPersistTaps="handled"
+                >
+                    <KeyboardAvoidingView enabled>
                     <FlatList
-                        data={DATA}
+                        data={data}
                         renderItem={renderItem}
                         keyExtractor={(item) => item.key}
+                        ListHeaderComponent={renderHeader(query, DATA, setData, setQuery, searchRef)}
                     />
+                    </KeyboardAvoidingView>
                 </SafeAreaView>
             }
         </>
@@ -137,6 +236,7 @@ const styles = StyleSheet.create({
     title_item: {
         fontSize: normalize(13),
         color: '#000',
+        fontWeight: '600'
     },
     description: {
         fontSize: normalize(10),
@@ -145,6 +245,7 @@ const styles = StyleSheet.create({
     title_price: {
         fontSize: normalize(15),
         color: '#000',
+        fontWeight: '600'
         // paddingTop: 40
     },
     total_item_price: {

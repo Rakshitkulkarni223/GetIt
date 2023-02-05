@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert } from 'react-native';
-import { AntDesign, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import React, { useState, useEffect, createRef } from 'react';
+import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert, TextInput, Keyboard } from 'react-native';
+import { AntDesign, EvilIcons, Ionicons } from '@expo/vector-icons';
 import { app, auth, db, database } from "../Firebase";
 import { ref, set, update } from "firebase/database";
 
@@ -11,7 +11,7 @@ import { normalize } from '../FontResize';
 const Item = ({ index, setItemId, setItemCategory, showfooter, handleIncrease, qtyhandlervisible, handleDecrease, setItemName, setItemImage, setItemDesc, setItemPrice, id, ItemQuantity, title, image_url, price, description, category, displaycategory }) => (
     <>{displaycategory ? <Text style={{
         fontSize: normalize(13),
-        fontWeight: "bold",
+        fontWeight: "600",
         marginLeft: scale(15),
         marginTop: scale(10),
         color: 'white',
@@ -113,7 +113,7 @@ const Item = ({ index, setItemId, setItemCategory, showfooter, handleIncrease, q
                                                 [
                                                     StyleSheet.absoluteFill,
                                                     {
-                                                        fontWeight: 'bold',
+                                                        fontWeight: '600',
                                                         fontSize: normalize(15),
                                                         backgroundColor: '#dcdcdc',
                                                         borderLeftWidth: scale(0.5),
@@ -138,13 +138,13 @@ const Item = ({ index, setItemId, setItemCategory, showfooter, handleIncrease, q
                                     </View>
                                     :
                                     <View>
-                                            <Text style={{
-                                                textAlignVertical: 'center',
-                                                textAlign: 'center',
-                                                color: "black",
-                                                fontSize: normalize(15),
-                                                fontWeight: "bold"
-                                            }} onPress={() => handleIncrease(index)}>ADD</Text>
+                                        <Text style={{
+                                            textAlignVertical: 'center',
+                                            textAlign: 'center',
+                                            color: "black",
+                                            fontSize: normalize(15),
+                                            fontWeight: "600"
+                                        }} onPress={() => handleIncrease(index)}>ADD</Text>
                                     </View>
                                 }
                             </>
@@ -173,7 +173,7 @@ const Item = ({ index, setItemId, setItemCategory, showfooter, handleIncrease, q
                                     textAlign: 'center',
                                     color: "black",
                                     fontSize: normalize(15),
-                                    fontWeight: "bold"
+                                    fontWeight: "600"
                                 }}>{ItemQuantity}</Text>
                             </View> : <></>}
 
@@ -183,6 +183,84 @@ const Item = ({ index, setItemId, setItemCategory, showfooter, handleIncrease, q
         </View>
     </>
 );
+
+const renderHeader = (query, DATA, setData, setQuery,searchRef) => {
+    return (
+        <View
+            style={{
+                backgroundColor: '#fff',
+                padding: scale(5),
+                marginTop: verticalScale(10),
+                marginHorizontal: scale(12),
+                borderRadius: scale(5),
+                borderColor: 'black',
+                borderWidth: scale(1),
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                // justifyContent: 'space-between'
+            }}
+        >
+            <View>
+                <Ionicons  name="search" size={scale(16)} color="black" />
+            </View>
+            <View>
+                <TextInput
+                    style={{
+                        backgroundColor: '#fff',
+                        paddingHorizontal: scale(10),
+                        // marginLeft: scale(10),
+                        // marginBottom: verticalScale(5),
+                        fontSize: normalize(12),
+                        // fontFamily: 'sans-serif-light'
+                    }}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    ref={searchRef}
+                    onSubmitEditing={Keyboard.dismiss}
+                    returnKeyType="next"
+                    cursorColor='#778899'
+                    clearButtonMode="always"
+                    onChangeText={queryText => handleSearch(queryText, DATA, setData, setQuery)}
+                    placeholder="Search Items"
+                />
+            </View>
+            {query ?
+                <View style={{
+                    marginLeft: scale(300),
+                    position: 'absolute'
+                }}>
+                    <Ionicons  name="close" size={scale(18)} color="black" 
+                    onPress={()=>{
+                        setQuery('');
+                        setData(DATA)
+                        searchRef.current.clear();
+                    }}/>
+                </View>
+                : <></>}
+        </View>
+    );
+}
+
+const handleSearch = (text, DATA, setData, setQuery) => {
+    const formattedQuery = text.toLowerCase();
+    const filteredData = DATA.filter((items) => {
+        return contains(items, formattedQuery);
+    });
+    setData(filteredData);
+    setQuery(text);
+};
+
+const contains = (items, query) => {
+
+    if (items.ItemName.toLowerCase().includes(query) || items.ItemCategory.toLowerCase().includes(query) ||
+        items.ItemDesc.toLowerCase().includes(query)) {
+        return true;
+    }
+
+    return false;
+};
+
 
 const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter, totalamount, settotalamount }) => {
 
@@ -195,6 +273,9 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
     const [refresh, setRefresh] = useState('');
     const [qtyhandlervisible, setqtyhandlervisible] = useState(qtyhandler);
     // const [totalamount, settotalamount] = useState(0)
+    const [query, setQuery] = useState('');
+
+    const searchRef = createRef();
 
     const [data, setData] = useState(DATA);
     useEffect(() => { setData(DATA) }, [DATA])
@@ -288,6 +369,10 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
 
     const checkcart = () => {
 
+        searchRef.current.clear();
+        setQuery('');
+        setData(DATA);
+
         if (totalamount <= 0) {
             Alert.alert('No Items In Cart', `Please select atleast one item to order`, [
                 {
@@ -305,6 +390,12 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
         }
     }
 
+   
+
+
+
+
+
     return (
         <SafeAreaView style={{
             flex: 1,
@@ -316,6 +407,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                 data={data}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => String(index)}
+                ListHeaderComponent={renderHeader(query,DATA, setData, setQuery,searchRef)}
             />
             {showfooter ? <View style={{
                 justifyContent: 'space-between',
@@ -334,7 +426,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                     fontSize: normalize(15),
                     paddingLeft: scale(8),
                     color: 'black',
-                    fontWeight: 'bold'
+                    fontWeight: '600'
                 }} >Total Amount : {totalamount}/-</Text></View>
 
                 <View
@@ -351,7 +443,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                     textAlign: 'center',
                     fontSize: normalize(18),
                     color: 'white',
-                    fontWeight: 'bold'
+                    fontWeight: '600'
                 }} onPress={checkcart}>Order Now</Text></View>
 
             </View> : <></>}
@@ -374,7 +466,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                     fontSize: normalize(18),
                     paddingLeft: scale(8),
                     color: 'black',
-                    fontWeight: 'bold'
+                    fontWeight: '600'
                 }} >Total Amount : {totalamount}/-</Text></View>
             </View> : <></>}
         </SafeAreaView>
@@ -402,10 +494,12 @@ const styles = StyleSheet.create({
     title_item: {
         fontSize: normalize(13),
         color: '#000',
+        fontWeight: "600",
     },
     title_price: {
         fontSize: normalize(13),
         color: '#000',
+        // fontWeight: "600",
         // paddingTop: 40
     },
     total_item_price: {

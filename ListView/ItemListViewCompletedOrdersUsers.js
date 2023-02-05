@@ -20,7 +20,7 @@ const Item = ({ id, OrderId, title, image_url, price, description, category, dis
     <>
         {displayCategory ? <Text style={{
             fontSize: normalize(13),
-            fontWeight: "bold",
+            fontWeight: "600",
             marginLeft: scale(15),
             marginTop: scale(10),
             color: 'black',
@@ -127,7 +127,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders }) => {
                     <Text onPress={() => toggleFunction(index)}
                         style={{
                             fontSize: normalize(16),
-                            fontWeight: "bold",
+                            fontWeight: "600",
                             color: 'white'
                         }}>{index + 1}. {item.key}</Text>
                 </View>
@@ -135,12 +135,12 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders }) => {
                     <Text
                         style={{
                             fontSize: normalize(16),
-                            fontWeight: "bold",
+                            fontWeight: "600",
                             color: 'white'
                         }}>{AllOrders[index].totalamount}/-</Text>
                 </View>
                 <View>
-                    <MaterialIcons name="location-pin" size={normalize(20)} color="red"
+                    <MaterialIcons name="location-pin" size={normalize(20)} color="#dc143c"
                         onPress={() => {
 
                             // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
@@ -261,33 +261,13 @@ const styles = StyleSheet.create({
     title_item: {
         fontSize: normalize(13),
         color: '#000',
+        fontWeight: "600",
     },
     title_price: {
         fontSize: normalize(13),
         color: '#000',
+        fontWeight: "600",
         // paddingTop: 40
-    },
-    total_item_price: {
-        fontSize: normalize(20),
-        color: '#000',
-        paddingTop: scale(10),
-    },
-    container_addremove: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        position: 'absolute'
-    },
-    container_add: {
-        // marginTop: verticalScale(-13),
-        // marginVertical: verticalScale(13),
-        borderRadius: scale(7),
-        // height: verticalScale(25),
-        width: scale(78),
-        borderColor: 'black',
-        backgroundColor: 'white',
-        borderWidth: scale(1.5),
-        elevation: scale(10),
     },
     description: {
         fontSize: normalize(10),
