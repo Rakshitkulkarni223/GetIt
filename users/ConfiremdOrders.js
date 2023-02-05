@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
    },
    mainBody: {
       flex: 1,
-      bottom: 4,
+      bottom: '0.1%',
       //   justifyContent: "center",
       backgroundColor: "white",
       //   alignContent: "center",

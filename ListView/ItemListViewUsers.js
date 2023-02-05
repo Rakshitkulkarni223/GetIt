@@ -6,15 +6,17 @@ import { ref, set, update } from "firebase/database";
 
 import { scale, moderateScale, verticalScale } from '../Dimensions';
 
+import { normalize } from '../FontResize';
+
 const Item = ({ index, setItemId, setItemCategory, showfooter, handleIncrease, qtyhandlervisible, handleDecrease, setItemName, setItemImage, setItemDesc, setItemPrice, id, ItemQuantity, title, image_url, price, description, category, displaycategory }) => (
     <>{displaycategory ? <Text style={{
-        fontSize: moderateScale(15, 0.2),
+        fontSize: normalize(13),
         fontWeight: "bold",
         marginLeft: scale(15),
         marginTop: scale(10),
         color: 'white',
         letterSpacing: scale(0.5),
-        // fontStyle: 'italic'
+        paddingRight: scale(15),
     }}>{category.toUpperCase()}</Text> : <></>}
         <View>
 
@@ -22,7 +24,9 @@ const Item = ({ index, setItemId, setItemCategory, showfooter, handleIncrease, q
                 <View style={{
                     flex: 1,
                     flexDirection: 'column',
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
+                    paddingRight: scale(8),
+                    // alignItems: 'center',
                     // alignItems: "flex-start",
                 }}>
                     <View>
@@ -49,42 +53,50 @@ const Item = ({ index, setItemId, setItemCategory, showfooter, handleIncrease, q
                 <View style={{
                     flex: 1,
                     flexDirection: 'column',
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
+                    // alignItems: 'center',
                 }}
                 >
                     <View style={{ borderWidth: scale(1), borderRadius: scale(10) }}>
-                        <View>
-                            <Image source={{ uri: image_url }} style={
-                                styles.photo
-                            } />
-                        </View>
-                        {/* {
-                            !showfooter?
-                        <View style={{ 
-                            // justifyContent: 'flex-end', 
-                            // alignItems: 'center',
-                            alignSelf: 'flex-end',
-                            position: 'absolute',
-                            borderWidth: scale(0),
-                            borderRadius: scale(4),
-                            width: scale(30),
-                            backgroundColor: 'red',
-                            padding: scale(5),
-                            marginBottom: scale(0)
-                            }}>
-                            <Text style={{
-                                fontSize: moderateScale(15),
-                                textAlign: 'center'
-                            }}>{ItemQuantity}</Text>
-                        </View> : <></>
-                        } */}
+                        <Image source={{ uri: image_url }} style={
+                            styles.photo
+                        } />
                     </View>
-                    <View>
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        position: 'absolute',
+                        marginTop: verticalScale(115),
+                        borderWidth: scale(1),
+                        height: scale(23),
+                        alignItems: 'center',
+                        marginLeft: scale(38),
+                        width: scale(80),
+                        borderColor: 'black',
+                        backgroundColor: 'white',
+                        borderWidth: scale(0.5),
+                        borderRadius: scale(5),
+                        elevation: scale(10),
+                    }}>
                         {(qtyhandlervisible && showfooter) ?
-                            <View style={styles.container_add}>
+                            <>
                                 {ItemQuantity > 0 ?
                                     <View
-                                        style={styles.container_addremove}
+                                        style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'center',
+                                            position: 'absolute',
+                                            marginTop: verticalScale(115),
+                                            borderWidth: scale(1),
+                                            height: scale(23),
+                                            marginLeft: scale(38),
+                                            width: scale(80),
+                                            borderColor: 'black',
+                                            backgroundColor: 'white',
+                                            borderWidth: scale(0.5),
+                                            borderRadius: scale(5),
+                                            elevation: scale(10),
+                                        }}
                                     >
                                         <View style={{ justifyContent: 'center', flex: 1 }}
                                         >
@@ -95,26 +107,27 @@ const Item = ({ index, setItemId, setItemCategory, showfooter, handleIncrease, q
                                                 }}
                                             />
                                         </View>
-                                        <View style={{ justifyContent: 'center', flex: 1, }}
+                                        <View style={{ justifyContent: 'center', flex: 1 }}
                                         >
                                             <Text style={
                                                 [
                                                     StyleSheet.absoluteFill,
                                                     {
                                                         fontWeight: 'bold',
-                                                        fontSize: moderateScale(15),
+                                                        fontSize: normalize(15),
                                                         backgroundColor: '#dcdcdc',
                                                         borderLeftWidth: scale(0.5),
                                                         borderRightWidth: scale(0.5),
                                                         color: "black",
-                                                        paddingTop: verticalScale(3),
                                                         textAlign: 'center',
+                                                        textAlignVertical: 'center',
                                                     }
                                                 ]
                                             }>{ItemQuantity}</Text>
                                         </View>
 
-                                        <View style={{ justifyContent: 'center', flex: 1 }}>
+                                        <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}
+                                        >
                                             <Ionicons name="md-add-outline" size={scale(20)} color="black"
                                                 onPress={() => handleIncrease(index)}
                                                 style={{
@@ -124,35 +137,44 @@ const Item = ({ index, setItemId, setItemCategory, showfooter, handleIncrease, q
                                         </View>
                                     </View>
                                     :
-                                    <View >
-                                        <View
-                                        // style={{ justifyContent: 'center', flex: 1 }}
-                                        >
+                                    <View>
                                             <Text style={{
+                                                textAlignVertical: 'center',
                                                 textAlign: 'center',
                                                 color: "black",
-                                                paddingTop: scale(2),
-                                                fontSize: moderateScale(18),
+                                                fontSize: normalize(15),
                                                 fontWeight: "bold"
                                             }} onPress={() => handleIncrease(index)}>ADD</Text>
-                                        </View>
-                                    </View>}
-                            </View>
+                                    </View>
+                                }
+                            </>
                             :
                             <></>
                         }
 
                         {(qtyhandlervisible && !showfooter) ?
-                            <View style={styles.container_add}>
-                                <View >
-                                    <Text style={{
-                                        textAlign: 'center',
-                                        color: "black",
-                                        paddingTop: scale(2),
-                                        fontSize: moderateScale(18),
-                                        fontWeight: "bold"
-                                    }} onPress={() => handleIncrease(index)}>{ItemQuantity}</Text>
-                                </View>
+                            <View style={{
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                position: 'absolute',
+                                marginTop: verticalScale(-12),
+                                borderWidth: scale(1),
+                                height: scale(23),
+                                marginLeft: scale(40),
+                                width: scale(80),
+                                borderRadius: scale(5),
+                                borderColor: 'black',
+                                backgroundColor: 'white',
+                                borderWidth: scale(0.5),
+                                elevation: scale(10),
+                            }}>
+                                <Text style={{
+                                    textAlignVertical: 'center',
+                                    textAlign: 'center',
+                                    color: "black",
+                                    fontSize: normalize(15),
+                                    fontWeight: "bold"
+                                }}>{ItemQuantity}</Text>
                             </View> : <></>}
 
                     </View>
@@ -162,7 +184,7 @@ const Item = ({ index, setItemId, setItemCategory, showfooter, handleIncrease, q
     </>
 );
 
-const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter, totalamount, settotalamount}) => {
+const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter, totalamount, settotalamount }) => {
 
     const [ItemName, setItemName] = useState("");
     const [ItemDesc, setItemDesc] = useState("");
@@ -309,7 +331,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                         // backgroundColor: 'white',
                     }}
                 ><Text style={{
-                    fontSize: moderateScale(18),
+                    fontSize: normalize(15),
                     paddingLeft: scale(8),
                     color: 'black',
                     fontWeight: 'bold'
@@ -327,7 +349,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                     }}
                 ><Text style={{
                     textAlign: 'center',
-                    fontSize: moderateScale(22),
+                    fontSize: normalize(18),
                     color: 'white',
                     fontWeight: 'bold'
                 }} onPress={checkcart}>Order Now</Text></View>
@@ -349,7 +371,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                         // backgroundColor: 'white',
                     }}
                 ><Text style={{
-                    fontSize: moderateScale(18),
+                    fontSize: normalize(18),
                     paddingLeft: scale(8),
                     color: 'black',
                     fontWeight: 'bold'
@@ -367,39 +389,41 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: scale(10),
+        paddingBottom: scale(25),
         marginLeft: scale(15),
         marginRight: scale(15),
         marginTop: scale(8),
         marginBottom: scale(9),
+        marginVertical: verticalScale(0),
         borderRadius: scale(10),
         backgroundColor: '#ffe4e1',
-        elevation: scale(10),
+        elevation: scale(5),
     },
     title_item: {
-        fontSize: moderateScale(15),
+        fontSize: normalize(13),
         color: '#000',
     },
     title_price: {
-        fontSize: moderateScale(15),
+        fontSize: normalize(13),
         color: '#000',
         // paddingTop: 40
     },
     total_item_price: {
-        fontSize: moderateScale(23),
+        fontSize: normalize(20),
         color: '#000',
         paddingTop: scale(10),
     },
     container_addremove: {
         flex: 1,
         flexDirection: 'row',
-        // justifyContent: 'flex-start'
+        justifyContent: 'center',
+        position: 'absolute'
     },
     container_add: {
-        marginTop: verticalScale(-13),
-        marginLeft: scale(42),
-        marginVertical: verticalScale(13),
+        // marginTop: verticalScale(-13),
+        // marginVertical: verticalScale(13),
         borderRadius: scale(7),
-        height: verticalScale(25),
+        // height: verticalScale(25),
         width: scale(78),
         borderColor: 'black',
         backgroundColor: 'white',
@@ -407,12 +431,12 @@ const styles = StyleSheet.create({
         elevation: scale(10),
     },
     description: {
-        fontSize: moderateScale(10),
+        fontSize: normalize(10),
         fontStyle: 'italic',
     },
     photo: {
-        height: verticalScale(125),
-        width: scale(148),
+        height: verticalScale(126),
+        width: scale(144),
         borderRadius: scale(9)
     },
 });

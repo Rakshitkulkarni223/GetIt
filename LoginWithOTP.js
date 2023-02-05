@@ -17,6 +17,8 @@ import { ref, child, get, onValue } from "firebase/database";
 
 import { scale, moderateScale, verticalScale } from './Dimensions';
 
+import { normalize } from './FontResize';
+
 const LoginWithOTP = ({ navigation }) => {
   // Ref or state management hooks
   const recaptchaVerifier = React.useRef(null);
@@ -42,7 +44,7 @@ const LoginWithOTP = ({ navigation }) => {
         />
         <Text style={{
           // marginTop: 20, 
-          fontSize: moderateScale(15),
+          fontSize: normalize(15),
         }}>Enter Phone Number</Text>
         <View
           style={{
@@ -63,13 +65,13 @@ const LoginWithOTP = ({ navigation }) => {
             justifyContent: 'center',
             backgroundColor: '#d3d3d3'
           }}>
-            <Text style={{ fontSize: moderateScale(18, 0.4), color: '#808080' }}>+91</Text>
+            <Text style={{ fontSize: normalize(15), textAlignVertical: 'center', color: '#808080' }}>+91</Text>
           </View>
           <View style={{
             paddingLeft: scale(3),
           }}>
             <TextInput
-              style={{ fontSize: moderateScale(20, 0.1) }}
+              style={{ fontSize: normalize(15), padding: scale(2) }}
               placeholder="555-555-4321"
               autoFocus
               cursorColor='#778899'
@@ -106,7 +108,7 @@ const LoginWithOTP = ({ navigation }) => {
         >
           <Text style={styles.text}>Send Verification Code</Text>
         </Pressable>
-        <Text style={{ marginTop: scale(20), fontSize: moderateScale(15), }}>Enter Verification Code</Text>
+        <Text style={{ marginTop: scale(20), fontSize: normalize(15), }}>Enter Verification Code</Text>
         <View style={{
           marginBottom: scale(15),
           marginTop: scale(10),
@@ -116,7 +118,7 @@ const LoginWithOTP = ({ navigation }) => {
         }}>
           <View>
             <TextInput
-              style={{ fontSize: moderateScale(25) }}
+              style={{ fontSize: normalize(20) }}
               editable={!!verificationId}
               cursorColor='#778899'
               placeholder="- - - - - -"
@@ -133,7 +135,7 @@ const LoginWithOTP = ({ navigation }) => {
             try {
               const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
               await signInWithCredential(auth, credential);
-              if (admins.includes(phoneNumber)) {
+              if (admins.includes('+91'+phoneNumber)) {
                 navigation.reset({
                   index: 0,
                   routes: [{ name: "Dashboard Admin" }],
@@ -181,7 +183,7 @@ const LoginWithOTP = ({ navigation }) => {
             <Text
               style={{
                 color: message.color || 'blue',
-                fontSize: moderateScale(16),
+                fontSize: normalize(16),
                 textAlign: 'center',
                 margin: scale(20),
               }}>
@@ -211,7 +213,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
   text: {
-    fontSize: moderateScale(16),
+    fontSize: normalize(15),
     lineHeight: scale(18),
     fontWeight: 'bold',
     letterSpacing: scale(0.5),

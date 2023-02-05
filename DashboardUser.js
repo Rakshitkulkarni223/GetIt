@@ -20,6 +20,8 @@ import { AntDesign, FontAwesome , Ionicons , MaterialIcons } from '@expo/vector-
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import { scale, moderateScale, verticalScale } from './Dimensions';
+
 
 import PendingOrders from "./users/PendingOrders";
 import ConfiremdOrders from "./users/ConfiremdOrders";
@@ -136,7 +138,7 @@ export default DashboardUser;
 const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
-        bottom: '0.60%',
+        bottom: '0.15%',
         justifyContent: "center",
         backgroundColor: "#307ecc",
         alignContent: "center",

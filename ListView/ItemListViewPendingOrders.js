@@ -6,64 +6,124 @@ import { app, auth, db, database } from "../Firebase";
 import { ref, set, update } from "firebase/database";
 import GoogleMap from '../GoogleMap';
 
+import { scale, moderateScale, verticalScale } from '../Dimensions';
 
-const Item = ({ id, AuthId, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, Location, Longitude, Latitude }) => (
+import { normalize } from '../FontResize';
+
+
+const AddRemoveItem = (add, { id, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude }) => {
+
+    {
+        add ? set(ref(database, `admin/confirmedOrdersByAdmin/${OrderId}/items/${category}/` + id), {
+            ItemId: id,
+            OrderId: OrderId,
+            ItemName: title,
+            ItemPrice: price,
+            ItemDesc: description,
+            ItemImage: image_url,
+            ItemCategory: category,
+            ItemQuantity: quantity,
+            ItemAddedDate: ItemAddedDate,
+            phoneNumber: phoneNumber,
+            Location: Location,
+            Longitude: Longitude,
+            Latitude: Latitude,
+            OrderConfirmed: true,
+            OrderConfirmedByAdmin: true,
+            OrderPending: true,
+            OrderDelivered: false
+        }) : false
+    }
+    set(ref(database, `users/confirmedOrders/${OrderId}/items/${category}/` + id), {
+    });
+
+}
+
+
+const Item = ({ id, AuthId, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude }) => (
     <>
         {displayCategory ? <Text style={{
-            fontSize: 15,
+            fontSize: normalize(13),
             fontWeight: "bold",
-            // fontStyle: 'italic'
-        }}>{category}</Text> : <></>}
+            marginLeft: scale(15),
+            marginTop: scale(10),
+            color: 'black',
+            letterSpacing: scale(0.5),
+            paddingRight: scale(15),
+        }}>{category.toUpperCase()}</Text> : <></>}
 
         <View style={styles.container}>
-            <Image source={{ uri: image_url }} style={styles.photo} />
-            <View style={styles.container_text}>
-                <Text style={styles.title}>
-                    {title}
-                </Text>
-                <Text style={styles.description}>
-                    {description}
-                </Text>
+            <View style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'space-around',
+                // paddingRight: scale(8),
+                // alignItems: 'center',
+                // alignItems: "flex-start",
+            }}>
+                <View>
+                    <Image source={{ uri: image_url }} style={styles.photo} />
+                </View>
+                <View style={{
+                    marginTop: verticalScale(4),
+                }}>
+                    <Text style={styles.title_item}>
+                        {title.toUpperCase()}
+                    </Text>
+                    <Text style={styles.description}>
+                        {description}
+                    </Text>
+                </View>
             </View>
-            <View style={styles.container_price}>
-                <Text style={styles.title}>
-                    {price}/-
-                </Text>
+
+            <View style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                // paddingRight: scale(8),
+                alignItems: 'center',
+            }}>
+
+                <View >
+                    <Text style={styles.title_price}>
+                        {price}/-
+                    </Text>
+                </View>
+
+                <View >
+                    <Text style={styles.title_item}>
+                        {quantity}
+                    </Text>
+                </View>
+
+                <View >
+                    <Text style={[styles.title_price, { fontWeight: 'bold' }]}>
+                        {quantity * price}/-
+                    </Text>
+                </View>
+
             </View>
-            <View style={styles.container_price}>
-                <Text style={styles.title}>
-                    {quantity}
-                </Text>
-            </View>
-            <View style={styles.container_update}>
-                <AntDesign name="checkcircleo" size={24} color="green" onPress={() => {
-                    set(ref(database, `admin/confirmedOrdersByAdmin/${OrderId}/items/${category}/` + id), {
-                        ItemId: id,
-                        OrderId: OrderId,
-                        ItemName: title,
-                        ItemPrice: price,
-                        ItemDesc: description,
-                        ItemImage: image_url,
-                        ItemCategory: category,
-                        ItemQuantity: quantity,
-                        ItemAddedDate: ItemAddedDate,
-                        Location: Location,
-                        Longitude: Longitude,
-                        Latitude: Latitude,
-                        OrderConfirmed: true,
-                        OrderConfirmedByAdmin: true,
-                        OrderPending: true,
-                        OrderDelivered: false
-                    });
-                    set(ref(database, `users/confirmedOrders/${OrderId}/items/${category}/` + id), {
-                    });
-                }} />
-            </View>
-            <View style={styles.container_update}>
-                <Entypo name="cross" size={24} color="red" onPress={() => {
-                    set(ref(database, `users/confirmedOrders/${OrderId}/items/${category}/` + id), {
-                    });
-                }} />
+
+
+            <View style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                // paddingRight: scale(8),
+                alignItems: 'center',
+            }}>
+
+                <View>
+                    <AntDesign name="checkcircleo" size={24} color="green" onPress={() => {
+                        AddRemoveItem(true, { id, AuthId, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude });
+                    }} />
+                </View>
+                <View
+                >
+                    <Entypo name="cross" size={24} color="red" onPress={() => {
+                        AddRemoveItem(false, { id, AuthId, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude });
+                    }} />
+                </View>
             </View>
         </View>
     </>
@@ -98,28 +158,30 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                 flex: 1,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                marginBottom: 10,
-                padding: 20,
-                borderRadius: 5,
-                backgroundColor: 'orange',
-                elevation: 2,
+                marginTop: scale(10),
+                padding: scale(16),
+                borderRadius: scale(5),
+                backgroundColor: '#778080',
+                elevation: scale(2),
             }}>
                 <View>
                     <Text onPress={() => toggleFunction(index)}
                         style={{
-                            fontSize: 20,
+                            fontSize: normalize(16),
                             fontWeight: "bold",
+                            color: 'white'
                         }}>{index + 1}. {item.key}</Text>
                 </View>
                 <View>
                     <Text onPress={() => toggleFunction(index)}
                         style={{
-                            fontSize: 20,
+                            fontSize: normalize(16),
                             fontWeight: "bold",
+                            color: 'white'
                         }}>{AllOrders[index].totalamount}/-</Text>
                 </View>
                 <View>
-                    <MaterialIcons name="location-pin" size={24} color="red"
+                    <MaterialIcons name="location-pin" size={normalize(20)} color="red"
                         onPress={() => {
 
                             // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
@@ -173,7 +235,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                     />
                 </View>
                 <View>
-                    <MaterialCommunityIcons name="checkbox-marked-circle" size={25} color="green"
+                    <MaterialCommunityIcons name="checkbox-marked-circle" size={normalize(20)} color="green"
                         onPress={() => {
                             alert("select all...");
                         }}
@@ -196,6 +258,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                             category={item.ItemCategory}
                             quantity={item.ItemQuantity}
                             ItemAddedDate={item.ItemAddedDate}
+                            phoneNumber={item.phoneNumber}
                             Location={AllOrders[index].Location}
                             Longitude={AllOrders[index].Longitude}
                             Latitude={AllOrders[index].Latitude}
@@ -212,7 +275,11 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
     return (
         <>
             {visibleMap ? <GoogleMap Longitude={longitude} Latitude={latitude} setvisibleMap={setvisibleMap} /> :
-                <SafeAreaView style={styles.container}>
+                <SafeAreaView style={{
+                    flex: 1,
+                    padding: scale(15),
+                    backgroundColor: '#dcdcdc',
+                }}>
                     <FlatList
                         data={AllOrders}
                         renderItem={renderItem}
@@ -228,45 +295,59 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        // height: verticalScale(190),
         flexDirection: 'row',
-        padding: 10,
-        marginLeft: 16,
-        marginRight: 16,
-        marginTop: 8,
-        marginBottom: 8,
-        borderRadius: 5,
-        backgroundColor: '#FFF',
-        elevation: 2,
+        justifyContent: 'space-between',
+        padding: scale(10),
+        paddingBottom: scale(15),
+        marginLeft: scale(15),
+        marginRight: scale(15),
+        marginTop: scale(8),
+        marginBottom: scale(9),
+        marginVertical: verticalScale(0),
+        borderRadius: scale(10),
+        backgroundColor: '#ffe4e1',
+        elevation: scale(5),
     },
-    title: {
-        fontSize: 16,
+    title_item: {
+        fontSize: normalize(13),
         color: '#000',
     },
-    container_text: {
-        flex: 1,
-        flexDirection: 'column',
-        marginLeft: 12,
-        justifyContent: 'center',
+    title_price: {
+        fontSize: normalize(13),
+        color: '#000',
+        // paddingTop: 40
     },
-    container_price: {
-        flex: 1,
-        flexDirection: 'column',
-        marginLeft: 12,
-        justifyContent: 'center',
+    total_item_price: {
+        fontSize: normalize(20),
+        color: '#000',
+        paddingTop: scale(10),
     },
-    container_update: {
+    container_addremove: {
         flex: 1,
-        flexDirection: 'column',
-        marginLeft: 12,
+        flexDirection: 'row',
         justifyContent: 'center',
+        position: 'absolute'
+    },
+    container_add: {
+        // marginTop: verticalScale(-13),
+        // marginVertical: verticalScale(13),
+        borderRadius: scale(7),
+        // height: verticalScale(25),
+        width: scale(78),
+        borderColor: 'black',
+        backgroundColor: 'white',
+        borderWidth: scale(1.5),
+        elevation: scale(10),
     },
     description: {
-        fontSize: 11,
+        fontSize: normalize(10),
         fontStyle: 'italic',
     },
     photo: {
-        height: 50,
-        width: 50,
+        height: verticalScale(40),
+        width: scale(44),
+        borderRadius: scale(9)
     },
 });
 

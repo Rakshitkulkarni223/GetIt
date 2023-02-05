@@ -8,45 +8,69 @@ import { ref, set, update } from "firebase/database";
 import QRCode from 'react-native-qrcode-svg';
 import GoogleMap from '../GoogleMap';
 
+import { scale, moderateScale, verticalScale } from '../Dimensions';
+
+import { normalize } from '../FontResize';
 
 
 const Item = ({ id, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate }) => (
     <>
         {displayCategory ? <Text style={{
-            fontSize: 15,
+            fontSize: normalize(13),
             fontWeight: "bold",
-            // fontStyle: 'italic'
-        }}>{category}</Text> : <></>}
+            marginLeft: scale(15),
+            marginTop: scale(10),
+            color: 'black',
+            letterSpacing: scale(0.5),
+            paddingRight: scale(15),
+        }}>{category.toUpperCase()}</Text> : <></>}
 
         <View style={styles.container}>
-            <Image source={{ uri: image_url }} style={styles.photo} />
-            <View style={styles.container_text}>
-                <Text style={styles.title}>
-                    {title}
-                </Text>
-                <Text style={styles.description}>
-                    {description}
-                </Text>
+            <View style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'space-around',
+                // paddingRight: scale(8),
+                // alignItems: 'center',
+                // alignItems: "flex-start",
+            }}>
+                <View>
+                    <Image source={{ uri: image_url }} style={styles.photo} />
+                </View>
+                <View style={{
+                    marginTop: verticalScale(4),
+                }}>
+                    <Text style={styles.title_item}>
+                        {title.toUpperCase()}
+                    </Text>
+                    <Text style={styles.description}>
+                        {description}
+                    </Text>
+                </View>
             </View>
-            <View style={styles.container_price}>
-                <Text style={styles.title}>
-                    {price}/-
-                </Text>
-            </View>
-            <View style={styles.container_price}>
-                <Text style={styles.title}>
-                    {quantity}
-                </Text>
-            </View>
-            <View style={styles.container_update}>
-                {/* <AntDesign name="checkcircleo" size={24} color="green" onPress={()=>{
-                }}/> */}
-            </View>
-            <View style={styles.container_update}>
-                {/* <Entypo name="cross" size={24} color="red" onPress={()=>{
-                    set(ref(database, `users/confirmedOrders/${OrderID}/items/${category}/` + id), {
-                    });
-                }}/> */}
+            <View style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                padding: scale(8),
+                alignItems: 'center',
+            }}>
+
+                <View  style={{
+                    marginLeft: scale(2),
+                }}>
+                    <Text style={styles.title_price}>
+                        {price}/-
+                    </Text>
+                </View>
+
+                <View style={{
+                    marginLeft: scale(2),
+                }}>
+                    <Text style={styles.title_item}>
+                        {quantity}
+                    </Text>
+                </View>
             </View>
         </View>
     </>
@@ -96,16 +120,16 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                 flex: 1,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                marginBottom: 10,
-                padding: 20,
-                borderRadius: 5,
+                marginTop: scale(10),
+                padding: scale(16),
+                borderRadius: scale(5),
                 backgroundColor: 'pink',
-                elevation: 2,
+                elevation: scale(5),
             }}>
                 <View>
                     <Text onPress={() => toggleFunction(index)}
                         style={{
-                            fontSize: 20,
+                            fontSize: normalize(16),
                             fontWeight: "bold",
                         }}>{index + 1}. {item.key}</Text>
                 </View>
@@ -114,12 +138,12 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                         handlePressQRcode(index)
                     }
                         style={{
-                            fontSize: 20,
+                            fontSize: normalize(16),
                             fontWeight: "bold",
                         }}>{AllOrders[index].totalamount}/-</Text>
                 </View>
                 <View>
-                    <MaterialIcons name="location-pin" size={24} color="red"
+                    <MaterialIcons name="location-pin" size={normalize(20)} color="red"
                         onPress={() => {
 
                             // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
@@ -170,12 +194,11 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                     />
                 </View>
                 <View>
-                    <MaterialCommunityIcons name="checkbox-marked-circle" size={25} color="green"
+                    <MaterialCommunityIcons name="checkbox-marked-circle" size={normalize(20)} color="green"
                         onPress={() => {
                             alert(`Order Delivered To ${AllOrders[index].Location}`);
-                            for(var i=0;i<AllOrders[index].value.length;i++)
-                            {
-                                set(ref(database, `users/completedOrders/${auth.currentUser.phoneNumber}/${AllOrders[index].value[i].OrderId}/items/${AllOrders[index].value[i].ItemCategory}/` + AllOrders[index].value[i].key), {
+                            for (var i = 0; i < AllOrders[index].value.length; i++) {
+                                set(ref(database, `users/completedOrders/${AllOrders[index].value[i].phoneNumber}/${AllOrders[index].value[i].OrderId}/items/${AllOrders[index].value[i].ItemCategory}/` + AllOrders[index].value[i].key), {
                                     ItemId: AllOrders[index].value[i].key,
                                     OrderId: AllOrders[index].value[i].OrderId,
                                     ItemName: AllOrders[index].value[i].ItemName,
@@ -185,6 +208,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                                     ItemCategory: AllOrders[index].value[i].ItemCategory,
                                     ItemQuantity: AllOrders[index].value[i].ItemQuantity,
                                     ItemAddedDate: AllOrders[index].value[i].ItemAddedDate,
+                                    phoneNumber: AllOrders[index].value[i].phoneNumber,
                                     Latitude: AllOrders[index].Latitude,
                                     Longitude: AllOrders[index].Longitude,
                                     Location: AllOrders[index].Location,
@@ -194,7 +218,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                                     OrderDelivered: true
                                 });
                             }
-                            
+
                         }}
                     />
                 </View>
@@ -231,9 +255,13 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
     return (
 
         <>
-            {visibleMap ? <GoogleMap Longitude={longitude} Latitude={latitude} setvisibleMap={setvisibleMap}/> :
+            {visibleMap ? <GoogleMap Longitude={longitude} Latitude={latitude} setvisibleMap={setvisibleMap} /> :
 
-                <SafeAreaView style={styles.container}>
+                <SafeAreaView style={{
+                    flex: 1,
+                    padding: scale(15),
+                    backgroundColor: '#dcdcdc',
+                }}>
                     {displayQRCode ? <>
                         <View style={{
                             flex: 1,
@@ -263,7 +291,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                                 }}
                                 >
                                     <Text style={{
-                                        fontSize: 20,
+                                        fontSize: normalize(16),
                                         fontWeight: "bold",
                                     }}>Order Id : {AllOrders[index].value[0].OrderId}</Text>
                                 </View>
@@ -278,7 +306,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                                 }}
                                 >
                                     <Text style={{
-                                        fontSize: 20,
+                                        fontSize: normalize(16),
                                         fontWeight: "bold",
                                     }}>Total Amount : {AllOrders[index].totalamount}</Text>
                                 </View>
@@ -307,7 +335,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
                             }}
                             >
                                 <Text style={{
-                                    fontSize: 20,
+                                    fontSize: normalize(16),
                                     fontWeight: "bold",
                                 }}
                                     onPress={() => handlePressQRcode(index)}>Payment Done ?</Text>
@@ -329,45 +357,59 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        // height: verticalScale(190),
         flexDirection: 'row',
-        padding: 10,
-        marginLeft: 16,
-        marginRight: 16,
-        marginTop: 8,
-        marginBottom: 8,
-        borderRadius: 5,
-        backgroundColor: '#FFF',
-        elevation: 2,
+        justifyContent: 'space-between',
+        padding: scale(10),
+        paddingBottom: scale(15),
+        marginLeft: scale(15),
+        marginRight: scale(15),
+        marginTop: scale(8),
+        marginBottom: scale(9),
+        marginVertical: verticalScale(0),
+        borderRadius: scale(10),
+        backgroundColor: '#ffe4e1',
+        elevation: scale(5),
     },
-    title: {
-        fontSize: 16,
+    title_item: {
+        fontSize: normalize(13),
         color: '#000',
     },
-    container_text: {
-        flex: 1,
-        flexDirection: 'column',
-        marginLeft: 12,
-        justifyContent: 'center',
+    title_price: {
+        fontSize: normalize(13),
+        color: '#000',
+        // paddingTop: 40
     },
-    container_price: {
-        flex: 1,
-        flexDirection: 'column',
-        marginLeft: 12,
-        justifyContent: 'center',
+    total_item_price: {
+        fontSize: normalize(20),
+        color: '#000',
+        paddingTop: scale(10),
     },
-    container_update: {
+    container_addremove: {
         flex: 1,
-        flexDirection: 'column',
-        marginLeft: 12,
+        flexDirection: 'row',
         justifyContent: 'center',
+        position: 'absolute'
+    },
+    container_add: {
+        // marginTop: verticalScale(-13),
+        // marginVertical: verticalScale(13),
+        borderRadius: scale(7),
+        // height: verticalScale(25),
+        width: scale(78),
+        borderColor: 'black',
+        backgroundColor: 'white',
+        borderWidth: scale(1.5),
+        elevation: scale(10),
     },
     description: {
-        fontSize: 11,
+        fontSize: normalize(10),
         fontStyle: 'italic',
     },
     photo: {
-        height: 50,
-        width: 50,
+        height: verticalScale(40),
+        width: scale(44),
+        borderRadius: scale(9)
     },
 });
 

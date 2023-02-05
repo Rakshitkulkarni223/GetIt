@@ -220,6 +220,11 @@ import { ref, set } from "firebase/database";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { SafeAreaView } from 'react-native';
 
+import { normalize } from './FontResize';
+
+import { scale, moderateScale, verticalScale } from './Dimensions';
+
+
 const SignUp = ({ navigation }) => {
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -317,16 +322,17 @@ const SignUp = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ padding: 20, marginTop: 20 }}>
+      <View style={{ padding: scale(18), marginTop: verticalScale(20) }}>
         <View
           style={{
-            borderWidth: 0.5,
-            borderRadius: 5,
+            borderWidth: scale(0.5),
+            borderRadius: scale(5),
+            // marginTop: verticalScale(10),
           }}
         >
-          <Text style={{ marginLeft: 10, marginTop: 5, fontFamily: 'sans-serif-light' }}>First name</Text>
+          <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>First name</Text>
           <TextInput
-            style={{ marginLeft: 10, marginBottom: 5, fontSize: 15, fontFamily: 'sans-serif-light' }}
+            style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
             placeholder="Enter first name"
             autoFocus
             keyboardType="default"
@@ -335,13 +341,13 @@ const SignUp = ({ navigation }) => {
             }}
           />
           <View style={{
-            borderTopWidth: 0.5
+            borderTopWidth: scale(0.5)
           }}>
             <Text style={{
-              marginLeft: 10, marginTop: 5, fontFamily: 'sans-serif-light'
+              marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light'
             }}>Last name</Text>
             <TextInput
-              style={{ marginLeft: 10, marginBottom: 5, fontSize: 15, }}
+              style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light'}}
               placeholder="Enter last name"
               keyboardType="default"
               onChangeText={(lastName) => {
@@ -352,16 +358,16 @@ const SignUp = ({ navigation }) => {
         </View>
         <View
           style={{
-            borderWidth: 0.5,
-            borderRadius: 5,
-            marginTop: 10,
+            borderWidth: scale(0.5),
+            borderRadius: scale(5),
+            marginTop: verticalScale(10),
           }}
         >
-          <Text style={{ marginLeft: 10, marginTop: 5, fontFamily: 'sans-serif-light' }}>DOB</Text>
+          <Text style={{  marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>DOB</Text>
           <Text
             style={{
-              marginLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 15,
-              fontWeight: DOBfontweight
+              marginLeft: scale(10), marginBottom: verticalScale(5), marginTop: verticalScale(5), fontSize: normalize(14),
+              fontWeight: DOBfontweight,
             }}
             onPress={showDatePicker}
           >{DOB}</Text>
@@ -374,14 +380,14 @@ const SignUp = ({ navigation }) => {
         </View>
         <View
           style={{
-            borderWidth: 0.5,
-            borderRadius: 5,
-            marginTop: 10,
+            borderWidth: scale(0.5),
+            borderRadius: scale(5),
+            marginTop: verticalScale(10),
           }}
         >
-          <Text style={{ marginLeft: 10, marginTop: 5, fontFamily: 'sans-serif-light' }}>Email</Text>
+          <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Email</Text>
           <TextInput
-            style={{ marginLeft: 10, marginBottom: 5, fontSize: 15, }}
+            style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
             placeholder="xyz@abc.com"
             keyboardType="default"
             onChangeText={(email) => {
@@ -392,14 +398,14 @@ const SignUp = ({ navigation }) => {
 
         <View
           style={{
-            borderWidth: 0.5,
-            borderRadius: 5,
-            marginTop: 10,
+            borderWidth: scale(0.5),
+            borderRadius: scale(5),
+            marginTop: verticalScale(10),
           }}
         >
-          <Text style={{ marginLeft: 10, marginTop: 5, fontFamily: 'sans-serif-light' }}>Password</Text>
+          <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Password</Text>
           <TextInput
-            style={{ marginLeft: 10, marginBottom: 5, fontSize: 15, }}
+            style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
             placeholder="xyz"
             keyboardType="default"
             onChangeText={(password) => {
@@ -411,15 +417,15 @@ const SignUp = ({ navigation }) => {
           <Text
             style={{
               color: 'red',
-              fontSize: 17,
+              fontSize: normalize(16),
               textAlign: 'center',
-              margin: 20,
+              marginTop: scale(20),
             }}>
             {message}
           </Text>
         ) : undefined}
         <View style={{
-          marginTop: '5%',
+          marginTop: verticalScale(20),
         }}>
           {/* <Button
             title="Sign Up"
@@ -443,17 +449,17 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 4,
-    elevation: 3,
+    paddingVertical: verticalScale(8),
+    paddingHorizontal: scale(32),
+    borderRadius: scale(4),
+    elevation: scale(10),
     backgroundColor: 'black',
   },
   text: {
-    fontSize: 20,
-    lineHeight: 21,
+    fontSize: normalize(16),
+    lineHeight: verticalScale(20),
     fontWeight: 'bold',
-    letterSpacing: 0.25,
+    letterSpacing: scale(0.5),
     color: 'white',
   },
 });

@@ -27,13 +27,18 @@ const UserAccountDetails = ({ navigation }) => {
                         borderWidth: scale(0.5),
                     }}
                     >
-                        <View>
-                        <FontAwesome5 name="user" size={scale(22)} color="black" />
+                        <View style={{
+                            justifyContent: 'center'
+                        }}>
+                        <FontAwesome5 name="user" size={verticalScale(18)} color="black" />
                         </View>
-                        <View>
+                        <View style={{
+                            justifyContent: 'center'
+                        }}>
                             <Text
                             style={{
-                                fontSize: scale(18),
+                                textAlignVertical: 'center',
+                                fontSize: verticalScale(18),
                                 marginLeft: scale(10),
                             }}
                             onPress={()=>{
@@ -50,13 +55,18 @@ const UserAccountDetails = ({ navigation }) => {
                         borderWidth: scale(0.5),
                     }}
                     >
-                        <View>
-                        <MaterialCommunityIcons name="information-outline" size={scale(22)} color="black" />
+                        <View style={{
+                            justifyContent: 'center'
+                        }}>
+                        <MaterialCommunityIcons name="information-outline" size={verticalScale(18)} color="black" />
                         </View>
-                        <View>
+                        <View style={{
+                            justifyContent: 'center'
+                        }}>
                             <Text
                             style={{
-                                fontSize: scale(18),
+                                textAlignVertical: 'center',
+                                fontSize: verticalScale(18),
                                 marginLeft: scale(10),
                             }}
                             >About us</Text>
@@ -70,13 +80,18 @@ const UserAccountDetails = ({ navigation }) => {
                         borderWidth: scale(0.5),
                     }}
                     >
-                        <View>
-                        <MaterialIcons name="contact-support" size={scale(22)} color="black" />
+                        <View style={{
+                            justifyContent: 'center'
+                        }}>
+                        <MaterialIcons name="contact-support" size={verticalScale(18)} color="black" />
                         </View>
-                        <View>
+                        <View style={{
+                            justifyContent: 'center'
+                        }}>
                             <Text
                             style={{
-                                fontSize: scale(18),
+                                textAlignVertical: 'center',
+                                fontSize: verticalScale(18),
                                 marginLeft: scale(10),
                             }}
                             >Contact us</Text>

@@ -5,6 +5,7 @@ import {
     TextInput,
     View,
     Text,
+    Pressable,
     KeyboardAvoidingView,
     Keyboard,
     TouchableOpacity,
@@ -14,6 +15,9 @@ import {
 import { AntDesign, Feather } from '@expo/vector-icons';
 
 
+import { normalize } from '../FontResize';
+
+import { scale, moderateScale, verticalScale } from '../Dimensions';
 
 import * as ImagePicker from 'expo-image-picker';
 
@@ -62,7 +66,9 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
     const [ItemPrice, setItemPrice] = useState(price);
     const [ItemImage, setItemImage] = useState(image_url);
     const [ItemId, setItemId] = useState(id);
-    const [errortext, setErrortext] = useState("");
+    
+    const [message, showMessage] = useState();
+
     const [updated, setupdated] = useState(false);
 
     // This function is triggered when the "Select an image" button pressed
@@ -102,13 +108,15 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
 
 
     const handleSubmitButton = async () => {
-        setErrortext("");
+        showMessage("");
+
         if (!ItemName) return alert("Please enter Item Name.");
         if (!ItemPrice) return alert("Please enter Item Price per Plate.");
         if (!ItemCategory) return alert("Please enter Item Category.");
         if (!ItemImage) return alert("Please upload Item Image.");
 
         try {
+
             ItemCategory.trim() !== category ?
                 set(ref(database, `admin/items/${category}/` + ItemId), {
 
@@ -117,10 +125,9 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
             await SaveItem(ItemCategory, ItemName, ItemPrice, ItemDesc, ItemImage, ItemCategory.trim() === category)
             alert(`${ItemName} ${ItemDesc} - ${ItemPrice} rs has been updated to ${ItemCategory} Category Successfully.`);
             setupdated(true);
-
         }
         catch (e) {
-            setErrortext(e);
+            showMessage(e);
         }
     };
 
@@ -128,142 +135,161 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
     return (
         <>
             {updated ? <ViewItems /> :
-                <SafeAreaView
-                    style={styles.root}
-                >
-                    <View style={[styles.container, { backgroundColor: '#e1e4e8' }]}>
-                        <View style={styles.sectionStyle}>
-                            <TextInput
-                                style={styles.inputStyle}
-                                onChangeText={(ItemName) =>
-                                    setItemName(ItemName)
-                                }
-                                defaultValue={ItemName}
-                                underlineColorAndroid="#f000"
-                                placeholder="Enter Item Name e.g Idli/Dosa"
-                                placeholderTextColor="#8b9cb5"
-                                keyboardType="default"
-                                autoCapitalize="sentences"
-                                returnKeyType="next"
-                                blurOnSubmit={false}
-                            // ref={ItemNameref}
-                            />
-                        </View>
-                        <View style={styles.sectionStyle}>
-                            <TextInput
-                                style={styles.inputStyle}
-                                onChangeText={(ItemDesc) =>
-                                    setItemDesc(ItemDesc)
-                                }
-                                defaultValue={ItemDesc}
-                                underlineColorAndroid="#f000"
-                                placeholder="Enter Item Description"
-                                placeholderTextColor="#8b9cb5"
-                                keyboardType="default"
-                                returnKeyType="next"
-                                blurOnSubmit={false}
-                            // ref={ItemDescref}
-                            />
-                        </View>
-                        <View style={styles.sectionStyle}>
-                            <TextInput
-                                style={styles.inputStyle}
-                                onChangeText={(ItemCategory) =>
-                                    setItemCategory(ItemCategory)
-                                }
-                                defaultValue={ItemCategory}
-                                underlineColorAndroid="#f000"
-                                placeholder="Enter Item Category e.g Breakfast,Snacks..."
-                                placeholderTextColor="#8b9cb5"
-                                keyboardType="default"
-                                returnKeyType="next"
-                                blurOnSubmit={false}
-                            // ref={ItemCategoryref}
-                            />
-                        </View>
-                        <View style={styles.sectionStyle}>
-                            <TextInput
-                                style={styles.inputStyle}
-                                onChangeText={(ItemPrice) =>
-                                    setItemPrice(ItemPrice)
-                                }
-                                defaultValue={ItemPrice}
-                                underlineColorAndroid="#f000"
-                                placeholder="Enter Item Price Per Plate"
-                                placeholderTextColor="#8b9cb5"
-                                returnKeyType="next"
-                                keyboardType="number-pad"
-                                onSubmitEditing={Keyboard.dismiss}
-                                blurOnSubmit={false}
-                            // ref={ItemPriceref}
-                            />
-                        </View>
-
-                        <View style={styles.imageContainer}>
-                            {
-                                ItemImage !== '' && <Image
-                                    source={{ uri: ItemImage }}
-                                    style={styles.image}
-                                />
-                            }
-                        </View>
-
-                        <View style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                        }}>
-                            <View style={{ paddingLeft: '28%', paddingTop: '2%' }}>
-                                <Feather name="image" size={30} color="black" onPress={
-                                    showImagePicker
-                                } />
-                            </View>
-                            <View style={{ paddingRight: '0%', paddingTop: '2%' }}>
-                                <Feather name="camera" size={30} color="black" onPress={
-                                    openCamera
-                                } />
-                            </View>
-
-                            <View style={{ paddingRight: '30%', paddingTop: '2%' }}>
-                                <AntDesign name="delete" size={30} color="black" onPress={() => {
-                                    setItemImage('');
-                                }} />
-                            </View>
-
-                        </View>
-
-                        {/* <View style={styles.sectionStyle}>
-                            <TextInput
-                                style={styles.inputStyle}
-                                onChangeText={(ItemImage) =>
-                                    setItemImage(ItemImage)
-                                }
-                                defaultValue={ItemImage}
-                                underlineColorAndroid="#f000"
-                                placeholder="Upload Item Image"
-                                placeholderTextColor="#8b9cb5"
-                                returnKeyType="next"
-                                keyboardType="default"
-                                onSubmitEditing={Keyboard.dismiss}
-                                blurOnSubmit={false}
-                            // ref={ItemImageref}
-                            />
-                        </View> */}
-
-                        {errortext != "" ? (
-                            <Text style={styles.errorTextStyle}>
-                                {" "}
-                                {errortext}{" "}
-                            </Text>
-                        ) : null}
-                        <TouchableOpacity
-                            style={styles.buttonStyle}
-                            activeOpacity={0.5}
-                            onPress={handleSubmitButton}
+                <SafeAreaView style={{ flex: 1 }}>
+                    <View style={{ padding: scale(18), marginTop: verticalScale(20) }}>
+                        <View
+                            style={{
+                                borderWidth: scale(0.5),
+                                borderRadius: scale(5),
+                                // marginTop: verticalScale(10),
+                            }}
                         >
-                            <Text style={styles.buttonTextStyle}>
-                                Update Item
+                            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item name</Text>
+                            <TextInput
+                                style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                                placeholder="Enter item name e.g Idli/Dosa"
+                                defaultValue={ItemName}
+                                keyboardType="default"
+                                cursorColor='#778899'
+                                onChangeText={(ItemName) => {
+                                    setItemName(ItemName)
+                                }}
+                            />
+                            <View style={{
+                                borderTopWidth: scale(0.5)
+                            }}>
+                                <Text style={{
+                                    marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light'
+                                }}>Item description</Text>
+                                <TextInput
+                                    style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                                    placeholder="Enter item description"
+                                    keyboardType="default"
+                                    defaultValue={ItemDesc}
+                                    cursorColor='#778899'
+                                    onChangeText={(ItemDesc) => {
+                                        setItemDesc(ItemDesc)
+                                    }}
+                                />
+                            </View>
+                        </View>
+
+                        <View
+                            style={{
+                                borderWidth: scale(0.5),
+                                borderRadius: scale(5),
+                                marginTop: verticalScale(10),
+                            }}
+                        >
+                            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item category</Text>
+                            <TextInput
+                                style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                                placeholder="Enter item category e.g Breakfast,Snacks..."
+                                keyboardType="default"
+                                cursorColor='#778899'
+                                defaultValue={ItemCategory}
+                                onChangeText={(ItemCategory) => {
+                                    setItemCategory(ItemCategory)
+                                }}
+                            />
+                        </View>
+
+                        <View
+                            style={{
+                                borderWidth: scale(0.5),
+                                borderRadius: scale(5),
+                                marginTop: verticalScale(10),
+                            }}
+                        >
+                            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>
+                                Item price
                             </Text>
-                        </TouchableOpacity>
+                            <TextInput
+                                style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                                placeholder="Enter item price per plate"
+                                autoCompleteType="tel"
+                                cursorColor='#778899'
+                                keyboardType="phone-pad"
+                                defaultValue={ItemPrice}
+                                textContentType="telephoneNumber"
+                                onChangeText={(ItemPrice) => {
+                                    setItemPrice(ItemPrice)
+                                }}
+                            />
+                        </View>
+
+
+                        <View
+                            style={{
+                                borderWidth: scale(0.5),
+                                borderRadius: scale(5),
+                                marginTop: verticalScale(10),
+                                paddingBottom: scale(2),
+                            }}
+                        >
+                            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item Image</Text>
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                            }}>
+                                {
+                                    ItemImage !== '' && <Image
+                                        source={{ uri: ItemImage }}
+                                        style={styles.image}
+                                    />
+                                }
+                            </View>
+
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-evenly',
+                                marginVertical: verticalScale(5),
+                            }}>
+                                <View
+                                // style={{ paddingLeft: scale(80), paddingTop: verticalScale(5) }}
+                                >
+                                    <Feather name="image" size={scale(25)} color="black" onPress={
+                                        showImagePicker
+                                    } />
+                                    {/* <MaterialIcons name="add-photo-alternate" size={scale(25)} color="black" onPress={
+                                    showImagePicker
+                                } /> */}
+                                </View>
+                                <View
+                                // style={{ paddingRight: scale(10), paddingTop: verticalScale(5) }}
+                                >
+                                    <Feather name="camera" size={scale(25)} color="black" onPress={
+                                        openCamera} />
+                                </View>
+
+                                {ItemImage ? <View
+                                // style={{ paddingRight: scale(90), paddingTop: verticalScale(5)  }}
+                                >
+                                    <AntDesign name="delete" size={scale(25)} color="black" onPress={() => {
+                                        setItemImage('');
+                                    }} />
+                                </View> : <></>}
+
+                            </View>
+                        </View>
+                        {message ? (
+                            <Text
+                                style={{
+                                    color: 'red',
+                                    fontSize: normalize(16),
+                                    textAlign: 'center',
+                                    marginTop: scale(20),
+                                }}>
+                                {message}
+                            </Text>
+                        ) : undefined}
+                        <View style={{
+                            marginTop: verticalScale(20),
+                        }}>
+                            <Pressable style={styles.button} onPress={handleSubmitButton}>
+                                <Text style={styles.text}>Update Item</Text>
+                            </Pressable>
+                        </View>
                     </View>
                 </SafeAreaView>
             }
@@ -272,105 +298,29 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
 }
 
 const styles = StyleSheet.create({
-    root: {
-        flex: 1,
-        backgroundColor: '#fff',
+    button: {
         alignItems: 'center',
         justifyContent: 'center',
+        paddingVertical: verticalScale(8),
+        paddingHorizontal: scale(32),
+        borderRadius: scale(4),
+        elevation: scale(10),
+        backgroundColor: 'black',
     },
-    container: {
-        height: '80%',
-        width: '90%',
-        borderRadius: 16,
-        padding: 16,
-        borderWidth: 8,
-        borderColor: 'rgba(0,0,0,0.2)',
-    },
-    item: {
-        borderWidth: 4,
-        borderColor: 'rgba(0,0,0,0.2)',
-        height: 48,
-        width: 48,
-        borderRadius: 8,
-    },
-    title: {
-        fontSize: 16,
-        color: '#000',
-    },
-    container_text: {
-        flex: 1,
-        flexDirection: 'column',
-        marginLeft: 12,
-        justifyContent: 'center',
-    },
-    container_price: {
-        flex: 1,
-        flexDirection: 'column',
-        marginLeft: 12,
-        justifyContent: 'center',
-    },
-    container_update: {
-        flex: 1,
-        flexDirection: 'column',
-        marginLeft: 12,
-        justifyContent: 'center',
-    },
-    description: {
-        fontSize: 11,
-        fontStyle: 'italic',
-    },
-    photo: {
-        height: 50,
-        width: 50,
-    },
-    sectionStyle: {
-        flexDirection: "row",
-        height: 40,
-        marginTop: 20,
-        marginLeft: 35,
-        marginRight: 35,
-        margin: 10,
-    },
-    buttonStyle: {
-        backgroundColor: "#7DE24E",
-        borderWidth: 0,
-        color: "#FFFFFF",
-        borderColor: "#7DE24E",
-        height: 40,
-        alignItems: "center",
-        borderRadius: 30,
-        marginLeft: 35,
-        marginRight: 35,
-        marginTop: 20,
-        marginBottom: 20,
-    },
-    buttonTextStyle: {
-        color: "#FFFFFF",
-        paddingVertical: 10,
-        fontSize: 16,
-    },
-    inputStyle: {
-        flex: 1,
-        color: "black",
-        paddingLeft: 15,
-        paddingRight: 15,
-        borderWidth: 1,
-        borderRadius: 3,
-        borderColor: "black",
-    },
-    errorTextStyle: {
-        color: "red",
-        textAlign: "center",
-        fontSize: 14,
-    },
-    imageContainer: {
-        paddingLeft: '24%'
+    text: {
+        fontSize: normalize(16),
+        lineHeight: verticalScale(20),
+        fontWeight: 'bold',
+        letterSpacing: scale(0.5),
+        color: 'white',
     },
     image: {
-        width: 180,
-        height: 180,
+        marginTop: verticalScale(5),
+        marginBottom: verticalScale(5),
+        width: scale(150),
+        height: verticalScale(120),
         resizeMode: 'cover'
-    }
+    },
 });
 
-export default UpdateItem
+export default UpdateItem;

@@ -21,6 +21,8 @@ import { ref, set, update, onValue } from "firebase/database";
 
 import { scale, moderateScale, verticalScale } from './Dimensions';
 
+import { normalize } from "./FontResize";
+
 
 const PaymentGateway = ({ navigation, route, setData, totalamount, AllConfirmedItems, OrderId, displayCurrentAddress, setDisplayCurrentAddress, longitude, setlongitude, latitude, setlatitude }) => {
 
@@ -126,7 +128,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
     },
     text: {
-        fontSize: moderateScale(16),
+        fontSize: normalize(14),
         lineHeight: scale(18),
         fontWeight: 'bold',
         letterSpacing: scale(0.75),

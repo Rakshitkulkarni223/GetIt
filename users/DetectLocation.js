@@ -7,6 +7,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { scale, moderateScale, verticalScale } from '../Dimensions';
 
+import { normalize } from '../FontResize';
+
 const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
     return (
         <Modal visible={visible} transparent={true} style={{
@@ -31,7 +33,7 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
                 }}>
                 <View>
                     <Text style={{
-                        fontSize: moderateScale(18),
+                        fontSize: normalize(15),
                         fontWeight: 'bold'
                     }}>Add Location Information</Text>
                 </View>
@@ -96,7 +98,7 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
                     }}>
                         <Pressable onPress={toggle}>
                             <Text style={{
-                                fontSize: moderateScale(15),
+                                fontSize: normalize(13),
                                 lineHeight: scale(18),
                                 fontWeight: 'bold',
                                 letterSpacing: scale(1),
@@ -117,7 +119,7 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
                     }}>
                         <Pressable onPress={onSubmit}>
                             <Text style={{
-                                fontSize: moderateScale(15),
+                                fontSize: normalize(13),
                                 lineHeight: scale(18),
                                 fontWeight: 'bold',
                                 letterSpacing: scale(1),
@@ -167,6 +169,8 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
             //     setErrorMsg('Permission to access location was denied');
             //     return;
             // }
+
+            await  Location.requestForegroundPermissionsAsync();
 
             let { coords } = await Location.getCurrentPositionAsync();
 
@@ -269,18 +273,18 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 
-            <View style={{ margin: scale(10),}}>
+            <View style={{ margin: scale(15),}}>
             {isautomatic ?
                 <Text style={{
                    
-                    fontSize: moderateScale(16),
+                    fontSize: normalize(16),
                     lineHeight: scale(18),
                     // fontWeight: 'bold',
                     letterSpacing: scale(0.5),
                 }}>Current Address</Text>
                 : <Text style={{
                     // margin: scale(10),
-                    fontSize: moderateScale(16),
+                    fontSize: normalize(15),
                     lineHeight: scale(18),
                     // fontWeight: 'bold',
                     letterSpacing: scale(0.5),
@@ -289,8 +293,8 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
             </View>
 
             <Text style={{
-                margin: scale(10),
-                fontSize: moderateScale(16),
+                margin: scale(15),
+                fontSize: normalize(16),
                 lineHeight: scale(18),
                 fontWeight: 'bold',
                 letterSpacing: scale(0.5),
@@ -377,7 +381,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
     },
     text: {
-        fontSize: moderateScale(16),
+        fontSize: normalize(15),
         lineHeight: scale(18),
         fontWeight: 'bold',
         letterSpacing: scale(0.5),
