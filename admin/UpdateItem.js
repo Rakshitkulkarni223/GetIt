@@ -5,6 +5,7 @@ import {
     TextInput,
     View,
     Text,
+    Modal,
     Pressable,
     KeyboardAvoidingView,
     Keyboard,
@@ -25,6 +26,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { app, auth, db, database } from "../Firebase";
 import { ref, set, update } from "firebase/database";
 import ViewItems from "./ViewItems";
+import ActivityIndicatorElement from "../ActivityIndicatorElement";
 
 const SaveItem = async (ItemCategory, ItemName, ItemPrice, ItemDesc, ItemImage, updated) => {
 
@@ -67,13 +69,18 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
     const [ItemPrice, setItemPrice] = useState(price);
     const [ItemImage, setItemImage] = useState(image_url);
     const [ItemId, setItemId] = useState(id);
-    
+
     const [message, showMessage] = useState();
+
+
+    const [loading, setloading] = useState(false);
 
     const [updated, setupdated] = useState(false);
 
     // This function is triggered when the "Select an image" button pressed
     const showImagePicker = async () => {
+
+        setloading(true)
         // Ask the user for the permission to access the media library 
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -87,10 +94,14 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
         if (!result['canceled']) {
             setItemImage(result['assets'][0]["uri"]);
         }
+
+        setloading(false)
     }
 
     // This function is triggered when the "Open camera" button pressed
     const openCamera = async () => {
+
+        setloading(true)
         // Ask the user for the permission to access the camera
         const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -104,12 +115,16 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
         if (!result['canceled']) {
             setItemImage(result['assets'][0]["uri"]);
         }
+
+        setloading(false)
     }
 
 
 
     const handleSubmitButton = async () => {
+
         showMessage("");
+        setloading(true);
 
         if (!ItemName) return alert("Please enter Item Name.");
         if (!ItemPrice) return alert("Please enter Item Price per Plate.");
@@ -117,17 +132,18 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
         if (!ItemImage) return alert("Please upload Item Image.");
 
         try {
-
             ItemCategory.trim() !== category ?
                 set(ref(database, `admin/items/${category}/` + ItemId), {
 
                 }) : false
 
             await SaveItem(ItemCategory, ItemName, ItemPrice, ItemDesc, ItemImage, ItemCategory.trim() === category)
-            Alert.alert("Item Updated",`${ItemName} ${ItemDesc} - ${ItemPrice} rs has been updated to ${ItemCategory} Category Successfully.`);
+            Alert.alert("Item Updated", `${ItemName} ${ItemDesc} - ${ItemPrice} rs has been updated to ${ItemCategory} Category Successfully.`);
             setupdated(true);
+            setloading(false);
         }
         catch (e) {
+            setloading(false)
             showMessage(e);
         }
     };
@@ -135,174 +151,176 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
 
     return (
         <>
-            {updated ? <ViewItems /> :
-                <SafeAreaView style={{ flex: 1, backgroundColor: '#3B3636'}}>
-                    <View style={{ padding: scale(18), marginTop: verticalScale(20) }}>
-                        <View
-                            style={{
-                                borderWidth: scale(0.5),
-                                borderRadius: scale(5),
-                                borderColor: 'white'
-                                // marginTop: verticalScale(10),
-                            }}
-                        >
-                            <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item name</Text>
-                            <TextInput
-                                style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
-                                placeholder="Enter item name e.g Idli/Dosa"
-                                defaultValue={ItemName}
-                                placeholderTextColor='white'
-                                keyboardType="default"
-                                cursorColor='#778899'
-                                onChangeText={(ItemName) => {
-                                    setItemName(ItemName)
+             <ActivityIndicatorElement loading={loading}/>
+            {
+                updated ? <ViewItems /> :
+                    <SafeAreaView style={{ flex: 1, backgroundColor: '#3B3636' }}>
+                        <View style={{ padding: scale(18), marginTop: verticalScale(20) }}>
+                            <View
+                                style={{
+                                    borderWidth: scale(0.5),
+                                    borderRadius: scale(5),
+                                    borderColor: 'white'
+                                    // marginTop: verticalScale(10),
                                 }}
-                            />
-                            <View style={{
-                                borderTopWidth: scale(0.5),
-                                borderColor: 'white'
-                                
-                            }}>
-                                <Text style={{
-                                    marginLeft: scale(10),  color: '#1FD4A5',marginTop: verticalScale(5), fontFamily: 'sans-serif-light'
-                                }}>Item description</Text>
+                            >
+                                <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item name</Text>
                                 <TextInput
                                     style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
-                                    placeholder="Enter item description"
+                                    placeholder="Enter item name e.g Idli/Dosa"
+                                    defaultValue={ItemName}
+                                    placeholderTextColor='white'
+                                    keyboardType="default"
+                                    cursorColor='#778899'
+                                    onChangeText={(ItemName) => {
+                                        setItemName(ItemName)
+                                    }}
+                                />
+                                <View style={{
+                                    borderTopWidth: scale(0.5),
+                                    borderColor: 'white'
+
+                                }}>
+                                    <Text style={{
+                                        marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light'
+                                    }}>Item description</Text>
+                                    <TextInput
+                                        style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                                        placeholder="Enter item description"
+                                        keyboardType="default"
+                                        placeholderTextColor='white'
+                                        defaultValue={ItemDesc}
+                                        cursorColor='#778899'
+                                        onChangeText={(ItemDesc) => {
+                                            setItemDesc(ItemDesc)
+                                        }}
+                                    />
+                                </View>
+                            </View>
+
+                            <View
+                                style={{
+                                    borderWidth: scale(0.5),
+                                    borderRadius: scale(5),
+                                    marginTop: verticalScale(10),
+                                    borderColor: 'white'
+                                }}
+                            >
+                                <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item category</Text>
+                                <TextInput
+                                    style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                                    placeholder="Enter item category e.g Breakfast,Snacks..."
                                     keyboardType="default"
                                     placeholderTextColor='white'
-                                    defaultValue={ItemDesc}
                                     cursorColor='#778899'
-                                    onChangeText={(ItemDesc) => {
-                                        setItemDesc(ItemDesc)
+                                    defaultValue={ItemCategory}
+                                    onChangeText={(ItemCategory) => {
+                                        setItemCategory(ItemCategory)
                                     }}
                                 />
                             </View>
-                        </View>
 
-                        <View
-                            style={{
-                                borderWidth: scale(0.5),
-                                borderRadius: scale(5),
-                                marginTop: verticalScale(10),
-                                borderColor: 'white'
-                            }}
-                        >
-                            <Text style={{ marginLeft: scale(10),  color: '#1FD4A5',marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item category</Text>
-                            <TextInput
-                                style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
-                                placeholder="Enter item category e.g Breakfast,Snacks..."
-                                keyboardType="default"
-                                placeholderTextColor='white'
-                                cursorColor='#778899'
-                                defaultValue={ItemCategory}
-                                onChangeText={(ItemCategory) => {
-                                    setItemCategory(ItemCategory)
+                            <View
+                                style={{
+                                    borderWidth: scale(0.5),
+                                    borderRadius: scale(5),
+                                    marginTop: verticalScale(10),
+                                    borderColor: 'white'
                                 }}
-                            />
-                        </View>
-
-                        <View
-                            style={{
-                                borderWidth: scale(0.5),
-                                borderRadius: scale(5),
-                                marginTop: verticalScale(10),
-                                borderColor: 'white'
-                            }}
-                        >
-                            <Text style={{ marginLeft: scale(10),  color: '#1FD4A5',marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>
-                                Item price
-                            </Text>
-                            <TextInput
-                                style={{ marginLeft: scale(10),color: 'white',  marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
-                                placeholder="Enter item price per plate"
-                                autoCompleteType="tel"
-                                cursorColor='#778899'
-                                placeholderTextColor='white'
-                                keyboardType="phone-pad"
-                                defaultValue={ItemPrice}
-                                textContentType="telephoneNumber"
-                                onChangeText={(ItemPrice) => {
-                                    setItemPrice(ItemPrice)
-                                }}
-                            />
-                        </View>
-
-
-                        <View
-                            style={{
-                                borderWidth: scale(0.5),
-                                borderRadius: scale(5),
-                                marginTop: verticalScale(10),
-                                paddingBottom: scale(2),
-                                borderColor: 'white'
-                            }}
-                        >
-                            <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item Image</Text>
-                            <View style={{
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                            }}>
-                                {
-                                    ItemImage !== '' && <Image
-                                        source={{ uri: ItemImage }}
-                                        style={styles.image}
-                                    />
-                                }
+                            >
+                                <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>
+                                    Item price
+                                </Text>
+                                <TextInput
+                                    style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                                    placeholder="Enter item price per plate"
+                                    autoCompleteType="tel"
+                                    cursorColor='#778899'
+                                    placeholderTextColor='white'
+                                    keyboardType="phone-pad"
+                                    defaultValue={ItemPrice}
+                                    textContentType="telephoneNumber"
+                                    onChangeText={(ItemPrice) => {
+                                        setItemPrice(ItemPrice)
+                                    }}
+                                />
                             </View>
 
-                            <View style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-evenly',
-                                marginVertical: verticalScale(5),
-                            }}>
-                                <View
-                                // style={{ paddingLeft: scale(80), paddingTop: verticalScale(5) }}
-                                >
-                                    <Feather name="image" size={scale(25)} color="white" onPress={
-                                        showImagePicker
-                                    } />
-                                    {/* <MaterialIcons name="add-photo-alternate" size={scale(25)} color="black" onPress={
+
+                            <View
+                                style={{
+                                    borderWidth: scale(0.5),
+                                    borderRadius: scale(5),
+                                    marginTop: verticalScale(10),
+                                    paddingBottom: scale(2),
+                                    borderColor: 'white'
+                                }}
+                            >
+                                <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item Image</Text>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                }}>
+                                    {
+                                        ItemImage !== '' && <Image
+                                            source={{ uri: ItemImage }}
+                                            style={styles.image}
+                                        />
+                                    }
+                                </View>
+
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-evenly',
+                                    marginVertical: verticalScale(5),
+                                }}>
+                                    <View
+                                    // style={{ paddingLeft: scale(80), paddingTop: verticalScale(5) }}
+                                    >
+                                        <Feather name="image" size={scale(25)} color="white" onPress={
+                                            showImagePicker
+                                        } />
+                                        {/* <MaterialIcons name="add-photo-alternate" size={scale(25)} color="black" onPress={
                                     showImagePicker
                                 } /> */}
-                                </View>
-                                <View
-                                // style={{ paddingRight: scale(10), paddingTop: verticalScale(5) }}
-                                >
-                                    <Feather name="camera" size={scale(25)} color="white" onPress={
-                                        openCamera} />
-                                </View>
+                                    </View>
+                                    <View
+                                    // style={{ paddingRight: scale(10), paddingTop: verticalScale(5) }}
+                                    >
+                                        <Feather name="camera" size={scale(25)} color="white" onPress={
+                                            openCamera} />
+                                    </View>
 
-                                {ItemImage ? <View
-                                // style={{ paddingRight: scale(90), paddingTop: verticalScale(5)  }}
-                                >
-                                    <AntDesign name="delete" size={scale(25)} color="red" onPress={() => {
-                                        setItemImage('');
-                                    }} />
-                                </View> : <></>}
+                                    {ItemImage ? <View
+                                    // style={{ paddingRight: scale(90), paddingTop: verticalScale(5)  }}
+                                    >
+                                        <AntDesign name="delete" size={scale(25)} color="red" onPress={() => {
+                                            setItemImage('');
+                                        }} />
+                                    </View> : <></>}
 
+                                </View>
+                            </View>
+                            {message ? (
+                                <Text
+                                    style={{
+                                        color: 'red',
+                                        fontSize: normalize(16),
+                                        textAlign: 'center',
+                                        marginTop: scale(20),
+                                    }}>
+                                    {message}
+                                </Text>
+                            ) : undefined}
+                            <View style={{
+                                marginTop: verticalScale(20),
+                            }}>
+                                <Pressable style={styles.button} onPress={handleSubmitButton}>
+                                    <Text style={styles.text}>Update Item</Text>
+                                </Pressable>
                             </View>
                         </View>
-                        {message ? (
-                            <Text
-                                style={{
-                                    color: 'red',
-                                    fontSize: normalize(16),
-                                    textAlign: 'center',
-                                    marginTop: scale(20),
-                                }}>
-                                {message}
-                            </Text>
-                        ) : undefined}
-                        <View style={{
-                            marginTop: verticalScale(20),
-                        }}>
-                            <Pressable style={styles.button} onPress={handleSubmitButton}>
-                                <Text style={styles.text}>Update Item</Text>
-                            </Pressable>
-                        </View>
-                    </View>
-                </SafeAreaView>
+                    </SafeAreaView>
             }
         </>
     )

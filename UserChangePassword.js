@@ -13,6 +13,7 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
     Pressable,
+    Alert,
 } from "react-native";
 
 import { updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth"
@@ -24,6 +25,7 @@ import { ref, set, update, onValue } from "firebase/database";
 import { scale, moderateScale, verticalScale } from './Dimensions';
 
 import { normalize } from "./FontResize";
+import ActivityIndicatorElement from "./ActivityIndicatorElement";
 
 const UserChangePassword = ({ navigation }) => {
     const [NewPassword, setNewPassword] = useState("");
@@ -34,7 +36,12 @@ const UserChangePassword = ({ navigation }) => {
 
     const [email, setemail] = useState('');
 
+    const [loading, setloading] = useState(false);
+
     useEffect(() => {
+
+        setloading(true)
+
         onValue(ref(database, `users/${auth.currentUser.phoneNumber}/`), (snapshot) => {
             snapshot.forEach((child) => {
                 if (child.key === 'password') {
@@ -45,10 +52,16 @@ const UserChangePassword = ({ navigation }) => {
                 }
             })
         })
+
+        setloading(false)
+
     }, [])
 
     const handleSubmitPress = async () => {
+        setloading(true)
+
         showMessage("");
+
         if (!NewPassword) {
             alert("Please fill Email");
             return;
@@ -64,14 +77,16 @@ const UserChangePassword = ({ navigation }) => {
         }
 
         try {
-            alert("Password Updated!");
+            Alert.alert("Password Updated!");
             update(ref(database, `users/${auth.currentUser.phoneNumber}/`), {
                 password: NewPassword
             })
+            setloading(false)
             navigation.navigate('User Profile')
         }
         catch (error) {
-            alert(error)
+            setloading(false)
+            Alert.alert(error)
             showMessage("Password not updated.")
         }
 
@@ -97,6 +112,7 @@ const UserChangePassword = ({ navigation }) => {
     return (
 
         <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
+            <ActivityIndicatorElement loading={loading} />
             <View style={{ padding: scale(18), marginTop: verticalScale(20) }}>
                 <View
                     style={{

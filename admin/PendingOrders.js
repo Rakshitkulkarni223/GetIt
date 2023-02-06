@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image } from 'react-native';
+import { Modal,SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image } from 'react-native';
 import { app, auth, db, database } from "../Firebase";
 import { ref, onValue, get, child } from "firebase/database";
 import ItemsListViewPendingOrders from '../ListView/ItemListViewPendingOrders';
+import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
 const PendingOrders = () => {
@@ -16,8 +17,12 @@ const PendingOrders = () => {
 
    const [itemsList,setitemsList] = useState(ref(database, 'users/confirmedOrders/'));
 
+   const [loading, setloading] = useState(false);
+
 
    useEffect(() => {
+
+      setloading(true);
 
       const getitems = onValue(itemsList, (snapshot) => {
          var items = [];
@@ -26,7 +31,9 @@ const PendingOrders = () => {
 
          var flag = true;
          var showuser = true;
+
          snapshot.forEach((child)=>{
+
             items = [];
             showuser = true;
             var Location = '';
@@ -86,6 +93,7 @@ const PendingOrders = () => {
          // items.push({ "ItemAddedDate": "Sat Jan 14 21:48:32 2023", "ItemCategory": "Breakfast", "ItemDesc": "Masala dosa", "ItemImage": "Test", "ItemName": "Dosa", "ItemPrice": "50", "ItemQuantity": 1, "displayCategory": true, "key": "BreakfastDosaMasaladosa" }, { "ItemAddedDate": "Sat Jan 14 21:48:34 2023", "ItemCategory": "Breakfast", "ItemDesc": "2 pieces", "ItemImage": "https://images.healthshots.com/healthshots/hi/uploads/2021/11/29201838/Idli-vs-vada-1-1600x900.jpg", "ItemName": "Idly", "ItemPrice": "30", "ItemQuantity": 2, "displayCategory": false, "key": "BreakfastIdly2pieces" }, { "ItemAddedDate": "Sat Jan 14 21:48:35 2023", "ItemCategory": "Breakfast", "ItemDesc": "2 pieces", "ItemImage": "Test", "ItemName": "Vada", "ItemPrice": "30", "ItemQuantity": 2, "displayCategory": false, "key": "BreakfastVada2pieces" }, { "ItemAddedDate": "Sat Jan 14 21:48:36 2023", "ItemCategory": "Cold Beverages", "ItemDesc": "50 ml", "ItemImage": "https://images.healthshots.com/healthshots/hi/uploads/2021/11/29201838/Idli-vs-vada-1-1600x900.jpg", "ItemName": "Frooti", "ItemPrice": "15", "ItemQuantity": 2, "displayCategory": true, "key": "ColdBeveragesFrooti50ml" }, { "ItemAddedDate": "Sat Jan 14 21:48:37 2023", "ItemCategory": "Ice cream", "ItemDesc": "Butter scotch", "ItemImage": "Test", "ItemName": "Ice cream", "ItemPrice": "30", "ItemQuantity": 1, "displayCategory": true, "key": "IcecreamIcecreamButterscotch" }, { "ItemAddedDate": "Sat Jan 14 21:48:38 2023", "ItemCategory": "Snacks", "ItemDesc": "2 pieces", "ItemImage": "Test", "ItemName": "Samosa", "ItemPrice": "30", "ItemQuantity": 2, "displayCategory": true, "key": "SnacksSamosa2pieces" }, { "ItemAddedDate": "Sat Jan 14 21:48:39 2023", "ItemCategory": "Test", "ItemDesc": "Test", "ItemImage": "Test", "ItemName": "Test", "ItemPrice": "30", "ItemQuantity": 2, "displayCategory": true, "key": "TestTestTest" })
          setAllItems(items);
          setAllOrders(orders);
+         setloading(false);
       });
 
       return () =>{
@@ -95,9 +103,11 @@ const PendingOrders = () => {
    }, [])
 
    return (
-      // <></>
-      <ItemsListViewPendingOrders AllItems={AllItems} AllOrders={AllOrders}
-      ></ItemsListViewPendingOrders>
+      <>
+       <ActivityIndicatorElement loading={loading}/>
+      <ItemsListViewPendingOrders AllItems={AllItems} AllOrders={AllOrders} loading={loading} setloading={setloading}/>
+      </>
+
    );
 }
 

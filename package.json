@@ -26,6 +26,7 @@
     "expo-location": "^15.0.1",
     "expo-media-library": "^15.0.0",
     "expo-permissions": "^14.0.0",
+    "expo-splash-screen": "~0.17.5",
     "expo-status-bar": "~1.4.2",
     "firebase": "^9.15.0",
     "react": "18.1.0",
@@ -40,7 +41,7 @@
     "react-native-super-grid": "^5.0.0",
     "react-native-svg": "13.4.0",
     "react-native-uuid": "^2.0.1",
-    "react-native-webview": "^11.26.1",
+    "react-native-webview": "11.23.1",
     "react-router-native": "^6.5.0"
   },
   "devDependencies": {

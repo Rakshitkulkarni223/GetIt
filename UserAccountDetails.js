@@ -4,13 +4,17 @@ import { SafeAreaView, View, Text } from "react-native";
 import { FontAwesome5,MaterialIcons, MaterialCommunityIcons  } from '@expo/vector-icons';
 
 import { scale, moderateScale, verticalScale} from './Dimensions';
+import ActivityIndicatorElement from "./ActivityIndicatorElement";
 
 const UserAccountDetails = ({ navigation }) => {
+
+    const [loading, setloading] = useState(false);
 
     return (
             <SafeAreaView
                 style={{ flex: 1, backgroundColor: '#3B3636' }}
             >
+                 <ActivityIndicatorElement loading={loading} />
                 <View
                     style={{
                         margin: scale(25),

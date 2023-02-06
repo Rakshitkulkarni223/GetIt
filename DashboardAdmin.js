@@ -16,7 +16,7 @@ import {
 import { onAuthStateChanged, signOut } from "firebase/auth";
 
 import { auth } from './Firebase';
-import { AntDesign, MaterialCommunityIcons,Ionicons,MaterialIcons, Octicons  } from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons, Octicons } from '@expo/vector-icons';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -26,6 +26,8 @@ import AddItem from "./admin/AddItem";
 import ViewItems from "./admin/ViewItems"
 import PendingOrders from "./admin/PendingOrders";
 import ConfirmedOrders from "./admin/ConfiremdOrders";
+import ActivityIndicatorElement from "./ActivityIndicatorElement";
+import { Alert } from "react-native";
 
 
 
@@ -46,9 +48,8 @@ function MyTabs() {
                 component={AddItem}
                 options={{
                     tabBarLabel: 'Add Item',
-                    tabBarIcon: ({ color , size }) => (  
-                        // <Ionicons name="add-circle-sharp" color={color} size={size} />
-                        <Octicons name="diff-added" color={color} size={size-3} />
+                    tabBarIcon: ({ color, size }) => (
+                        <Octicons name="diff-added" color={color} size={size - 3} />
                     ),
                 }}
             />
@@ -94,35 +95,45 @@ const DashboardAdmin = ({ navigation, route }) => {
 
     const [textbutton, setTextButton] = useState("");
 
+    const [loading, setloading] = useState(false);
+
     useEffect(() => {
 
+        setloading(true)
+
         if (textbutton === "Logout") {
-            const email = auth.currentUser.email;
+            const phoneNumber = auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3);
             navigation.setOptions({
                 headerRight: () => (
                     <AntDesign name="logout" size={24} color="black" onPress={() => signOut(auth).then(() => {
-                        alert(`${email}, you have successfully logged out!`);
+                        Alert.alert(`${phoneNumber}`, 'you have successfully logged out!');
                         navigation.replace("Home")
                     }).catch((error) => {
-                        alert(`${email}, Logout Unsuccessfull!`);
+                        Alert.alert(`${phoneNumber}`, 'Logout Unsuccessfull!');
                     })} />
                 ),
             })
+
+            setloading(false)
         }
     }, [user])
 
 
     useEffect(() => {
 
+        setloading(true)
+
         const unsubscribe = onAuthStateChanged(auth, (validuser) => {
             if (validuser) {
                 const uid = validuser.uid;
                 setTextButton("Logout");
-                setUser({ loggedIn: true, email: validuser.email })
+                setUser({ loggedIn: true, phoneNumber: validuser.phoneNumber })
             } else {
                 setTextButton("Login");
                 setUser({ loggedIn: false })
             }
+
+            setloading(false)
         });
         return () => {
             unsubscribe();
@@ -131,9 +142,10 @@ const DashboardAdmin = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={styles.mainBody}>
-                <NavigationContainer independent={true}>
-                    <MyTabs />
-                </NavigationContainer>
+            <ActivityIndicatorElement loading={loading} />
+            <NavigationContainer independent={true}>
+                <MyTabs />
+            </NavigationContainer>
         </SafeAreaView>
     );
 };

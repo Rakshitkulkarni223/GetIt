@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createRef } from 'react';
-import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert, TextInput, Keyboard } from 'react-native';
+import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert, TextInput, Keyboard, ActivityIndicator, Modal } from 'react-native';
 import { AntDesign, EvilIcons, Ionicons } from '@expo/vector-icons';
 import { app, auth, db, database } from "../Firebase";
 import { ref, set, update } from "firebase/database";
@@ -7,6 +7,7 @@ import { ref, set, update } from "firebase/database";
 import { scale, moderateScale, verticalScale } from '../Dimensions';
 
 import { normalize } from '../FontResize';
+import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 const Item = ({ index, setItemId, setItemCategory, showfooter, handleIncrease, qtyhandlervisible, handleDecrease, setItemName, setItemImage, setItemDesc, setItemPrice, id, ItemQuantity, title, image_url, price, description, category, displaycategory }) => (
     <>{displaycategory ? <Text style={{
@@ -184,7 +185,7 @@ const Item = ({ index, setItemId, setItemCategory, showfooter, handleIncrease, q
     </>
 );
 
-const renderHeader = (query, DATA, setData, setQuery,searchRef) => {
+const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => {
     return (
         <View
             style={{
@@ -202,15 +203,17 @@ const renderHeader = (query, DATA, setData, setQuery,searchRef) => {
             }}
         >
             <View>
-                <Ionicons  name="search" size={scale(16)} color="black" />
+                <Ionicons name="search" size={scale(16)} color="black" />
             </View>
             <View>
                 <TextInput
                     style={{
-                        backgroundColor: '#fff',
+                        // flex: 1,
+                        // backgroundColor: '#fff',
                         paddingHorizontal: scale(10),
-                        // marginLeft: scale(10),
-                        // marginBottom: verticalScale(5),
+                        marginRight: scale(40),
+                        // // marginLeft: scale(10),
+                        // // marginBottom: verticalScale(5),
                         fontSize: normalize(12),
                         // fontFamily: 'sans-serif-light'
                     }}
@@ -221,7 +224,7 @@ const renderHeader = (query, DATA, setData, setQuery,searchRef) => {
                     returnKeyType="next"
                     cursorColor='#778899'
                     clearButtonMode="always"
-                    onChangeText={queryText => handleSearch(queryText, DATA, setData, setQuery)}
+                    onChangeText={queryText => handleSearch(queryText, DATA, setData, setQuery, setloading)}
                     placeholder="Search Items"
                 />
             </View>
@@ -230,25 +233,32 @@ const renderHeader = (query, DATA, setData, setQuery,searchRef) => {
                     marginLeft: scale(300),
                     position: 'absolute'
                 }}>
-                    <Ionicons  name="close" size={scale(18)} color="black" 
-                    onPress={()=>{
-                        setQuery('');
-                        setData(DATA)
-                        searchRef.current.clear();
-                    }}/>
+                    <Ionicons name="close" size={scale(18)} color="black"
+                        onPress={() => {
+                            setloading(true)
+                            setQuery('');
+                            setData(DATA)
+                            if (searchRef && searchRef.current) {
+                                searchRef.current.clear()
+                            }
+                            setloading(false)
+                        }} />
                 </View>
                 : <></>}
         </View>
     );
 }
 
-const handleSearch = (text, DATA, setData, setQuery) => {
+const handleSearch = (text, DATA, setData, setQuery, setloading) => {
+
+    setloading(true)
     const formattedQuery = text.toLowerCase();
     const filteredData = DATA.filter((items) => {
         return contains(items, formattedQuery);
     });
     setData(filteredData);
     setQuery(text);
+    setloading(false)
 };
 
 const contains = (items, query) => {
@@ -262,7 +272,7 @@ const contains = (items, query) => {
 };
 
 
-const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter, totalamount, settotalamount }) => {
+const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter, totalamount, settotalamount, loading, setloading }) => {
 
     const [ItemName, setItemName] = useState("");
     const [ItemDesc, setItemDesc] = useState("");
@@ -277,10 +287,20 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
 
     const searchRef = createRef();
 
+
     const [data, setData] = useState(DATA);
-    useEffect(() => { setData(DATA) }, [DATA])
+    useEffect(() => {
+        setQuery('');
+        if (searchRef && searchRef.current) {
+            searchRef.current.clear()
+        }
+        setData(DATA)
+    }, [DATA])
 
     const handleIncrease = (index) => {
+
+        setloading(true)
+
         const temp = data;
         temp[index].ItemQuantity = temp[index].ItemQuantity + 1;
         var id = temp[index].key;
@@ -307,9 +327,13 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
         });
         setData(temp);
         setRefresh(Math.random()); // <- Add if your view not Rerender
+
+        setloading(false)
     };
 
     const handleDecrease = (index) => {
+
+        setloading(true)
 
         const temp = data;
         temp[index].ItemQuantity = temp[index].ItemQuantity - 1;
@@ -341,6 +365,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
         });
         setData(temp);
         setRefresh(Math.random()); // <- Add if your view not Rerender
+        setloading(false)
     };
 
     const renderItem = ({ item, index }) => (
@@ -369,6 +394,8 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
 
     const checkcart = () => {
 
+        setloading(true);
+
         searchRef.current.clear();
         setQuery('');
         setData(DATA);
@@ -379,99 +406,156 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                     text: 'OK',
                 },
             ])
+            setloading(false)
         }
         else {
-            // Alert.alert('Total Amount', `${totalamount} Rs`, [
-            //     {
-            //         text: 'OK',
-            //     },
-            // ])
             navigation.navigate("Confirm Order", { OrderId: OrderId })
         }
     }
 
-   
-
-
-
-
 
     return (
-        <SafeAreaView style={{
-            flex: 1,
-            backgroundColor: '#3B3636'
-            // backgroundColor: ''
-        }}>
+        <>
+            <ActivityIndicatorElement loading={loading} />
 
-            <FlatList
-                data={data}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => String(index)}
-                ListHeaderComponent={renderHeader(query,DATA, setData, setQuery,searchRef)}
-            />
-            {showfooter ? <View style={{
-                justifyContent: 'space-between',
-                flexDirection: 'row',
-                backgroundColor: 'white',
-                height: verticalScale(35),
+            <SafeAreaView style={{
+                flex: 1,
+                backgroundColor: '#3B3636'
+                // backgroundColor: ''
             }}>
-                <View
-                    style={{
-                        justifyContent: 'center',
-                        // width: scale(200),
-                        borderColor: 'black',
-                        // backgroundColor: 'white',
-                    }}
-                ><Text style={{
-                    fontSize: normalize(15),
-                    paddingLeft: scale(8),
-                    color: 'black',
-                    fontWeight: '600'
-                }} >Total Amount : {totalamount}/-</Text></View>
+                {
+                    DATA.length !== 0 ?
+                        <SafeAreaView style={{
+                            flex: 1,
+                            backgroundColor: '#3B3636'
+                            // backgroundColor: ''
+                        }}>
+                            <FlatList
+                                data={data}
+                                renderItem={renderItem}
+                                ListEmptyComponent={
+                                    <View style={{
+                                        flex: 1,
+                                        flexDirection: 'column',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        marginHorizontal: scale(15),
+                                    }}>
+                                        <Text style={{
+                                            // padding: scale(34),
+                                            fontFamily: 'sans-serif-thin',
+                                            // fontWeight: '700',
+                                            letterSpacing: scale(0.5),
+                                            color: 'white',
+                                            marginTop: verticalScale(5),
 
-                <View
-                    style={{
-                        justifyContent: 'center',
-                        paddingLeft: scale(28),
-                        paddingRight: scale(28),
-                        borderLeftWidth: scale(1),
-                        borderBottomWidth: scale(1),
-                        borderRightWidth: scale(1),
-                        borderColor: 'black',
-                        backgroundColor: "#fa8072",
-                        borderRadius: scale(5),
-                    }}
-                ><Text style={{
-                    textAlign: 'center',
-                    fontSize: normalize(18),
-                    color: 'white',
-                    fontWeight: '600'
-                }} onPress={checkcart}>Order Now</Text></View>
+                                        }}>
+                                            <Text> No results for</Text>
+                                            <Text style={{ fontWeight: "bold" }}> {query}</Text>
+                                        </Text>
 
-            </View> : <></>}
+                                    </View>
+                                }
+                                keyExtractor={(item, index) => String(index)}
+                                ListHeaderComponent={renderHeader(query, DATA, setData, setQuery, searchRef, setloading)}
+                            />
 
 
-            {!showfooter ? <View style={{
-                justifyContent: 'center',
-                flexDirection: 'row',
-                backgroundColor: 'white',
-                height: verticalScale(35),
-            }}>
-                <View
-                    style={{
-                        justifyContent: 'center',
-                        // width: scale(200),
-                        borderColor: 'black',
-                        // backgroundColor: 'white',
-                    }}
-                ><Text style={{
-                    fontSize: normalize(18),
-                    paddingLeft: scale(8),
-                    color: 'black',
-                    fontWeight: '600'
-                }} >Total Amount : {totalamount}/-</Text></View>
-            </View> : <></>}
-        </SafeAreaView>
+                            {showfooter ? <View style={{
+                                justifyContent: 'space-between',
+                                flexDirection: 'row',
+                                backgroundColor: 'white',
+                                height: verticalScale(35),
+                            }}>
+                                <View
+                                    style={{
+                                        justifyContent: 'center',
+                                        // width: scale(200),
+                                        borderColor: 'black',
+                                        // backgroundColor: 'white',
+                                    }}
+                                ><Text style={{
+                                    fontSize: normalize(15),
+                                    paddingLeft: scale(8),
+                                    color: 'black',
+                                    fontWeight: '600'
+                                }} >Total Amount : {totalamount}/-</Text></View>
+
+                                <View
+                                    style={{
+                                        justifyContent: 'center',
+                                        paddingLeft: scale(28),
+                                        paddingRight: scale(28),
+                                        borderLeftWidth: scale(1),
+                                        borderBottomWidth: scale(1),
+                                        borderRightWidth: scale(1),
+                                        borderColor: 'black',
+                                        backgroundColor: "#fa8072",
+                                        borderRadius: scale(5),
+                                    }}
+                                ><Text style={{
+                                    textAlign: 'center',
+                                    fontSize: normalize(18),
+                                    color: 'white',
+                                    fontWeight: '600'
+                                }} onPress={checkcart}>Order Now</Text></View>
+
+                            </View> : <></>}
+
+
+                            {!showfooter ? <View style={{
+                                justifyContent: 'center',
+                                flexDirection: 'row',
+                                backgroundColor: 'white',
+                                height: verticalScale(35),
+                            }}>
+                                <View
+                                    style={{
+                                        justifyContent: 'center',
+                                        // width: scale(200),
+                                        borderColor: 'black',
+                                        // backgroundColor: 'white',
+                                    }}
+                                ><Text style={{
+                                    fontSize: normalize(18),
+                                    paddingLeft: scale(8),
+                                    color: 'black',
+                                    fontWeight: '600'
+                                }} >Total Amount : {totalamount}/-</Text></View>
+                            </View> : <></>}
+
+                        </SafeAreaView>
+                        :
+                        <View style={{
+                            flex: 1,
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
+                            {loading ? <Text style={{
+                                marginTop: scale(50),
+                                // padding: scale(34),
+                                fontFamily: 'sans-serif-thin',
+                                fontWeight: '700',
+                                letterSpacing: scale(0.5),
+                                color: 'red'
+                            }}>
+                                Loading items...
+                            </Text> :
+                                <Text style={{
+                                    // padding: scale(34),
+                                    fontWeight: '600',
+                                    letterSpacing: scale(0.5),
+                                    color: 'white',
+                                    fontSize: normalize(15)
+                                }}>
+                                    No items
+                                </Text>
+                            }
+                        </View>
+                }
+            </SafeAreaView>
+        </>
     )
 }
 

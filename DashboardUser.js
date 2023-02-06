@@ -11,11 +11,12 @@ import {
     Keyboard,
     TouchableOpacity,
     KeyboardAvoidingView,
+    Alert,
 } from "react-native";
 
 import { onAuthStateChanged, signOut } from "firebase/auth";
 
-import { AntDesign, Feather , Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -31,6 +32,7 @@ import { ref, set, update, onValue } from "firebase/database";
 import UsersCompletedOrders from "./users/UsersCompletedOrders";
 import UserAccountDetails from "./UserAccountDetails";
 import UserPendingOrders from "./users/UserPendingOrders";
+import ActivityIndicatorElement from "./ActivityIndicatorElement";
 
 
 
@@ -52,7 +54,7 @@ function MyTabs({ navigation, OrderId }) {
                 options={{
                     tabBarLabel: "All Items",
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="preview" color={color} size={normalize(size-6)} />
+                        <MaterialIcons name="preview" color={color} size={normalize(size - 6)} />
                     ),
                 }}
             />
@@ -64,7 +66,7 @@ function MyTabs({ navigation, OrderId }) {
                     tabBarLabel: "Pending Orders",
                     tabBarIcon: ({ color, size }) => (
                         // <Ionicons name="basket" color={color} size={size} />
-                        <Feather name="shopping-bag" color={color} size={normalize(size-8)} />
+                        <Feather name="shopping-bag" color={color} size={normalize(size - 8)} />
                     ),
                 }}
             />
@@ -75,7 +77,7 @@ function MyTabs({ navigation, OrderId }) {
                 options={{
                     tabBarLabel: "Your Orders",
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="basket" color={color} size={normalize(size-3)} />
+                        <Ionicons name="basket" color={color} size={normalize(size - 3)} />
                     ),
                 }}
             />
@@ -86,7 +88,7 @@ function MyTabs({ navigation, OrderId }) {
                 options={{
                     tabBarLabel: "Profile",
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="account-circle" color={color} size={normalize(size-5)} />
+                        <MaterialIcons name="account-circle" color={color} size={normalize(size - 5)} />
                     ),
                 }}
             />
@@ -101,35 +103,43 @@ const DashboardUser = ({ navigation, OrderId }) => {
 
     const [textbutton, setTextButton] = useState("");
 
+    const [loading, setloading] = useState(false);
+
     useEffect(() => {
 
+        setloading(true)
+
         if (textbutton === "Logout") {
-            const email = auth.currentUser.email;
+            const phoneNumber = auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3);
             navigation.setOptions({
                 headerRight: () => (
                     <AntDesign name="logout" size={24} color="black" onPress={() => signOut(auth).then(() => {
-                        alert(`${email}, you have successfully logged out!`);
+                        Alert.alert(`${phoneNumber}`, 'you have successfully logged out!');
                         navigation.replace("Home")
                     }).catch((error) => {
-                        alert(`${email}, Logout Unsuccessfull!`);
+                        Alert.alert(`${phoneNumber}`, 'Logout Unsuccessfull!');
                     })} />
                 ),
             })
+
+            setloading(false)
         }
     }, [user])
 
 
     useEffect(() => {
-
+        setloading(true)
         const unsubscribe = onAuthStateChanged(auth, (validuser) => {
             if (validuser) {
                 const uid = validuser.uid;
                 setTextButton("Logout");
-                setUser({ loggedIn: true, email: validuser.email })
+                setUser({ loggedIn: true, phoneNumber: validuser.phoneNumber })
             } else {
                 setTextButton("Login");
                 setUser({ loggedIn: false })
             }
+
+            setloading(false)
         });
         return () => {
             unsubscribe();
@@ -139,6 +149,7 @@ const DashboardUser = ({ navigation, OrderId }) => {
     return (
 
         <SafeAreaView style={styles.mainBody}>
+            <ActivityIndicatorElement loading={loading} />
             <NavigationContainer independent={true}>
                 <MyTabs navigation={navigation} OrderId={OrderId} />
             </NavigationContainer>
@@ -154,53 +165,5 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         backgroundColor: "#307ecc",
         alignContent: "center",
-    },
-    sectionStyle: {
-        flexDirection: "row",
-        height: 40,
-        marginTop: 20,
-        marginLeft: 35,
-        marginRight: 35,
-        margin: 10,
-    },
-    buttonStyle: {
-        backgroundColor: "#7DE24E",
-        borderWidth: 0,
-        color: "#FFFFFF",
-        borderColor: "#7DE24E",
-        height: 40,
-        alignItems: "center",
-        borderRadius: 30,
-        marginLeft: 35,
-        marginRight: 35,
-        marginTop: 20,
-        marginBottom: 25,
-    },
-    buttonTextStyle: {
-        color: "#FFFFFF",
-        paddingVertical: 10,
-        fontSize: 16,
-    },
-    inputStyle: {
-        flex: 1,
-        color: "white",
-        paddingLeft: 15,
-        paddingRight: 15,
-        borderWidth: 1,
-        borderRadius: 30,
-        borderColor: "#dadae8",
-    },
-    registerTextStyle: {
-        color: "#FFFFFF",
-        textAlign: "center",
-        fontWeight: "bold",
-        fontSize: 14,
-        alignSelf: "center",
-        padding: 10,
-    },
-    errorTextStyle: {
-        color: "red",
-        textAlign: "center",
-        fontSize: 14,
     },
 });

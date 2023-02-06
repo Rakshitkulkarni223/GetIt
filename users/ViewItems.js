@@ -3,6 +3,7 @@ import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image } from
 import { app, auth, db, database } from "../Firebase";
 import { ref, onValue, get, child } from "firebase/database";
 import ItemsListViewUsers from '../ListView/ItemListViewUsers';
+import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
 const ViewItems = ({navigation, OrderId}) => {
@@ -12,9 +13,13 @@ const ViewItems = ({navigation, OrderId}) => {
    const [itemsList,setitemsList] = useState(ref(database, 'admin/items/'));
 
    const [totalamount, settotalamount] = useState(0);
+
+   const [loading, setloading] = useState(false);
    
    
    useEffect(() => {
+
+      setloading(true)
 
       const getitems = onValue(itemsList, (snapshot) => {
          var items = [];
@@ -36,6 +41,8 @@ const ViewItems = ({navigation, OrderId}) => {
             })
          })
          setAllItems(items);
+
+         setloading(false)
       });
 
       return () =>{
@@ -45,7 +52,16 @@ const ViewItems = ({navigation, OrderId}) => {
    }, [])
 
    return (
-      <ItemsListViewUsers navigation={navigation} OrderId={OrderId} DATA={AllItems} qtyhandler={true} showfooter={true} totalamount={totalamount} settotalamount={settotalamount}></ItemsListViewUsers>
+      <>
+      <ActivityIndicatorElement loading={loading}/>
+      <ItemsListViewUsers navigation={navigation} OrderId={OrderId} DATA={AllItems} 
+      qtyhandler={true} showfooter={true} 
+      totalamount={totalamount} settotalamount={settotalamount}
+      loading={loading}
+      setloading={setloading}
+      ></ItemsListViewUsers>
+      </>
+   
    );
 }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, setState } from 'react'
-import { TouchableOpacity, Text, TextInput, View, Pressable, Button, StyleSheet, SafeAreaView, Modal, PermissionsAndroid, Alert } from 'react-native';
+import { TouchableOpacity, Text, TextInput, ActivityIndicator, View, Pressable, Button, StyleSheet, SafeAreaView, Modal, PermissionsAndroid, Alert } from 'react-native';
 
 import * as Location from 'expo-location';
 
@@ -8,6 +8,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { scale, moderateScale, verticalScale } from '../Dimensions';
 
 import { normalize } from '../FontResize';
+
+import ActivityIndicatorElement from '../ActivityIndicatorElement'
 
 const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
     return (
@@ -143,6 +145,8 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
     const [postalcode, setpostalcode] = useState('');
     const [cityname, setcityname] = useState('');
 
+    const [loading, setloading] = useState(false);
+
     const [isautomatic, setisautomatic] = useState(true);
 
     useEffect(() => {
@@ -152,6 +156,8 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
 
 
     const GetCurrentLocation = async () => {
+
+        setloading(true)
 
         setisautomatic(true);
 
@@ -170,7 +176,7 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
             //     return;
             // }
 
-            await  Location.requestForegroundPermissionsAsync();
+            await Location.requestForegroundPermissionsAsync();
 
             let { coords } = await Location.getCurrentPositionAsync();
 
@@ -203,8 +209,11 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
                 // let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
                 setDisplayCurrentAddress(address);
             }
+            setloading(false)
         }
         catch (e) {
+
+            setloading(false)
             alert(
                 'Location Permission not granted.Please enable location Permission'
             );
@@ -212,6 +221,8 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
     };
 
     const getLocationFromAddress = async () => {
+
+        setloading(true)
 
         setisautomatic(false)
 
@@ -267,102 +278,110 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
             setlongitude(longitude);
         }
         setVisible(!visible)
+
+        setloading(false)
     }
 
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+        <>
+            <ActivityIndicatorElement loading={loading} />
+            <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 
-            <View style={{ margin: scale(15),}}>
-            {isautomatic ?
+                <View style={{ margin: scale(15), }}>
+                    {isautomatic ?
+                        <Text style={{
+
+                            fontSize: normalize(16),
+                            lineHeight: scale(18),
+                            // fontWeight: 'bold',
+                            letterSpacing: scale(0.5),
+                        }}>Current Address</Text>
+                        : <Text style={{
+                            // margin: scale(10),
+                            fontSize: normalize(15),
+                            lineHeight: scale(18),
+                            // fontWeight: 'bold',
+                            letterSpacing: scale(0.5),
+                        }}>Manually Entered Address</Text>
+                    }
+                </View>
+
                 <Text style={{
-                   
+                    margin: scale(15),
                     fontSize: normalize(16),
                     lineHeight: scale(18),
-                    // fontWeight: 'bold',
+                    fontWeight: 'bold',
                     letterSpacing: scale(0.5),
-                }}>Current Address</Text>
-                : <Text style={{
-                    // margin: scale(10),
-                    fontSize: normalize(15),
-                    lineHeight: scale(18),
-                    // fontWeight: 'bold',
-                    letterSpacing: scale(0.5),
-                }}>Manually Entered Address</Text>
-            }
-            </View>
 
-            <Text style={{
-                margin: scale(15),
-                fontSize: normalize(16),
-                lineHeight: scale(18),
-                fontWeight: 'bold',
-                letterSpacing: scale(0.5),
+                }}>{displayCurrentAddress}</Text>
 
-            }}>{displayCurrentAddress}</Text>
 
-            <ModalInput
-                visible={visible}
-                values={{
-                    housename: housename,
-                    cityname: cityname,
-                    streetname: streetname,
-                    postalcode: postalcode
-                }}
 
-                setvalues={{
-                    sethousename: sethousename,
-                    setcityname: setcityname,
-                    setstreetname: setstreetname,
-                    setpostalcode: setpostalcode
-                }}
-                toggle={() => setVisible(!visible)}
-                onSubmit={getLocationFromAddress}
-            />
-            <View style={{
-                flex: 1,
-                flexDirection: 'column',
-                justifyContent: 'center',
-                margin: scale(25),
-            }}>
-                <View>
+                <ModalInput
+                    visible={visible}
+                    values={{
+                        housename: housename,
+                        cityname: cityname,
+                        streetname: streetname,
+                        postalcode: postalcode
+                    }}
+
+                    setvalues={{
+                        sethousename: sethousename,
+                        setcityname: setcityname,
+                        setstreetname: setstreetname,
+                        setpostalcode: setpostalcode
+                    }}
+                    toggle={() => setVisible(!visible)}
+                    onSubmit={getLocationFromAddress}
+                />
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    margin: scale(25),
+                }}>
+                    <View>
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            paddingVertical: verticalScale(5),
+                            paddingHorizontal: scale(2),
+                            borderRadius: scale(4),
+                            elevation: scale(18),
+                            marginBottom: scale(25),
+                            backgroundColor: 'black',
+                        }}>
+                            <View>
+                                <MaterialCommunityIcons name="target" size={scale(20)} color="red" onPress={() => GetCurrentLocation()} />
+                            </View>
+                            <View style={{ paddingLeft: scale(10), }}>
+                                <Pressable onPress={() => GetCurrentLocation()}>
+                                    <Text style={styles.text}>Detect Location</Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </View>
+
                     <View style={{
                         flexDirection: 'row',
                         justifyContent: 'center',
-                        alignItems: 'center',
-                        paddingVertical: verticalScale(5),
-                        paddingHorizontal: scale(2),
-                        borderRadius: scale(4),
-                        elevation: scale(18),
                         marginBottom: scale(25),
-                        backgroundColor: 'black',
                     }}>
-                        <View>
-                            <MaterialCommunityIcons name="target" size={scale(20)} color="red" onPress={() => GetCurrentLocation()} />
-                        </View>
-                        <View style={{ paddingLeft: scale(10), }}>
-                            <Pressable onPress={() => GetCurrentLocation()}>
-                                <Text style={styles.text}>Detect Location</Text>
-                            </Pressable>
-                        </View>
+                        <Text style={{ color: 'black', fontWeight: 'bold' }}>OR</Text>
+                    </View>
+
+                    <View>
+                        <Pressable style={styles.button} onPress={() => setVisible(!visible)}>
+                            <Text style={styles.text}>Enter Location Manually</Text>
+                        </Pressable>
                     </View>
                 </View>
 
-                <View style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    marginBottom: scale(25),
-                }}>
-                    <Text style={{ color: 'black', fontWeight: 'bold' }}>OR</Text>
-                </View>
-
-                <View>
-                    <Pressable style={styles.button} onPress={() => setVisible(!visible)}>
-                        <Text style={styles.text}>Enter Location Manually</Text>
-                    </Pressable>
-                </View>
-            </View>
-        </SafeAreaView>
+            </SafeAreaView>
+        </>
     )
 }
 

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState, useRef} from 'react';
 import {
   Text,
   View,
@@ -18,20 +18,24 @@ import { ref, child, get, onValue } from "firebase/database";
 import { scale, moderateScale, verticalScale } from './Dimensions';
 
 import { normalize } from './FontResize';
+import ActivityIndicatorElement from './ActivityIndicatorElement';
 
 const LoginWithOTP = ({ navigation }) => {
   // Ref or state management hooks
-  const recaptchaVerifier = React.useRef(null);
-  const [phoneNumber, setPhoneNumber] = React.useState();
-  const [verificationId, setVerificationId] = React.useState();
-  const [verificationCode, setVerificationCode] = React.useState();
+  const recaptchaVerifier = useRef(null);
+  const [phoneNumber, setPhoneNumber] = useState();
+  const [verificationId, setVerificationId] = useState();
+  const [verificationCode, setVerificationCode] = useState();
 
-  const [message, showMessage] = React.useState();
+  const [message, showMessage] = useState();
   const attemptInvisibleVerification = false;
+
+  const [loading, setloading] = useState(false);
 
 
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
+      <ActivityIndicatorElement loading={loading} />
       <View
         style={{
           padding: scale(20),
@@ -76,6 +80,7 @@ const LoginWithOTP = ({ navigation }) => {
               autoFocus
               cursorColor='#778899'
               autoCompleteType="tel"
+              letterSpacing={normalize(2)}
               keyboardType="phone-pad"
               textContentType="telephoneNumber"
               onChangeText={setPhoneNumber}
@@ -86,6 +91,7 @@ const LoginWithOTP = ({ navigation }) => {
 
         <Pressable style={styles.button}
           onPress={async () => {
+            setloading(true)
             try {
               if (!phoneNumber || phoneNumber.length !== 10) {
                 showMessage({ text: `Error: Invalid Mobile Number!!`, color: 'red' });
@@ -101,7 +107,11 @@ const LoginWithOTP = ({ navigation }) => {
                   text: 'Verification code has been sent to your phone.',
                 });
               }
+
+              setloading(false)
+
             } catch (err) {
+              setloading(false)
               showMessage({ text: `Error: ${err.message}`, color: 'red' });
             }
           }}
@@ -132,10 +142,12 @@ const LoginWithOTP = ({ navigation }) => {
         </View>
         <Pressable style={styles.button}
           onPress={async () => {
+            setloading(true)
             try {
               const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
               await signInWithCredential(auth, credential);
               if (admins.includes('+91'+phoneNumber)) {
+                setloading(false)
                 navigation.reset({
                   index: 0,
                   routes: [{ name: "Dashboard Admin" }],
@@ -146,12 +158,14 @@ const LoginWithOTP = ({ navigation }) => {
                   onValue(ref(database, 'users/'), (snapshot) => {
                     if (snapshot.exists()) {
                       if (!snapshot.val()[auth.currentUser.phoneNumber]) {
+                        setloading(false)
                         navigation.reset({
                           index: 0,
                           routes: [{ name: 'Signup' }],
                         });
                       }
                     } else {
+                      setloading(false)
                       navigation.reset({
                         index: 0,
                         routes: [{ name: 'Home' }],
@@ -160,6 +174,7 @@ const LoginWithOTP = ({ navigation }) => {
                   })
                 }
                 catch (error) {
+                  setloading(false)
                   navigation.reset({
                     index: 0,
                     routes: [{ name: 'Signup' }],
@@ -167,6 +182,7 @@ const LoginWithOTP = ({ navigation }) => {
                 }
               }
             } catch (err) {
+              setloading(false)
               showMessage({ text: `Error: ${err.message}`, color: 'red' });
             }
           }}

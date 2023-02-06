@@ -22,20 +22,28 @@ import { ref, set, update, onValue } from "firebase/database";
 import { scale, moderateScale, verticalScale } from './Dimensions';
 
 import { normalize } from "./FontResize";
+import ActivityIndicatorElement from "./ActivityIndicatorElement";
 
 
 const PaymentGateway = ({ navigation, route, setData, totalamount, AllConfirmedItems, OrderId, displayCurrentAddress, setDisplayCurrentAddress, longitude, setlongitude, latitude, setlatitude }) => {
 
     const [paymentDone, setpaymentDone] = useState(false);
 
+    const [loading, setloading] = useState(false);
+
     useEffect(() => {
+        setloading(true)
         const unsubscribe = navigation.addListener('tabPress', (e) => {
             e.preventDefault();
         });
+
+        setloading(false)
         return unsubscribe;
     }, [navigation]);
 
     const openPaymentApp = async (paymentMode) => {
+
+        setloading(true)
 
         try {
             let url = `upi://pay?pa=9480527929@ybl&pn=Rakshit Kulkarni&tn=Note&am=${totalamount}&cu=INR`;
@@ -85,19 +93,26 @@ const PaymentGateway = ({ navigation, route, setData, totalamount, AllConfirmedI
 
             await set(ref(database, `users/orders/${OrderId}/items/`), {
             })
+
+            setloading(false)
+
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'Home' }],
             });
         }
         catch (err) {
-            alert(err);
+            setloading(false)
+            Alert.alert(err);
             console.error('ERROR : ', err);
         }
     }
 
     return (
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
+
+            <ActivityIndicatorElement loading={loading} />
+            
             <View style={{
                 flex: 1,
                 flexDirection: 'column',
@@ -115,10 +130,11 @@ const PaymentGateway = ({ navigation, route, setData, totalamount, AllConfirmedI
                     flexDirection: 'row',
                     justifyContent: 'center',
                 }}>
-                    <Text style={{ color: 'black', fontWeight: 'bold', letterSpacing: scale(0.3),
-                     marginBottom: verticalScale(10),
-                     marginTop: verticalScale(10)
-                     }}>OR</Text>
+                    <Text style={{
+                        color: 'black', fontWeight: 'bold', letterSpacing: scale(0.3),
+                        marginBottom: verticalScale(10),
+                        marginTop: verticalScale(10)
+                    }}>OR</Text>
                 </View>
 
                 <View style={{ margin: scale(10), }}>

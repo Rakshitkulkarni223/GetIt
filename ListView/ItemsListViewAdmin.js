@@ -1,6 +1,6 @@
 import React, { createRef, useEffect, useState } from 'react';
-import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, TextInput, StatusBar, Image, Keyboard, KeyboardAvoidingView } from 'react-native';
-import { AntDesign, Ionicons, EvilIcons ,MaterialCommunityIcons } from '@expo/vector-icons';
+import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, TextInput, StatusBar, Image, Keyboard, KeyboardAvoidingView, Modal } from 'react-native';
+import { AntDesign, Ionicons, EvilIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import UpdateItem from '../admin/UpdateItem';
 import { app, auth, db, database } from "../Firebase";
 import { ref, set } from "firebase/database";
@@ -8,6 +8,7 @@ import { ref, set } from "firebase/database";
 import { normalize } from '../FontResize';
 
 import { scale, moderateScale, verticalScale } from '../Dimensions';
+import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
 const Item = ({ setItemId, setupdate, setItemCategory, setItemName, setItemImage, setItemDesc, setItemPrice, id, title, image_url, price, description, category, displaycategory }) => (
@@ -70,7 +71,7 @@ const Item = ({ setItemId, setupdate, setItemCategory, setItemName, setItemImage
     </>
 );
 
-const renderHeader = (query, DATA, setData, setQuery, searchRef) => {
+const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => {
     return (
         <View
             style={{
@@ -109,7 +110,7 @@ const renderHeader = (query, DATA, setData, setQuery, searchRef) => {
                     returnKeyType="next"
                     cursorColor='#778899'
                     clearButtonMode="always"
-                    onChangeText={queryText => handleSearch(queryText, DATA, setData, setQuery)}
+                    onChangeText={queryText => handleSearch(queryText, DATA, setData, setQuery, setloading)}
                     placeholder="Search Items"
                 />
             </View>
@@ -121,26 +122,34 @@ const renderHeader = (query, DATA, setData, setQuery, searchRef) => {
                     marginLeft: scale(300),
                     position: 'absolute'
                 }}>
-                    <Ionicons  name="close" size={scale(18)} color="black" 
-                    onPress={()=>{
-                        Keyboard.dismiss
-                        setQuery('');
-                        setData(DATA)
-                        searchRef.current.clear();
-                    }}/>
+                    <Ionicons name="close" size={scale(18)} color="black"
+                        onPress={() => {
+                            setloading(true)
+                            setQuery('');
+                            setData(DATA)
+                            if (searchRef && searchRef.current) {
+                                searchRef.current.clear()
+                            }
+                            setloading(false)
+                        }} />
                 </View>
                 : <></>}
         </View>
     );
 }
 
-const handleSearch = (text, DATA, setData, setQuery) => {
+const handleSearch = (text, DATA, setData, setQuery, setloading) => {
+
+    setloading(true)
+
     const formattedQuery = text.toLowerCase();
     const filteredData = DATA.filter((items) => {
         return contains(items, formattedQuery);
     });
     setData(filteredData);
     setQuery(text);
+
+    setloading(false);
 };
 
 const contains = (items, query) => {
@@ -154,7 +163,7 @@ const contains = (items, query) => {
 };
 
 
-const ItemsListViewAdmin = ({ DATA }) => {
+const ItemsListViewAdmin = ({ DATA, loading, setloading }) => {
 
     const [update, setupdate] = useState(false);
 
@@ -167,11 +176,18 @@ const ItemsListViewAdmin = ({ DATA }) => {
     const [ItemImage, setItemImage] = useState("");
     const [ItemId, setItemId] = useState("");
 
+
     const searchRef = createRef();
 
 
     const [data, setData] = useState(DATA);
-    useEffect(() => { setData(DATA) }, [DATA])
+    useEffect(() => {
+        setQuery('');
+        if (searchRef && searchRef.current) {
+            searchRef.current.clear()
+        }
+        setData(DATA)
+    }, [DATA])
 
     const renderItem = ({ item }) => (
         <Item
@@ -194,23 +210,78 @@ const ItemsListViewAdmin = ({ DATA }) => {
 
     return (
         <>
-            {update ?
-                <UpdateItem title={ItemName} description={ItemDesc} image_url={ItemImage} price={ItemPrice} category={ItemCategory} id={ItemId} />
-                :
-                <SafeAreaView style={{
-                    flex: 1,
-                    backgroundColor: '#3B3636'
-                }} keyboardShouldPersistTaps="handled"
-                >
-                    <KeyboardAvoidingView enabled>
-                    <FlatList
-                        data={data}
-                        renderItem={renderItem}
-                        keyExtractor={(item) => item.key}
-                        ListHeaderComponent={renderHeader(query, DATA, setData, setQuery, searchRef)}
-                    />
-                    </KeyboardAvoidingView>
-                </SafeAreaView>
+            <ActivityIndicatorElement loading={loading} />
+            {
+                update ?
+                    <UpdateItem title={ItemName} description={ItemDesc} image_url={ItemImage} price={ItemPrice} category={ItemCategory} id={ItemId} />
+                    :
+                    <SafeAreaView style={{
+                        flex: 1,
+                        backgroundColor: '#3B3636'
+                    }} keyboardShouldPersistTaps="handled"
+                    >
+                        <KeyboardAvoidingView enabled>
+                            {
+                                DATA.length !== 0 ?
+                                    <FlatList
+                                        data={data}
+                                        renderItem={renderItem}
+                                        keyExtractor={(item) => item.key}
+                                        ListEmptyComponent={
+                                            <View style={{
+                                                flex: 1,
+                                                flexDirection: 'column',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                marginHorizontal: scale(15),
+                                            }}>
+                                                <Text style={{
+                                                    // padding: scale(34),
+                                                    fontFamily: 'sans-serif-thin',
+                                                    // fontWeight: '700',
+                                                    letterSpacing: scale(0.5),
+                                                    color: 'white',
+                                                    marginTop: verticalScale(5),
+
+                                                }}>
+                                                    <Text> No results for</Text>
+                                                    <Text style={{ fontWeight: "bold" }}> {query}</Text>
+                                                </Text>
+
+                                            </View>
+                                        }
+                                        ListHeaderComponent={renderHeader(query, DATA, setData, setQuery, searchRef, setloading)}
+                                    />
+                                    :
+                                    <View style={{
+                                        flex: 1,
+                                        flexDirection: 'column',
+                                        justifyContent: 'center',
+                                        alignItems: 'center'
+                                    }}>
+                                        {loading ? <Text style={{
+                                            marginTop: scale(50),
+                                            // padding: scale(34),
+                                            fontFamily: 'sans-serif-thin',
+                                            fontWeight: '700',
+                                            letterSpacing: scale(0.5),
+                                            color: 'red'
+                                        }}>
+                                            Loading items...
+                                        </Text> :
+                                            <Text style={{
+                                                fontWeight: '600',
+                                                letterSpacing: scale(0.5),
+                                                color: 'white',
+                                                fontSize: normalize(15)
+                                            }}>
+                                                No items
+                                            </Text>
+                                        }
+                                    </View>
+                            }
+                        </KeyboardAvoidingView>
+                    </SafeAreaView>
             }
         </>
     )

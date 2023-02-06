@@ -4,14 +4,20 @@ import ItemListViewUserPendingOrders from '../ListView/ItemListViewUserPendingOr
 
 import { app, auth, db, database } from "../Firebase";
 import { ref, onValue, get, child } from "firebase/database";
+import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 const UserPendingOrders = ({ navigation }) => {
 
    const [AllOrders, setAllOrders] = useState([]);
 
    const [itemsList,setitemsList] = useState(ref(database, `users/userpendingOrders/${auth.currentUser.phoneNumber}/`));
+
+
+   const [loading, setloading] = useState(false);
    
    useEffect(() => {
+
+      setloading(true)
 
       const getitems = onValue(itemsList, (snapshot) => {
 
@@ -82,6 +88,7 @@ const UserPendingOrders = ({ navigation }) => {
           });
 
          setAllOrders(orders);
+         setloading(false)
       });
 
       return () =>{
@@ -91,7 +98,11 @@ const UserPendingOrders = ({ navigation }) => {
    }, [])
 
    return (
-      <ItemListViewUserPendingOrders AllOrders={AllOrders} />
+
+      <>
+      <ActivityIndicatorElement loading={loading}/>
+      <ItemListViewUserPendingOrders AllOrders={AllOrders} loading={loading} setloading={setloading}/>
+      </>
    );
 }
 export default UserPendingOrders;

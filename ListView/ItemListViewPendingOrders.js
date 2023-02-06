@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert } from 'react-native';
+import { SafeAreaView, Modal, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert } from 'react-native';
 import { AntDesign, MaterialCommunityIcons, Entypo, MaterialIcons } from '@expo/vector-icons';
 import UpdateItem from '../admin/UpdateItem';
 import { app, auth, db, database } from "../Firebase";
@@ -9,9 +9,11 @@ import GoogleMap from '../GoogleMap';
 import { scale, moderateScale, verticalScale } from '../Dimensions';
 
 import { normalize } from '../FontResize';
+import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
-const AddRemoveItem = (add, { id, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude }) => {
+const AddRemoveItem = (add, { id, OrderId, title, image_url, price, description, category, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude }) => {
+
 
     {
         add ? set(ref(database, `admin/confirmedOrdersByAdmin/${OrderId}/items/${category}/` + id), {
@@ -40,7 +42,7 @@ const AddRemoveItem = (add, { id, OrderId, title, image_url, price, description,
 }
 
 
-const Item = ({ id, AuthId, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude }) => (
+const Item = ({ id, setloading, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude }) => (
     <>
         {displayCategory ? <Text style={{
             fontSize: normalize(13),
@@ -115,13 +117,17 @@ const Item = ({ id, AuthId, OrderId, title, image_url, price, description, categ
 
                 <View>
                     <AntDesign name="checkcircleo" size={24} color="green" onPress={() => {
-                        AddRemoveItem(true, { id, AuthId, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude });
+                        setloading(true)
+                        AddRemoveItem(true, { id, OrderId, title, image_url, price, description, category, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude });
+                        setloading(false)
                     }} />
                 </View>
                 <View
                 >
                     <Entypo name="cross" size={24} color="red" onPress={() => {
-                        AddRemoveItem(false, { id, AuthId, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude });
+                        setloading(true)
+                        AddRemoveItem(false, { id, OrderId, title, image_url, price, description, category, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude });
+                        setloading(false)
                     }} />
                 </View>
             </View>
@@ -129,7 +135,30 @@ const Item = ({ id, AuthId, OrderId, title, image_url, price, description, categ
     </>
 );
 
-const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
+
+const ConfirmAllItems = (AllOrders, index) => {
+    for (let item = 0; item < AllOrders[index].value.length; item++) {
+        AddRemoveItem(true,
+            {
+                id: AllOrders[index].value[item].key,
+                OrderId: AllOrders[index].value[item].OrderId,
+                title: AllOrders[index].value[item].ItemName,
+                image_url: AllOrders[index].value[item].ItemImage,
+                price: AllOrders[index].value[item].ItemPrice,
+                description: AllOrders[index].value[item].ItemDesc,
+                category: AllOrders[index].value[item].ItemCategory,
+                quantity: AllOrders[index].value[item].ItemQuantity,
+                ItemAddedDate: AllOrders[index].value[item].ItemAddedDate,
+                phoneNumber: AllOrders[index].value[item].phoneNumber,
+                Location: AllOrders[index].Location,
+                Longitude: AllOrders[index].Longitude,
+                Latitude: AllOrders[index].Latitude
+            });
+    }
+
+}
+
+const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }) => {
 
     const [update, setupdate] = useState(false);
 
@@ -147,8 +176,10 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
     const [longitude, setlongitude] = useState('');
 
     const toggleFunction = (index) => {
+        setloading(true)
         AllOrders[index].toggle = !AllOrders[index].toggle;
         setToggle(!toggle);
+        setloading(false)
     };
 
     const renderItem = ({ item, index }) => (
@@ -186,6 +217,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
 
                             // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
 
+                            setloading(true)
 
                             if (!AllOrders[index].Longitude && !AllOrders[index].Latitude && AllOrders[index].Location !== '') {
                                 Alert.alert('Exact Location Not Found', `But Location Address is mentioned as ${AllOrders[index].Location}`, [
@@ -207,28 +239,17 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
 
                                 setlatitude(AllOrders[index].Latitude);
 
-                                setvisibleMap(true);
-                            }
-                            //     flag=false;
-                            // }
+                                Alert.alert('Order Delivery Location', `${AllOrders[index].Location}`, [
+                                    {
+                                        text: 'OK',
+                                    },
+                                ])
 
-                            // if (longitude !== '' && latitude !== '' && AllOrders[index].Location !== '') {
-                            //     setvisibleMap(true);
-                            //     flag=false
-                            // }
-                            // if(longitude === '' && latitude === '' && AllOrders[index].Location === ''){
-                            //     Alert.alert('Correct Location Not Found', 'Please call the person to confirm the Location...', [
-                            //         {
-                            //             text: 'Want to Call?',
-                            //             onPress: () => console.log("call.."),
-                            //             style: 'cancel',
-                            //          },
-                            //          {
-                            //             text: 'Want to Continue', onPress: () =>
-                            //             console.log("continue..")
-                            //          },
-                            //     ])
-                            // }
+
+                                // setvisibleMap(true);
+                            }
+
+                            setloading(false)
 
                         }
                         }
@@ -237,7 +258,25 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                 <View>
                     <MaterialCommunityIcons name="checkbox-marked-circle" size={normalize(20)} color="green"
                         onPress={() => {
-                            alert("select all...");
+
+                            setloading(true)
+
+                            Alert.alert('All items selected', 'Do you want confirm all items?', [
+                                {
+                                    text: "Cancel",
+                                    style: 'cancel'
+                                },
+                                {
+                                    text: "OK",
+                                    onPress: () => {
+                                        ConfirmAllItems(AllOrders, index)
+                                    }
+                                }
+                            ])
+
+
+                            setloading(false)
+
                         }}
                     />
                 </View>
@@ -262,6 +301,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
                             Location={AllOrders[index].Location}
                             Longitude={AllOrders[index].Longitude}
                             Latitude={AllOrders[index].Latitude}
+                            setloading={setloading}
                         />
                     </View>
                 )
@@ -274,18 +314,69 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders }) => {
 
     return (
         <>
-            {visibleMap ? <GoogleMap Longitude={longitude} Latitude={latitude} setvisibleMap={setvisibleMap} /> :
-                <SafeAreaView style={{
-                    flex: 1,
-                    padding: scale(15),
-                    backgroundColor: '#3B3636',
-                }}>
-                    <FlatList
-                        data={AllOrders}
-                        renderItem={renderItem}
-                        keyExtractor={(item, index) => String(index)}
-                    />
-                </SafeAreaView>}
+            <ActivityIndicatorElement loading={loading} />
+            {
+
+                visibleMap ? <GoogleMap Longitude={longitude} Latitude={latitude} setvisibleMap={setvisibleMap} /> :
+                    <SafeAreaView style={{
+                        flex: 1,
+                        padding: scale(15),
+                        backgroundColor: '#3B3636',
+                    }}>
+                        {AllOrders.length !== 0 ?
+                            <FlatList
+                                data={AllOrders}
+                                renderItem={renderItem}
+                                keyExtractor={(item, index) => String(index)}
+                                ListEmptyComponent={
+                                    <View style={{
+                                        flex: 1,
+                                        flexDirection: 'column',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        marginHorizontal: scale(15),
+                                    }}>
+                                        <Text style={{
+                                            fontWeight: '600',
+                                            letterSpacing: scale(0.5),
+                                            color: 'white',
+                                            fontSize: normalize(15)
+                                        }}>
+                                            No pending orders
+                                        </Text>
+
+                                    </View>
+                                }
+                            />
+                            :
+                            <View style={{
+                                flex: 1,
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}>
+                                {loading ? <Text style={{
+                                    marginTop: scale(50),
+                                    // padding: scale(34),
+                                    fontFamily: 'sans-serif-thin',
+                                    fontWeight: '700',
+                                    letterSpacing: scale(0.5),
+                                    color: 'red'
+                                }}>
+                                    Loading pending orders...
+                                </Text> :
+                                    <Text style={{
+                                        fontWeight: '600',
+                                        letterSpacing: scale(0.5),
+                                        color: 'white',
+                                        fontSize: normalize(15)
+                                    }}>
+                                        No pending orders
+                                    </Text>
+                                }
+                            </View>
+                        }
+                    </SafeAreaView>}
         </>
 
     )

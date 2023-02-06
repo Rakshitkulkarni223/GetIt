@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert } from 'react-native';
+import { SafeAreaView, Modal, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert } from 'react-native';
 import { AntDesign, MaterialCommunityIcons, Entypo, MaterialIcons } from '@expo/vector-icons';
 import UpdateItem from '../admin/UpdateItem';
 import { app, auth, db, database } from "../Firebase";
@@ -12,6 +12,7 @@ import GoogleMap from '../GoogleMap';
 import { scale, moderateScale, verticalScale } from '../Dimensions';
 
 import { normalize } from '../FontResize';
+import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
 
@@ -79,7 +80,7 @@ const Item = ({ id, OrderId, title, image_url, price, description, category, dis
     </>
 );
 
-const ItemListViewUserPendingOrders = ({ AllOrders }) => {
+const ItemListViewUserPendingOrders = ({ AllOrders, loading, setloading }) => {
 
     const [update, setupdate] = useState(false);
 
@@ -90,6 +91,7 @@ const ItemListViewUserPendingOrders = ({ AllOrders }) => {
     const [ItemImage, setItemImage] = useState("");
     const [ItemId, setItemId] = useState("");
     const [toggle, setToggle] = useState(true);
+
 
     const [displayQRCode, setdisplayQRCode] = useState(false);
 
@@ -107,8 +109,10 @@ const ItemListViewUserPendingOrders = ({ AllOrders }) => {
     }, [])
 
     const toggleFunction = (index) => {
+        setloading(true)
         AllOrders[index].toggle = !AllOrders[index].toggle;
         setToggle(!toggle);
+        setloading(false)
     };
 
     const renderItem = ({ item, index }) => (
@@ -145,10 +149,10 @@ const ItemListViewUserPendingOrders = ({ AllOrders }) => {
 
                             // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
 
-
+                            // setloading(true)
 
                             if (!AllOrders[index].Longitude && !AllOrders[index].Latitude && AllOrders[index].Location !== '') {
-                                Alert.alert('Order Delivered', `Exact Location is not found. But Order Delivered to ${AllOrders[index].Location}`, [
+                                Alert.alert('Order Delivery Location', `Exact Location is not found. But Order Delivered to ${AllOrders[index].Location}`, [
                                     {
                                         text: 'OK',
                                     },
@@ -158,25 +162,15 @@ const ItemListViewUserPendingOrders = ({ AllOrders }) => {
                             if (AllOrders[index].Longitude && AllOrders[index].Latitude && AllOrders[index].Location !== '') {
                                 setlongitude(AllOrders[index].Longitude);
                                 setlatitude(AllOrders[index].Latitude);
-                                setvisibleMap(true);
+                                Alert.alert('Order Delivery Location', `${AllOrders[index].Location}`, [
+                                    {
+                                        text: 'OK',
+                                    },
+                                ])
+                                // setvisibleMap(true);
                             }
 
-                            // if (longitude !== '' && latitude !== '' && AllOrders[index].Location !== '') {
-                            //     setvisibleMap(true)
-                            // }
-                            // else {
-                            //     Alert.alert('Correct Location Not Found', 'Please call the person to confirm the Location...', [
-                            //         {
-                            //             text: 'Want to Call?',
-                            //             onPress: () => console.log("call.."),
-                            //             style: 'cancel',
-                            //         },
-                            //         {
-                            //             text: 'Want to Continue', onPress: () =>
-                            //                 console.log("continue..")
-                            //         },
-                            //     ])
-                            // }
+                            // setloading(false)
 
                         }
                         }
@@ -222,19 +216,49 @@ const ItemListViewUserPendingOrders = ({ AllOrders }) => {
     return (
 
         <>
-            {visibleMap ? <GoogleMap Longitude={longitude} Latitude={latitude} setvisibleMap={setvisibleMap} /> :
+            <ActivityIndicatorElement loading={loading} />
+            {
+                visibleMap ? <GoogleMap Longitude={longitude} Latitude={latitude} setvisibleMap={setvisibleMap} /> :
 
-                <SafeAreaView style={{
-                    flex: 1,
-                    padding: scale(15),
-                    backgroundColor: '#3B3636',
-                }}>
-                    <FlatList
-                        data={AllOrders}
-                        renderItem={renderItem}
-                        keyExtractor={(item, index) => String(index)}
-                    />
-                </SafeAreaView>}
+                    <SafeAreaView style={{
+                        flex: 1,
+                        padding: scale(15),
+                        backgroundColor: '#3B3636',
+                    }}>
+                        {AllOrders.length !== 0 ?
+                            <FlatList
+                                data={AllOrders}
+                                renderItem={renderItem}
+                                keyExtractor={(item, index) => String(index)}
+                            /> :
+                            <View style={{
+                                flex: 1,
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}>
+                                {loading ? <Text style={{
+                                    marginTop: scale(50),
+                                    fontFamily: 'sans-serif-thin',
+                                    fontWeight: '700',
+                                    letterSpacing: scale(0.5),
+                                    color: 'red'
+                                }}>
+                                    Loading pending orders...
+                                </Text> :
+                                    <Text style={{
+                                        fontWeight: '600',
+                                        letterSpacing: scale(0.5),
+                                        color: 'white',
+                                        fontSize: normalize(15)
+                                    }}>
+                                        No pending orders
+                                    </Text>
+                                }
+                            </View>
+                        }
+                    </SafeAreaView>
+            }
         </>
 
     )

@@ -1,47 +1,60 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image } from 'react-native';
+import { Modal, SafeAreaView, View, FlatList, StyleSheet, ActivityIndicator, Text, StatusBar, Image } from 'react-native';
 import ItemsListViewAdmin from '../ListView/ItemsListViewAdmin';
 import { app, auth, db, database } from "../Firebase";
 import { ref, onValue, get, child } from "firebase/database";
+
+import ActivityIndicatorElement from '../ActivityIndicatorElement';
+
+import { scale } from '../Dimensions';
+
+import { normalize } from '../FontResize';
 
 const ViewItems = () => {
 
    const [AllItems, setAllItems] = useState([]);
 
-   const [itemsList,setitemsList] = useState(ref(database, 'admin/items/'));
-   
-   
-   useEffect(() => {
+   const [itemsList, setitemsList] = useState(ref(database, 'admin/items/'));
 
+   const [loading, setloading] = useState(false);
+
+
+   useEffect(() => {
+      setloading(true)
       const getitems = onValue(itemsList, (snapshot) => {
          var items = [];
          var count = 0;
-         snapshot.forEach((child)=>{
-            count = true; 
-            child.forEach((it)=>{
+         snapshot.forEach((child) => {
+            count = true;
+            child.forEach((it) => {
                items.push({
                   displaycategory: count,
-                  key:it.key,
+                  key: it.key,
                   ItemName: it.val().ItemName,
                   ItemDesc: it.val().ItemDesc,
                   ItemCategory: it.val().ItemCategory,
                   ItemPrice: it.val().ItemPrice,
-                  ItemImage:it.val().ItemImage,
+                  ItemImage: it.val().ItemImage,
                })
-               count=false;
+               count = false;
             })
          })
          setAllItems(items);
+         setloading(false);
       });
 
-      return () =>{
+      return () => {
          getitems();
+
       }
 
    }, [])
 
    return (
-      <ItemsListViewAdmin DATA={AllItems}></ItemsListViewAdmin>
+      <>
+         <ActivityIndicatorElement loading={loading} />
+         <ItemsListViewAdmin DATA={AllItems} loading={loading} setloading={setloading} />
+      </>
    );
 }
 

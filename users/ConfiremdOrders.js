@@ -13,11 +13,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import PaymentGateway from '../Payment';
 import DetectLocation from './DetectLocation';
+import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
 const Tab = createBottomTabNavigator();
 
-function MyTabs({ navigation, AllConfirmedItems, totalamount, OrderId, displayCurrentAddress, setDisplayCurrentAddress,longitude,setlongitude,latitude,setlatitude }) {
+function MyTabs({ navigation,loading, setloading,AllConfirmedItems, totalamount, OrderId, displayCurrentAddress, setDisplayCurrentAddress, longitude, setlongitude, latitude, setlatitude }) {
 
    return (
       <Tab.Navigator
@@ -29,7 +30,7 @@ function MyTabs({ navigation, AllConfirmedItems, totalamount, OrderId, displayCu
       >
          <Tab.Screen
             name="View Confirmed Items"
-            children={() => <ItemsListViewUsers DATA={AllConfirmedItems} OrderId={OrderId} totalamount={totalamount} qtyhandler={true} showfooter={false}/>}
+            children={() => <ItemsListViewUsers DATA={AllConfirmedItems} OrderId={OrderId} totalamount={totalamount} qtyhandler={true} showfooter={false} loading={loading} setloading={setloading}/>}
             options={{
                tabBarLabel: 'View Confirmed Items',
                tabBarIcon: ({ color, size }) => (
@@ -71,7 +72,7 @@ function MyTabs({ navigation, AllConfirmedItems, totalamount, OrderId, displayCu
             listeners={({ navigation, route }) => ({
                tabPress: e => {
                   {
-                     displayCurrentAddress!=='' ?
+                     displayCurrentAddress !== '' ?
                         Alert.alert('Delivery Location', `${displayCurrentAddress}`, [
                            {
                               text: 'Want to change?',
@@ -125,10 +126,13 @@ const ConfiremdOrders = ({ navigation, route }) => {
 
    const [latitude, setlatitude] = useState('');
 
+   const [loading, setloading] = useState(false);
+
    var amount = 0;
 
    useEffect(() => {
 
+      setloading(true)
 
       onValue(itemsList, (snapshot) => {
          var items = [];
@@ -169,42 +173,38 @@ const ConfiremdOrders = ({ navigation, route }) => {
          })
          setAllConfirmedItems(items);
          settotalamount(amount);
+         setloading(false)
       });
    }, [])
 
    return (
+      <>
 
-      <SafeAreaView style={styles.mainBody}>
-         <NavigationContainer independent={true}>
-            <MyTabs navigation={navigation}
-               AllConfirmedItems={AllConfirmedItems}
-               totalamount={totalamount}
-               OrderId={OrderId}
-               displayCurrentAddress={displayCurrentAddress}
-               setDisplayCurrentAddress={setDisplayCurrentAddress}
-               longitude={longitude}
-               setlongitude={setlongitude}
-               latitude={latitude}
-               setlatitude={setlatitude}
-            />
-         </NavigationContainer>
-      </SafeAreaView>
+         <SafeAreaView style={styles.mainBody}>
+         <ActivityIndicatorElement loading={loading}/>
+            <NavigationContainer independent={true}>
+               <MyTabs navigation={navigation}
+                  AllConfirmedItems={AllConfirmedItems}
+                  totalamount={totalamount}
+                  OrderId={OrderId}
+                  displayCurrentAddress={displayCurrentAddress}
+                  setDisplayCurrentAddress={setDisplayCurrentAddress}
+                  longitude={longitude}
+                  setlongitude={setlongitude}
+                  latitude={latitude}
+                  setlatitude={setlatitude}
+                  loading={loading}
+                  setloading={setloading}
+               />
+            </NavigationContainer>
+         </SafeAreaView>
+
+      </>
    )
 }
 export default ConfiremdOrders;
 
 const styles = StyleSheet.create({
-   container: {
-      top: 400,
-      flex: 1,
-      flexDirection: 'row',
-      padding: 10,
-      marginLeft: 16,
-      marginRight: 16,
-      marginTop: 8,
-      marginBottom: 8,
-      borderRadius: 5,
-   },
    mainBody: {
       flex: 1,
       bottom: '0.1%',
@@ -212,24 +212,4 @@ const styles = StyleSheet.create({
       backgroundColor: "white",
       //   alignContent: "center",
    },
-   fab: {
-      position: 'absolute',
-      width: 150,
-      height: 40,
-      alignItems: 'center',
-      justifyContent: 'center',
-      right: 20,
-      left: 30,
-      bottom: 30,
-      backgroundColor: 'orange',
-      borderRadius: 5,
-      borderColor: "black",
-      elevation: 8
-   },
-   fabIcon: {
-      fontSize: 20,
-      color: 'black',
-      fontWeight: 'bold'
-   },
-
 })

@@ -1,13 +1,14 @@
 import React, { useState, createRef, useEffect } from "react";
 import { SafeAreaView, View, Text, Image } from "react-native";
 
-import { FontAwesome5, MaterialIcons , MaterialCommunityIcons, AntDesign  } from '@expo/vector-icons';
+import { FontAwesome5, MaterialIcons, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 
 import { app, auth, db, database } from "./Firebase";
 import { ref, set, update, onValue } from "firebase/database";
 
-import { scale, moderateScale, verticalScale} from './Dimensions';
+import { scale, moderateScale, verticalScale } from './Dimensions';
 import { normalize } from "./FontResize";
+import ActivityIndicatorElement from "./ActivityIndicatorElement";
 
 const UserProfile = ({ navigation }) => {
 
@@ -15,35 +16,38 @@ const UserProfile = ({ navigation }) => {
     const [lastName, setlastName] = useState('');
     const [password, setpassword] = useState('');
 
-    useEffect( () =>{
+    const [loading, setloading] = useState(false);
+
+    useEffect(() => {
+        setloading(true)
         onValue(ref(database, `users/${auth.currentUser.phoneNumber}/`), (snapshot) => {
             snapshot.forEach((child) => {
-                if(child.key==='firstName')
-                {
+                if (child.key === 'firstName') {
                     setfirstName(child.val())
                 }
-                if(child.key==='lastName')
-                {
+                if (child.key === 'lastName') {
                     setlastName(child.val())
                 }
-                if(child.key==='password')
-                {
-                    var dummypassword=''
-                    for(let i=0;i<child.val().length;i++)
-                    {
-                        dummypassword+='*'
+                if (child.key === 'password') {
+                    var dummypassword = ''
+                    for (let i = 0; i < child.val().length; i++) {
+                        dummypassword += '*'
                     }
                     setpassword(dummypassword)
                 }
             })
         })
-    },[])
+        setloading(false)
+
+    }, [])
 
     return (
         <>
             <SafeAreaView
                 style={{ flex: 1, backgroundColor: '#3B3636' }}
             >
+                <ActivityIndicatorElement loading={loading} />
+                
                 <View
                     style={{
                         flex: 0.1,
@@ -89,7 +93,7 @@ const UserProfile = ({ navigation }) => {
                                 justifyContent: 'space-evenly',
                             }}
                         >
-                            <View style={{marginBottom: scale(3)}}>
+                            <View style={{ marginBottom: scale(3) }}>
                                 <Text
                                     style={{
                                         fontSize: normalize(14),
@@ -105,7 +109,7 @@ const UserProfile = ({ navigation }) => {
                                         fontFamily: 'sans-serif-light',
                                         color: 'white'
                                     }}
-                                >{firstName+' '+lastName}</Text>
+                                >{firstName + ' ' + lastName}</Text>
                             </View>
                         </View>
 
@@ -127,7 +131,7 @@ const UserProfile = ({ navigation }) => {
                                 justifyContent: 'space-evenly'
                             }}
                         >
-                            <View style={{marginBottom: scale(3)}}>
+                            <View style={{ marginBottom: scale(3) }}>
                                 <Text
                                     style={{
                                         fontSize: normalize(14),
@@ -143,7 +147,7 @@ const UserProfile = ({ navigation }) => {
                                         fontFamily: 'sans-serif-light',
                                         color: 'white'
                                     }}
-                                >{auth.currentUser.phoneNumber.slice(0,3) + ' ' + auth.currentUser.phoneNumber.slice(3)}</Text>
+                                >{auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3)}</Text>
                             </View>
                         </View>
                     </View>
@@ -163,7 +167,7 @@ const UserProfile = ({ navigation }) => {
                                 justifyContent: 'space-evenly'
                             }}
                         >
-                            <View style={{marginBottom: scale(3)}}>
+                            <View style={{ marginBottom: scale(3) }}>
                                 <Text
                                     style={{
                                         fontSize: normalize(14),
@@ -202,23 +206,23 @@ const UserProfile = ({ navigation }) => {
                                 justifyContent: 'space-between'
                             }}
                         >
-                            <View style={{marginBottom: scale(3)}}>
+                            <View style={{ marginBottom: scale(3) }}>
                                 <Text
                                     style={{
                                         fontSize: normalize(15),
                                         fontFamily: 'sans-serif-light',
                                         color: 'white'
                                     }}
-                                    onPress={()=>{
+                                    onPress={() => {
                                         navigation.navigate('Change Password')
                                     }}
                                 >Change Password</Text>
                             </View>
                             <View>
-                                <AntDesign name="right" size={normalize(16)} color="white" 
-                                onPress={()=>{
-                                    navigation.navigate('Change Password')
-                                }}
+                                <AntDesign name="right" size={normalize(16)} color="white"
+                                    onPress={() => {
+                                        navigation.navigate('Change Password')
+                                    }}
                                 />
                             </View>
                         </View>

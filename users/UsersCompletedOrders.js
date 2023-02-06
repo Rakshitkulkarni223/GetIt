@@ -4,6 +4,7 @@ import { app, auth, db, database } from "../Firebase";
 import { ref, onValue, get, child } from "firebase/database";
 import ItemsListViewUsers from '../ListView/ItemListViewUsers';
 import ItemListViewCompletedOrdersUsers from '../ListView/ItemListViewCompletedOrdersUsers';
+import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
 const UsersCompletedOrders = ({navigation}) => {
@@ -11,9 +12,13 @@ const UsersCompletedOrders = ({navigation}) => {
    const [AllOrders, setAllOrders] = useState([]);
 
    const [itemsList,setitemsList] = useState(ref(database, `users/completedOrders/${auth.currentUser.phoneNumber}/`));
+
+   const [loading, setloading] = useState(false);
    
    
    useEffect(() => {
+
+      setloading(true)
 
       const getitems = onValue(itemsList, (snapshot) => {
 
@@ -86,6 +91,8 @@ const UsersCompletedOrders = ({navigation}) => {
           });
 
          setAllOrders(orders);
+
+         setloading(false)
       });
 
       return () =>{
@@ -95,7 +102,10 @@ const UsersCompletedOrders = ({navigation}) => {
    }, [])
 
    return (
-      <ItemListViewCompletedOrdersUsers AllOrders={AllOrders} />
+      <>
+      <ActivityIndicatorElement loading={loading}/>
+      <ItemListViewCompletedOrdersUsers AllOrders={AllOrders} loading={loading} setloading={setloading}/>
+      </>
    );
 }
 

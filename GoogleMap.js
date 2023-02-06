@@ -1,6 +1,7 @@
 import React, { Component, useEffect, useState } from 'react';
-import { Dimensions, StyleSheet, View ,Text} from 'react-native';
+import { Dimensions, StyleSheet, View, Text, SafeAreaView } from 'react-native';
 import MapView from 'react-native-maps';
+import ActivityIndicatorElement from './ActivityIndicatorElement';
 // import MapViewDirections from 'react-native-maps-directions';
 
 // const origin = {latitude: 37.3318456, longitude: -122.0296002};
@@ -13,51 +14,63 @@ import MapView from 'react-native-maps';
 
 
 
-const GoogleMap = ({ Longitude, Latitude ,setvisibleMap}) => {
+const GoogleMap = ({ Longitude, Latitude, setvisibleMap }) => {
 
   const [latitude, setlatitude] = useState('');
   const [longitude, setlongitude] = useState('');
   const [deltaLatittude, setdeltaLatittude] = useState('');
   const [deltaLongitude, setdeltaLongitude] = useState('');
 
+  const [loading, setloading] = useState(false);
+
   useEffect(() => {
+
+    setloading(true)
 
     let minX, maxX, minY, maxY;
 
     minX = Latitude;
     maxX = Latitude;
-    minY =  Longitude;
-    maxY =  Longitude;
+    minY = Longitude;
+    maxY = Longitude;
+
+    console.log(Latitude,Longitude)
 
     minX = Math.min(minX, Latitude);
     maxX = Math.max(maxX, Latitude);
-    minY = Math.min(minY,  Longitude);
-    maxY = Math.max(maxY,  Longitude);
+    minY = Math.min(minY, Longitude);
+    maxY = Math.max(maxY, Longitude);
 
     setlatitude((minX + maxX) / 2);
     setlongitude((minY + maxY) / 2);
     setdeltaLatittude(maxX - minX);
     setdeltaLongitude(maxY - minY);
 
+    setloading(false)
+
   }, [])
 
   return (
-    <View style={styles.container}>
-      <Text style={{color: 'black', fontSize: 40, padding: 10}} onPress={()=>{
-        setvisibleMap(false);
-      }}>Go back</Text>
-      <View>
-     <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: latitude,
-          longitude: longitude,
-          latitudeDelta: deltaLatittude,
-          longitudeDelta: deltaLongitude,
-        }}
-      />
+    <SafeAreaView>
+      <ActivityIndicatorElement loading={loading} />
+      <View style={styles.container}>
+        <Text style={{ color: 'black', fontSize: 40, padding: 10 }} onPress={() => {
+          setvisibleMap(false);
+        }}>Go back</Text>
+        <View>
+          <MapView
+            style={styles.map}
+            initialRegion={{
+              latitude: latitude,
+              longitude: longitude,
+              latitudeDelta: deltaLatittude,
+              longitudeDelta: deltaLongitude,
+            }}
+          />
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
+
   );
 }
 
