@@ -64,7 +64,14 @@ const Item = ({ id, setloading, OrderId, title, image_url, price, description, c
                 // alignItems: "flex-start",
             }}>
                 <View>
-                    <Image source={{ uri: image_url }} style={styles.photo} />
+                <Image source={{ uri: image_url }} style={styles.photo} 
+                onLoadStart={()=>{
+                    setloading(true)
+                }}
+                onLoadEnd={()=>{
+                    setloading(false)
+                }}
+                 />
                 </View>
                 <View style={{
                     marginTop: verticalScale(4),

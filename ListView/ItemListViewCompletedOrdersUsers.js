@@ -15,7 +15,7 @@ import { normalize } from '../FontResize';
 import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
-const Item = ({ id, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate }) => (
+const Item = ({ setloading,id, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate }) => (
     <>
         {displayCategory ? <Text style={{
             fontSize: normalize(13),
@@ -37,7 +37,14 @@ const Item = ({ id, OrderId, title, image_url, price, description, category, dis
                 // alignItems: "flex-start",
             }}>
                 <View>
-                    <Image source={{ uri: image_url }} style={styles.photo} />
+                <Image source={{ uri: image_url }} style={styles.photo} 
+                onLoadStart={()=>{
+                    setloading(true)
+                }}
+                onLoadEnd={()=>{
+                    setloading(false)
+                }}
+                 />
                 </View>
                 <View style={{
                     marginTop: verticalScale(4),
@@ -202,6 +209,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading }) =>
                             category={item.ItemCategory}
                             quantity={item.ItemQuantity}
                             ItemAddedDate={item.ItemAddedDate}
+                            setloading={setloading}
                         />
                     </View>
                 )

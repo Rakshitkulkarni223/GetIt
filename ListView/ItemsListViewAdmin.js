@@ -11,7 +11,7 @@ import { scale, moderateScale, verticalScale } from '../Dimensions';
 import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
-const Item = ({ setItemId, setupdate, setItemCategory, setItemName, setItemImage, setItemDesc, setItemPrice, id, title, image_url, price, description, category, displaycategory }) => (
+const Item = ({ setloading, setItemId, setupdate, setItemCategory, setItemName, setItemImage, setItemDesc, setItemPrice, id, title, image_url, price, description, category, displaycategory }) => (
     <>{displaycategory ? <Text style={{
         fontSize: normalize(13),
         fontWeight: "600",
@@ -65,7 +65,14 @@ const Item = ({ setItemId, setupdate, setItemCategory, setItemName, setItemImage
                 </View>
             </View>
             <View>
-                <Image source={{ uri: image_url }} style={styles.photo} />
+                <Image source={{ uri: image_url }} style={styles.photo} 
+                onLoadStart={()=>{
+                    setloading(true)
+                }}
+                onLoadEnd={()=>{
+                    setloading(false)
+                }}
+                 />
             </View>
         </View>
     </>
@@ -199,6 +206,7 @@ const ItemsListViewAdmin = ({ DATA, loading, setloading }) => {
             description={item.ItemDesc}
             price={item.ItemPrice}
             category={item.ItemCategory}
+            setloading={setloading}
             setItemName={setItemName}
             setItemDesc={setItemDesc}
             setItemImage={setItemImage}
@@ -209,81 +217,82 @@ const ItemsListViewAdmin = ({ DATA, loading, setloading }) => {
     );
 
     return (
-        <>
+        <SafeAreaView style={{
+            flex: 1,
+            backgroundColor: '#3B3636'
+        }} keyboardShouldPersistTaps="handled"
+        >
             <ActivityIndicatorElement loading={loading} />
             {
                 update ?
                     <UpdateItem title={ItemName} description={ItemDesc} image_url={ItemImage} price={ItemPrice} category={ItemCategory} id={ItemId} />
                     :
-                    <SafeAreaView style={{
-                        flex: 1,
-                        backgroundColor: '#3B3636'
-                    }} keyboardShouldPersistTaps="handled"
-                    >
+                    DATA.length !== 0 ?
+
                         <KeyboardAvoidingView enabled>
-                            {
-                                DATA.length !== 0 ?
-                                    <FlatList
-                                        data={data}
-                                        renderItem={renderItem}
-                                        keyExtractor={(item) => item.key}
-                                        ListEmptyComponent={
-                                            <View style={{
-                                                flex: 1,
-                                                flexDirection: 'column',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                marginHorizontal: scale(15),
-                                            }}>
-                                                <Text style={{
-                                                    // padding: scale(34),
-                                                    fontFamily: 'sans-serif-thin',
-                                                    // fontWeight: '700',
-                                                    letterSpacing: scale(0.5),
-                                                    color: 'white',
-                                                    marginTop: verticalScale(5),
 
-                                                }}>
-                                                    <Text> No results for</Text>
-                                                    <Text style={{ fontWeight: "bold" }}> {query}</Text>
-                                                </Text>
-
-                                            </View>
-                                        }
-                                        ListHeaderComponent={renderHeader(query, DATA, setData, setQuery, searchRef, setloading)}
-                                    />
-                                    :
+                            <FlatList
+                                data={data}
+                                renderItem={renderItem}
+                                keyExtractor={(item) => item.key}
+                                ListEmptyComponent={
                                     <View style={{
                                         flex: 1,
                                         flexDirection: 'column',
                                         justifyContent: 'center',
-                                        alignItems: 'center'
+                                        alignItems: 'center',
+                                        marginHorizontal: scale(15),
                                     }}>
-                                        {loading ? <Text style={{
-                                            marginTop: scale(50),
+                                        <Text style={{
                                             // padding: scale(34),
                                             fontFamily: 'sans-serif-thin',
-                                            fontWeight: '700',
+                                            // fontWeight: '700',
                                             letterSpacing: scale(0.5),
-                                            color: 'red'
+                                            color: 'white',
+                                            marginTop: verticalScale(5),
+
                                         }}>
-                                            Loading items...
-                                        </Text> :
-                                            <Text style={{
-                                                fontWeight: '600',
-                                                letterSpacing: scale(0.5),
-                                                color: 'white',
-                                                fontSize: normalize(15)
-                                            }}>
-                                                No items
-                                            </Text>
-                                        }
+                                            <Text> No results for</Text>
+                                            <Text style={{ fontWeight: "bold" }}> {query}</Text>
+                                        </Text>
+
                                     </View>
-                            }
+                                }
+                                ListHeaderComponent={renderHeader(query, DATA, setData, setQuery, searchRef, setloading)}
+                            />
                         </KeyboardAvoidingView>
-                    </SafeAreaView>
+
+                        :
+                        <View style={{
+                            flex: 1,
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
+                            {loading ? <Text style={{
+                                marginTop: scale(50),
+                                // padding: scale(34),
+                                fontFamily: 'sans-serif-thin',
+                                fontWeight: '700',
+                                letterSpacing: scale(0.5),
+                                color: 'red'
+                            }}>
+                                Loading items...
+                            </Text> :
+                                <Text style={{
+                                    fontWeight: '600',
+                                    letterSpacing: scale(0.5),
+                                    color: 'white',
+                                    fontSize: normalize(15)
+                                }}>
+                                    No items
+                                </Text>
+                            }
+                        </View>
+
+
             }
-        </>
+        </SafeAreaView>
     )
 }
 
