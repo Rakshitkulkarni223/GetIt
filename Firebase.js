@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore'
 import { getDatabase } from "firebase/database";
+import { getStorage } from "firebase/storage";
 
 export const firebaseConfig = {
     apiKey: "AIzaSyBJGV363J9OL1upLK9Yzy_O51y4zW6vEBc",
@@ -18,5 +19,6 @@ export default app;
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const storage = getStorage();
 export const database = getDatabase();
-export const admins = ["rakshitkulkarni2002@gmail.com","+919480527929"]
+export const admins = ["rakshitkulkarni2002@gmail.com","+919380682856"]

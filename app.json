@@ -7,9 +7,9 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "https://us.123rf.com/450wm/indianfoodimages/indianfoodimages1808/indianfoodimages180800081/indianfoodimages180800081.jpg?ver=6",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#6DA297"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

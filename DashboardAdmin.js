@@ -28,6 +28,7 @@ import PendingOrders from "./admin/PendingOrders";
 import ConfirmedOrders from "./admin/ConfiremdOrders";
 import ActivityIndicatorElement from "./ActivityIndicatorElement";
 import { Alert } from "react-native";
+import { normalize } from "./FontResize";
 
 
 
@@ -98,45 +99,48 @@ const DashboardAdmin = ({ navigation, route }) => {
     const [loading, setloading] = useState(false);
 
     useEffect(() => {
-
-        setloading(true)
-
-        if (textbutton === "Logout") {
+        try {
             const phoneNumber = auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3);
             navigation.setOptions({
+                headerShown: true,
+                title: 'Dashboard Admin',
                 headerRight: () => (
-                    <AntDesign name="logout" size={24} color="black" onPress={() => signOut(auth).then(() => {
+                    <AntDesign name="logout" size={normalize(20)} color="black" onPress={() => signOut(auth).then(() => {
                         Alert.alert(`${phoneNumber}`, 'you have successfully logged out!');
-                        navigation.replace("Home")
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'Main' }],
+                        });
                     }).catch((error) => {
                         Alert.alert(`${phoneNumber}`, 'Logout Unsuccessfull!');
                     })} />
                 ),
             })
-
-            setloading(false)
+        }
+        catch (error) {
+            setUser({ loggedIn: false })
         }
     }, [user])
 
 
     useEffect(() => {
+        try {
+            const unsubscribe = onAuthStateChanged(auth, (validuser) => {
+                if (validuser) {
+                    const uid = validuser.uid;
+                    // setOrderId(uuid.v4().substring(0, 8));
+                    setUser({ loggedIn: true, phoneNumber: validuser.phoneNumber })
+                } else {
+                    setUser({ loggedIn: false })
+                }
 
-        setloading(true)
-
-        const unsubscribe = onAuthStateChanged(auth, (validuser) => {
-            if (validuser) {
-                const uid = validuser.uid;
-                setTextButton("Logout");
-                setUser({ loggedIn: true, phoneNumber: validuser.phoneNumber })
-            } else {
-                setTextButton("Login");
-                setUser({ loggedIn: false })
+            });
+            return () => {
+                unsubscribe();
             }
-
-            setloading(false)
-        });
-        return () => {
-            unsubscribe();
+        }
+        catch (error) {
+            setUser({ loggedIn: false })
         }
     }, [])
 

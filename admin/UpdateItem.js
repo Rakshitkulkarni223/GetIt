@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import {
     StyleSheet, Image, SafeAreaView,
     TextInput,
@@ -23,43 +23,14 @@ import { scale, moderateScale, verticalScale } from '../Dimensions';
 
 import * as ImagePicker from 'expo-image-picker';
 
-import { app, auth, db, database } from "../Firebase";
+import { app, auth, db, storage, database } from "../Firebase";
 import { ref, set, update } from "firebase/database";
 import ViewItems from "./ViewItems";
 import ActivityIndicatorElement from "../ActivityIndicatorElement";
 
-const SaveItem = async (ItemCategory, ItemName, ItemPrice, ItemDesc, ItemImage, updated) => {
+import { ref as sref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-    const id = ItemCategory.match(/([0-9a-zA-Z])/g).join("") + ItemName.match(/([0-9a-zA-Z])/g).join("") + ItemDesc.match(/([0-9a-zA-Z])/g).join("")
 
-    ItemName = ItemName.trim();
-    ItemCategory = ItemCategory.trim();
-    ItemDesc = ItemDesc.trim();
-    ItemPrice = ItemPrice.trim();
-
-    updated ?
-
-        update(ref(database, `admin/items/${ItemCategory}/` + id), {
-            ItemId: id,
-            ItemName: ItemName,
-            ItemPrice: ItemPrice,
-            ItemDesc: ItemDesc,
-            ItemImage: ItemImage,
-            ItemCategory: ItemCategory,
-            ItemUpdatedDate: new Date().toLocaleString(),
-        }) :
-
-        update(ref(database, `admin/items/${ItemCategory}/` + id), {
-            ItemId: id,
-            ItemName: ItemName,
-            ItemPrice: ItemPrice,
-            ItemDesc: ItemDesc,
-            ItemImage: ItemImage,
-            ItemCategory: ItemCategory,
-            ItemAddedDate: new Date().toLocaleString(),
-        })
-
-};
 
 const UpdateItem = ({ title, description, image_url, price, category, id }) => {
 
@@ -72,6 +43,11 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
 
     const [message, showMessage] = useState();
 
+    const ItemNameref = createRef("");
+    const ItemDescref = createRef("");
+    const ItemPriceref = createRef("");
+    const ItemCategoryref = createRef("");
+
 
     const [loading, setloading] = useState(false);
 
@@ -80,7 +56,6 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
     // This function is triggered when the "Select an image" button pressed
     const showImagePicker = async () => {
 
-        setloading(true)
         // Ask the user for the permission to access the media library 
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -95,13 +70,11 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
             setItemImage(result['assets'][0]["uri"]);
         }
 
-        setloading(false)
     }
 
     // This function is triggered when the "Open camera" button pressed
     const openCamera = async () => {
 
-        setloading(true)
         // Ask the user for the permission to access the camera
         const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -115,21 +88,86 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
         if (!result['canceled']) {
             setItemImage(result['assets'][0]["uri"]);
         }
-
-        setloading(false)
     }
 
+    const uploadImage = async (image, id) => {
+        try {
+            const blob = await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function () {
+                    resolve(xhr.response);
+                };
+                xhr.onerror = function (e) {
+                    console.log(e);
+                    reject(new TypeError("Network request failed"));
+                };
+                xhr.responseType = "blob";
+                xhr.open("GET", image, true);
+                xhr.send(null);
+            });
 
+            const fileRef = sref(storage, `Images/${id}`);
+            const result = await uploadBytes(fileRef, blob);
+
+            blob.close();
+            setloading(false)
+
+            const url = await getDownloadURL(fileRef);
+            return url;
+        }
+        catch (error) {
+            console.log(error)
+            setloading(false)
+            Alert.alert("Image Not Uploaded!!");
+        }
+
+    }
+    const SaveItem = async (ItemCategory, ItemName, ItemPrice, ItemDesc, ItemImage, updated) => {
+
+        const id = ItemCategory.match(/([0-9a-zA-Z])/g).join("") + ItemName.match(/([0-9a-zA-Z])/g).join("") + ItemDesc.match(/([0-9a-zA-Z])/g).join("")
+
+        ItemName = ItemName.trim();
+        ItemCategory = ItemCategory.trim();
+        ItemDesc = ItemDesc.trim();
+        ItemPrice = ItemPrice.trim();
+
+        var image = await uploadImage(ItemImage, id);
+
+        updated ?
+
+            update(ref(database, `admin/items/${ItemCategory}/` + id), {
+                ItemId: id,
+                ItemName: ItemName,
+                ItemPrice: ItemPrice,
+                ItemDesc: ItemDesc,
+                ItemImage: image,
+                ItemCategory: ItemCategory,
+                ItemUpdatedDate: new Date().toLocaleString(),
+            }) :
+
+            update(ref(database, `admin/items/${ItemCategory}/` + id), {
+                ItemId: id,
+                ItemName: ItemName,
+                ItemPrice: ItemPrice,
+                ItemDesc: ItemDesc,
+                ItemImage: image,
+                ItemCategory: ItemCategory,
+                ItemAddedDate: new Date().toLocaleString(),
+            })
+
+    };
 
     const handleSubmitButton = async () => {
 
         showMessage("");
-        setloading(true);
 
         if (!ItemName) return alert("Please enter Item Name.");
         if (!ItemPrice) return alert("Please enter Item Price per Plate.");
         if (!ItemCategory) return alert("Please enter Item Category.");
         if (!ItemImage) return alert("Please upload Item Image.");
+
+        setloading(true);
+
 
         try {
             ItemCategory.trim() !== category ?
@@ -138,6 +176,7 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
                 }) : false
 
             await SaveItem(ItemCategory, ItemName, ItemPrice, ItemDesc, ItemImage, ItemCategory.trim() === category)
+            setloading(false)
             Alert.alert("Item Updated", `${ItemName} ${ItemDesc} - ${ItemPrice} rs has been updated to ${ItemCategory} Category Successfully.`);
             setupdated(true);
             setloading(false);
@@ -151,175 +190,214 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
 
     return (
         <>
-             <ActivityIndicatorElement loading={loading}/>
+            <ActivityIndicatorElement loading={loading} />
             {
                 updated ? <ViewItems /> :
                     <SafeAreaView style={{ flex: 1, backgroundColor: '#3B3636' }}>
-                        <View style={{ padding: scale(18), marginTop: verticalScale(20) }}>
-                            <View
-                                style={{
-                                    borderWidth: scale(0.5),
-                                    borderRadius: scale(5),
-                                    borderColor: 'white'
-                                    // marginTop: verticalScale(10),
-                                }}
-                            >
-                                <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item name</Text>
-                                <TextInput
-                                    style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
-                                    placeholder="Enter item name e.g Idli/Dosa"
-                                    defaultValue={ItemName}
-                                    placeholderTextColor='white'
-                                    keyboardType="default"
-                                    cursorColor='#778899'
-                                    onChangeText={(ItemName) => {
-                                        setItemName(ItemName)
+                        <ScrollView>
+                            <View style={{ padding: scale(18), marginTop: verticalScale(20) }}>
+                                <View
+                                    style={{
+                                        borderBottomWidth: scale(0.5),
+                                        borderRadius: scale(5),
+                                        marginTop: verticalScale(10),
+                                        borderColor: 'white'
                                     }}
-                                />
-                                <View style={{
-                                    borderTopWidth: scale(0.5),
-                                    borderColor: 'white'
-
-                                }}>
-                                    <Text style={{
-                                        marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light'
-                                    }}>Item description</Text>
+                                >
+                                    <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item name</Text>
                                     <TextInput
-                                        style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
-                                        placeholder="Enter item description"
+                                        style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: ItemName ? 'sans-serif-light' : 'sans-serif-thin' }}
+                                        placeholder="Enter item name e.g Idli/Dosa"
+                                        defaultValue={ItemName}
+                                        placeholderTextColor='white'
+                                        keyboardType="default"
+                                        cursorColor='#778899'
+                                        ref={ItemNameref}
+                                        clearButtonMode="always"
+                                        returnKeyType="next"
+                                        onSubmitEditing={() =>
+                                            ItemDescref.current && ItemDescref.current.focus()
+                                        }
+                                        blurOnSubmit={false}
+                                        onChangeText={(ItemName) => {
+                                            setItemName(ItemName)
+                                        }}
+                                    />
+                                    </View>
+                                    <View
+                                        style={{
+                                            borderBottomWidth: scale(0.5),
+                                            borderRadius: scale(5),
+                                            marginTop: verticalScale(10),
+                                            borderColor: 'white'
+                                        }}
+                                    >
+                                        <Text style={{
+                                            marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light'
+                                        }}>Item description</Text>
+                                        <TextInput
+                                            style={{
+                                                marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14),
+                                                fontFamily: ItemDesc ? 'sans-serif-light' : 'sans-serif-thin'
+                                            }}
+                                            placeholder="Enter item description"
+                                            keyboardType="default"
+                                            placeholderTextColor='white'
+                                            defaultValue={ItemDesc}
+                                            ref={ItemDescref}
+                                            clearButtonMode="always"
+                                            returnKeyType="next"
+                                            onSubmitEditing={() =>
+                                                ItemCategory.current && ItemCategory.current.focus()
+                                            }
+                                            blurOnSubmit={false}
+                                            cursorColor='#778899'
+                                            onChangeText={(ItemDesc) => {
+                                                setItemDesc(ItemDesc)
+                                            }}
+                                        />
+                                    </View>
+
+                                <View
+                                    style={{
+                                        borderBottomWidth: scale(0.5),
+                                        borderRadius: scale(5),
+                                        marginTop: verticalScale(10),
+                                        borderColor: 'white'
+                                    }}
+                                >
+                                    <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item category</Text>
+                                    <TextInput
+                                        style={{
+                                            marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14),
+                                            fontFamily: ItemCategory ? 'sans-serif-light' : 'sans-serif-thin'
+                                        }}
+                                        placeholder="Enter item category e.g Breakfast,Snacks..."
                                         keyboardType="default"
                                         placeholderTextColor='white'
-                                        defaultValue={ItemDesc}
                                         cursorColor='#778899'
-                                        onChangeText={(ItemDesc) => {
-                                            setItemDesc(ItemDesc)
+                                        defaultValue={ItemCategory}
+                                        ref={ItemCategoryref}
+                                        returnKeyType="next"
+                                        clearButtonMode="always"
+                                        onSubmitEditing={() =>
+                                            ItemPrice.current && ItemPrice.current.focus()
+                                        }
+                                        blurOnSubmit={false}
+                                        onChangeText={(ItemCategory) => {
+                                            setItemCategory(ItemCategory)
                                         }}
                                     />
                                 </View>
-                            </View>
 
-                            <View
-                                style={{
-                                    borderWidth: scale(0.5),
-                                    borderRadius: scale(5),
-                                    marginTop: verticalScale(10),
-                                    borderColor: 'white'
-                                }}
-                            >
-                                <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item category</Text>
-                                <TextInput
-                                    style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
-                                    placeholder="Enter item category e.g Breakfast,Snacks..."
-                                    keyboardType="default"
-                                    placeholderTextColor='white'
-                                    cursorColor='#778899'
-                                    defaultValue={ItemCategory}
-                                    onChangeText={(ItemCategory) => {
-                                        setItemCategory(ItemCategory)
+                                <View
+                                    style={{
+                                        borderBottomWidth: scale(0.5),
+                                        borderRadius: scale(5),
+                                        marginTop: verticalScale(10),
+                                        borderColor: 'white'
                                     }}
-                                />
-                            </View>
-
-                            <View
-                                style={{
-                                    borderWidth: scale(0.5),
-                                    borderRadius: scale(5),
-                                    marginTop: verticalScale(10),
-                                    borderColor: 'white'
-                                }}
-                            >
-                                <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>
-                                    Item price
-                                </Text>
-                                <TextInput
-                                    style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
-                                    placeholder="Enter item price per plate"
-                                    autoCompleteType="tel"
-                                    cursorColor='#778899'
-                                    placeholderTextColor='white'
-                                    keyboardType="phone-pad"
-                                    defaultValue={ItemPrice}
-                                    textContentType="telephoneNumber"
-                                    onChangeText={(ItemPrice) => {
-                                        setItemPrice(ItemPrice)
-                                    }}
-                                />
-                            </View>
-
-
-                            <View
-                                style={{
-                                    borderWidth: scale(0.5),
-                                    borderRadius: scale(5),
-                                    marginTop: verticalScale(10),
-                                    paddingBottom: scale(2),
-                                    borderColor: 'white'
-                                }}
-                            >
-                                <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item Image</Text>
-                                <View style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'center',
-                                }}>
-                                    {
-                                        ItemImage !== '' && <Image
-                                            source={{ uri: ItemImage }}
-                                            style={styles.image}
-                                        />
-                                    }
+                                >
+                                    <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>
+                                        Item price
+                                    </Text>
+                                    <TextInput
+                                        style={{
+                                            marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14),
+                                            fontFamily: ItemPrice ? 'sans-serif-light' : 'sans-serif-thin'
+                                        }}
+                                        placeholder="Enter item price per plate"
+                                        autoCompleteType="tel"
+                                        cursorColor='#778899'
+                                        placeholderTextColor='white'
+                                        keyboardType="phone-pad"
+                                        defaultValue={ItemPrice}
+                                        ref={ItemPriceref}
+                                        returnKeyType="next"
+                                        onSubmitEditing={Keyboard.dismiss}
+                                        blurOnSubmit={false}
+                                        textContentType="telephoneNumber"
+                                        onChangeText={(ItemPrice) => {
+                                            setItemPrice(ItemPrice)
+                                        }}
+                                    />
                                 </View>
 
-                                <View style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-evenly',
-                                    marginVertical: verticalScale(5),
-                                }}>
-                                    <View
-                                    // style={{ paddingLeft: scale(80), paddingTop: verticalScale(5) }}
-                                    >
-                                        <Feather name="image" size={scale(25)} color="white" onPress={
-                                            showImagePicker
-                                        } />
-                                        {/* <MaterialIcons name="add-photo-alternate" size={scale(25)} color="black" onPress={
+
+                                <View
+                                    style={{
+                                        borderBottomWidth: scale(0.5),
+                                        borderRadius: scale(5),
+                                        marginTop: verticalScale(10),
+                                        paddingBottom: scale(2),
+                                        borderColor: 'white'
+                                    }}
+                                >
+                                    <Text style={{ marginLeft: scale(10), color: '#1FD4A5', marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item Image</Text>
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                    }}>
+                                        {
+                                            ItemImage !== '' && <Image
+                                                source={{ uri: ItemImage }}
+                                                style={styles.image}
+                                            />
+                                        }
+                                    </View>
+
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-evenly',
+                                        marginVertical: verticalScale(5),
+                                    }}>
+                                        <View
+                                        // style={{ paddingLeft: scale(80), paddingTop: verticalScale(5) }}
+                                        >
+                                            <Feather name="image" size={scale(25)} color="white" onPress={
+                                                showImagePicker
+                                            } />
+                                            {/* <MaterialIcons name="add-photo-alternate" size={scale(25)} color="black" onPress={
                                     showImagePicker
                                 } /> */}
-                                    </View>
-                                    <View
-                                    // style={{ paddingRight: scale(10), paddingTop: verticalScale(5) }}
-                                    >
-                                        <Feather name="camera" size={scale(25)} color="white" onPress={
-                                            openCamera} />
-                                    </View>
+                                        </View>
+                                        <View
+                                        // style={{ paddingRight: scale(10), paddingTop: verticalScale(5) }}
+                                        >
+                                            <Feather name="camera" size={scale(25)} color="white" onPress={
+                                                openCamera} />
+                                        </View>
 
-                                    {ItemImage ? <View
-                                    // style={{ paddingRight: scale(90), paddingTop: verticalScale(5)  }}
-                                    >
-                                        <AntDesign name="delete" size={scale(25)} color="red" onPress={() => {
-                                            setItemImage('');
-                                        }} />
-                                    </View> : <></>}
+                                        {ItemImage ? <View
+                                        // style={{ paddingRight: scale(90), paddingTop: verticalScale(5)  }}
+                                        >
+                                            <AntDesign name="delete" size={scale(25)} color="red" onPress={() => {
+                                                setItemImage('');
+                                            }} />
+                                        </View> : <></>}
 
+                                    </View>
+                                </View>
+                                {message ? (
+                                    <Text
+                                        style={{
+                                            color: 'red',
+                                            fontSize: normalize(16),
+                                            textAlign: 'center',
+                                            marginTop: scale(20),
+                                        }}>
+                                        {message}
+                                    </Text>
+                                ) : undefined}
+                                <View style={{
+                                    marginTop: verticalScale(20),
+                                }}>
+                                    <Pressable style={styles.button} onPress={handleSubmitButton}>
+                                        <Text style={styles.text}>Update Item</Text>
+                                    </Pressable>
                                 </View>
                             </View>
-                            {message ? (
-                                <Text
-                                    style={{
-                                        color: 'red',
-                                        fontSize: normalize(16),
-                                        textAlign: 'center',
-                                        marginTop: scale(20),
-                                    }}>
-                                    {message}
-                                </Text>
-                            ) : undefined}
-                            <View style={{
-                                marginTop: verticalScale(20),
-                            }}>
-                                <Pressable style={styles.button} onPress={handleSubmitButton}>
-                                    <Text style={styles.text}>Update Item</Text>
-                                </Pressable>
-                            </View>
-                        </View>
+                        </ScrollView>
                     </SafeAreaView>
             }
         </>

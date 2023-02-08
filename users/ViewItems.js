@@ -40,9 +40,9 @@ const ViewItems = ({navigation, OrderId}) => {
                count=false;
             })
          })
+         setloading(false)
          setAllItems(items);
 
-         setloading(false)
       });
 
       return () =>{

@@ -212,33 +212,33 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, loading, setloading
 
 
    
-    // useEffect(() => {
+    useEffect(() => {
 
-    //     setloading(true);
+        setloading(true);
 
-    //     const getitemsDelivered = onValue(itemsList, (snapshot) => {
+        const getitemsDelivered = onValue(itemsList, (snapshot) => {
 
-    //         var itemsdelivered = []
+            var itemsdelivered = []
 
-    //         snapshot.forEach((allItems) => {
+            snapshot.forEach((allItems) => {
 
-    //             allItems.forEach((child) => {
-    //                 itemsdelivered.push({
-    //                     key: child.key, Delivered: false
-    //                 });
-    //             })
-    //         })
+                allItems.forEach((child) => {
+                    itemsdelivered.push({
+                        key: child.key, Delivered: false
+                    });
+                })
+            })
 
-    //         setdelivered(itemsdelivered)
+            setdelivered(itemsdelivered)
 
-    //         setloading(false);
-    //     });
+            setloading(false);
+        });
 
-    //     return () => {
-    //         getitemsDelivered();
-    //     }
+        return () => {
+            getitemsDelivered();
+        }
 
-    // }, [])
+    }, [])
 
 
     const toggleFunction = (index) => {

@@ -153,11 +153,21 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
         GetCurrentLocation();
     }, [])
 
+    useEffect(() => {
+        const timerId = setTimeout(() => {
+           setloading(false)
+        }, 10000);
+        return () => {
+          clearInterval(timerId);
+        };
+      }, []);
+    
+
 
 
     const GetCurrentLocation = async () => {
 
-        setloading(true)
+        // setloading(true)
 
         setisautomatic(true);
 
@@ -222,7 +232,7 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
 
     const getLocationFromAddress = async () => {
 
-        setloading(true)
+        // setloading(true)
 
         setisautomatic(false)
 

@@ -363,9 +363,9 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
             OrderPending: false,
             OrderDelivered: false
         });
+        setloading(false)
         setData(temp);
         setRefresh(Math.random()); // <- Add if your view not Rerender
-        setloading(false)
     };
 
     const renderItem = ({ item, index }) => (
