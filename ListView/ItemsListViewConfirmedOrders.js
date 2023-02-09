@@ -124,7 +124,7 @@ const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => 
                     cursorColor='#778899'
                     clearButtonMode="always"
                     onChangeText={queryText => handleSearch(queryText, DATA, setData, setQuery, setloading)}
-                    placeholder="Search Items"
+                    placeholder="Search Order Id"
                 />
             </View>
             {query ?

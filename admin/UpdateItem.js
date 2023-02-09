@@ -41,7 +41,7 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
     const [ItemImage, setItemImage] = useState(image_url);
     const [ItemId, setItemId] = useState(id);
 
-    const [message, showMessage] = useState();
+    const [message, setMessage] = useState();
 
     const ItemNameref = createRef("");
     const ItemDescref = createRef("");
@@ -159,7 +159,7 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
 
     const handleSubmitButton = async () => {
 
-        showMessage("");
+        setMessage();
 
         if (!ItemName) return alert("Please enter Item Name.");
         if (!ItemPrice) return alert("Please enter Item Price per Plate.");
@@ -177,13 +177,18 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
 
             await SaveItem(ItemCategory, ItemName, ItemPrice, ItemDesc, ItemImage, ItemCategory.trim() === category)
             setloading(false)
+
+            setMessage({
+                text: 'Item Updated',
+                type: 'info'
+            })
+            setloading(false);
             Alert.alert("Item Updated", `${ItemName} ${ItemDesc} - ${ItemPrice} rs has been updated to ${ItemCategory} Category Successfully.`);
             setupdated(true);
-            setloading(false);
         }
         catch (e) {
             setloading(false)
-            showMessage(e);
+            setMessage({text : e, type : 'danger'});
         }
     };
 
@@ -386,7 +391,7 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
                                             textAlign: 'center',
                                             marginTop: scale(20),
                                         }}>
-                                        {message}
+                                        {message.text}
                                     </Text>
                                 ) : undefined}
                                 <View style={{

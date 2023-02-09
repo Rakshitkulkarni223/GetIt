@@ -106,7 +106,7 @@ const DashboardAdmin = ({ navigation, route }) => {
                 title: 'Dashboard Admin',
                 headerRight: () => (
                     <AntDesign name="logout" size={normalize(20)} color="black" onPress={() => signOut(auth).then(() => {
-                        Alert.alert(`${phoneNumber}`, 'you have successfully logged out!');
+                        Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
                         navigation.reset({
                             index: 0,
                             routes: [{ name: 'Main' }],

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     SafeAreaView,
     StyleSheet,
@@ -21,6 +21,15 @@ import { scale } from './Dimensions';
 import { normalize } from './FontResize';
 
 const ActivityIndicatorElement = ({ loading }) => {
+
+    const [color, setColor] = useState('teal');
+    useEffect(() => {
+      const id = setInterval(() => {
+        setColor((color) => color == 'teal' ? 'royalblue' : 'teal');
+      }, 500);
+      return () => clearInterval(id);
+    }, []);
+
     return (
         <Modal visible={loading} transparent={true}>
             <View style={{
@@ -28,7 +37,7 @@ const ActivityIndicatorElement = ({ loading }) => {
                 flexDirection: 'column',
                 justifyContent: 'center'
             }}>
-                <ActivityIndicator size="large" color="#2F66EE" animating={true} />
+                <ActivityIndicator  size="large" color={color} animating={true} />
             </View>
         </Modal>
     );

@@ -63,7 +63,9 @@ const LoginWithOTP = ({ navigation }) => {
 
 
 
-  const displayFlashMessage = (message, type) => {
+  const displayFlashMessage = () => {
+    var msg = message.text;
+    var type = message.type;
 
     var color = ''
 
@@ -79,7 +81,7 @@ const LoginWithOTP = ({ navigation }) => {
     }
 
     flashMessage.current.showMessage({
-      message: message,
+      message: msg,
       type: type,
       animationDuration: 650,
       duration: 2000,
@@ -423,8 +425,13 @@ const LoginWithOTP = ({ navigation }) => {
                   }}>
                     <Text style={{ fontSize: normalize(17), textAlignVertical: 'center', color: '#808080' }}>+91</Text>
                   </View>
+
                   <View style={{
-                    paddingLeft: scale(5),
+                    // flex: 1,
+                    width: '65%',
+                    flexDirection: 'row',
+                    marginLeft: scale(5),
+                    // justifyContent: 'center'
                   }}>
                     <TextInput
                       style={{ fontSize: normalize(17), padding: scale(2) }}
@@ -438,16 +445,17 @@ const LoginWithOTP = ({ navigation }) => {
                       onSubmitEditing={Keyboard.dismiss}
                     />
                   </View>
+
                   <View style={{
-                    marginLeft: scale(90),
+                    // flex: 1,
+                    marginLeft: scale(40),
                     justifyContent: 'center',
                   }}>
                     {phoneNumber && phoneNumber.length === 10 ? <Feather name="check-circle" size={normalize(18)} color="#249A5A" /> : <></>}
                   </View>
+                  
                 </View>
-                {message ?
-                  displayFlashMessage(message.text, message.type)
-                  : undefined}
+              
 
 
                 <TouchableOpacity style={[styles.button, { marginTop: verticalScale(15) }]}
@@ -482,6 +490,9 @@ const LoginWithOTP = ({ navigation }) => {
             </View>
           </ScrollView>
         }
+          {message ?
+                  displayFlashMessage()
+                  : undefined}
         {/* </KeyboardAvoidingView> */}
       </SafeAreaView>
     </>

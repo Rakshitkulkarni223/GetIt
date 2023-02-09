@@ -17,6 +17,7 @@ const UserProfile = ({ navigation }) => {
     const [password, setpassword] = useState('');
     const [DOB, setDOB] = useState('');
     const [email, setemail] = useState('');
+    const [ProfilePic, setProfilePic] = useState('');
 
     const [loading, setloading] = useState(false);
 
@@ -36,7 +37,11 @@ const UserProfile = ({ navigation }) => {
                 if (child.key === 'Dob') {
                     setDOB(child.val())
                 }
+                if (child.key === 'ProfilePic') {
+                    setProfilePic(child.val())
+                }
                 if (child.key === 'password') {
+                    setpassword(password)
                     var dummypassword = ''
                     for (let i = 0; i < child.val().length; i++) {
                         dummypassword += '*'
@@ -71,17 +76,43 @@ const UserProfile = ({ navigation }) => {
                             marginLeft: scale(60),
                         }}
                     >
-                        <Image
-                            style={{
-                                width: scale(170),
-                                height: verticalScale(180),
-                                borderRadius: scale(100),
-                            }}
-                            resizeMode='contain'
-                            source={{
-                                uri: 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
-                            }}
-                        />
+                        {ProfilePic ?
+
+                            <Image
+                                style={{
+                                    width: scale(170),
+                                    height: verticalScale(160),
+                                    borderRadius: scale(100),
+                                    borderWidth: scale(1),
+                                    borderColor: '#3F999E',
+                                    resizeMode: 'cover'
+                                }}
+                                source={{
+                                    uri: ProfilePic ? ProfilePic : ''
+                                }}
+                                onLoadStart={() => {setloading(true)}}
+                                onLoadEnd={() => {setloading(false)}}
+                            />
+                            :
+                            <Image
+                                style={{
+                                    width: scale(170),
+                                    height: verticalScale(160),
+                                    borderRadius: scale(100),
+                                    borderWidth: scale(1),
+                                    borderColor: '#3F999E',
+                                    resizeMode: 'cover'
+                                }}
+
+                                source={require('./assets/Profile.png')}
+                            // source={{
+                            //   uri: ProfilePic ? ProfilePic : 'Images:/Profile.png'
+                            //   // '/assets/Profile.jpg'
+                            //   // 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png'
+                            //   // 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
+                            // }}
+                            />
+                        }
 
                     </View>
 
@@ -329,7 +360,7 @@ const UserProfile = ({ navigation }) => {
                                 index: 0,
                                 routes: [{
                                     name: 'Signup',
-                                    params: { firstName: firstName, lastName: lastName, DOB: DOB, email: email, password: password }
+                                    params: { firstName: firstName, lastName: lastName, DOB: DOB, email: email, password: password , ProfilePic: ProfilePic}
                                 }
                                 ],
                             });
