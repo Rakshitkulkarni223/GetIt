@@ -241,6 +241,7 @@ const LoginWithOTP = ({ navigation }) => {
                         });
                       }
                       else {
+                        setloading(false)
                         navigation.reset({
                           index: 0,
                           routes: [{ name: "Home" }],
@@ -458,7 +459,7 @@ const LoginWithOTP = ({ navigation }) => {
               
 
 
-                <TouchableOpacity style={[styles.button, { marginTop: verticalScale(15) }]}
+                <TouchableOpacity style={[styles.button,{ marginTop: verticalScale(15) }]}
                   onPress={async () => {
                     setloading(true)
                     try {
@@ -483,6 +484,7 @@ const LoginWithOTP = ({ navigation }) => {
                     }
                   }}
                 >
+
                   <Text style={styles.text}>GET OTP</Text>
                 </TouchableOpacity>
                 {attemptInvisibleVerification && <FirebaseRecaptchaBanner />}

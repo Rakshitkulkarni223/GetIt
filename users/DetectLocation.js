@@ -1,5 +1,5 @@
-import React, { useEffect, useState, setState } from 'react'
-import { TouchableOpacity, Text, TextInput, ActivityIndicator, View, Pressable, Button, StyleSheet, SafeAreaView, Modal, PermissionsAndroid, Alert } from 'react-native';
+import React, { useEffect, useState, setState, createRef } from 'react'
+import { Text, TextInput, ActivityIndicator, View, TouchableOpacity, Button, StyleSheet, SafeAreaView, Modal, PermissionsAndroid, Alert } from 'react-native';
 
 import * as Location from 'expo-location';
 
@@ -12,6 +12,12 @@ import { normalize } from '../FontResize';
 import ActivityIndicatorElement from '../ActivityIndicatorElement'
 
 const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
+
+    const houseNameRef = createRef("");
+    const streetNameRef = createRef("");
+    const cityNameRef = createRef("");
+    const postalCodeRef = createRef("");
+
     return (
         <Modal visible={visible} transparent={true} style={{
             justifyContent: 'center'
@@ -47,7 +53,14 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
                         onChangeText={(housename) =>
                             setvalues.sethousename(housename)
                         }
-                        placeholder={'Enter  compartment/house name..'}
+                        placeholder={'Enter compartment/house name..'}
+                        ref={houseNameRef}
+                        clearButtonMode="always"
+                        returnKeyType="next"
+                        onSubmitEditing={() =>
+                            streetNameRef.current && streetNameRef.current.focus()
+                        }
+                        blurOnSubmit={false}
                         autoFocus
                         style={styles.locationInfo}
                     />
@@ -58,6 +71,13 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
                         onChangeText={(streetname) =>
                             setvalues.setstreetname(streetname)
                         }
+                        ref={streetNameRef}
+                        clearButtonMode="always"
+                        returnKeyType="next"
+                        onSubmitEditing={() =>
+                            cityNameRef.current && cityNameRef.current.focus()
+                        }
+                        blurOnSubmit={false}
                         placeholder={'Enter street name...'}
                         style={styles.locationInfo}
                     />
@@ -70,6 +90,13 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
                             setvalues.setcityname(cityname)
                         }
                         placeholder={'Enter city and state name...'}
+                        ref={cityNameRef}
+                        clearButtonMode="always"
+                        returnKeyType="next"
+                        onSubmitEditing={() =>
+                            postalCodeRef.current && postalCodeRef.current.focus()
+                        }
+                        blurOnSubmit={false}
                         style={styles.locationInfo}
                     />
                 </View>
@@ -83,6 +110,10 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
                         autoCompleteType="tel"
                         keyboardType="phone-pad"
                         textContentType="telephoneNumber"
+                        ref={postalCodeRef}
+                        clearButtonMode="always"
+                        returnKeyType="next"
+                        blurOnSubmit={false}
                         placeholder={'Enter postal code...'}
                         style={styles.locationInfo}
                     />
@@ -98,7 +129,7 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
                         elevation: scale(18),
                         backgroundColor: 'black',
                     }}>
-                        <Pressable onPress={toggle}>
+                        <TouchableOpacity onPress={toggle}>
                             <Text style={{
                                 fontSize: normalize(13),
                                 lineHeight: scale(18),
@@ -106,7 +137,7 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
                                 letterSpacing: scale(1),
                                 color: 'white',
                             }}>CANCEL</Text>
-                        </Pressable>
+                        </TouchableOpacity>
                         {/* <Button title="set location" onPress={onSubmit} /> */}
                     </View>
                     <View style={{
@@ -119,7 +150,7 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
                         elevation: scale(18),
                         backgroundColor: 'black',
                     }}>
-                        <Pressable onPress={onSubmit}>
+                        <TouchableOpacity onPress={onSubmit}>
                             <Text style={{
                                 fontSize: normalize(13),
                                 lineHeight: scale(18),
@@ -127,7 +158,7 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
                                 letterSpacing: scale(1),
                                 color: 'white',
                             }}>SET LOCATION</Text>
-                        </Pressable>
+                        </TouchableOpacity>
                         {/* <Button title="set location" onPress={onSubmit} /> */}
                     </View>
                 </View>
@@ -187,6 +218,8 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
             // }
 
             await Location.requestForegroundPermissionsAsync();
+
+            setloading(true)
 
             let { coords } = await Location.getCurrentPositionAsync();
 
@@ -281,6 +314,7 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
             setDisplayCurrentAddress('');
             return;
         }
+
         setDisplayCurrentAddress(`${housename}, ${streetname}, ${cityname}, ${postalcode}`)
         if (coords) {
             const { latitude, longitude } = coords;
@@ -288,6 +322,11 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
             setlongitude(longitude);
         }
         setVisible(!visible)
+
+        sethousename('');
+        setstreetname('');
+        setcityname('');
+        setpostalcode('');
 
         setloading(false)
     }
@@ -368,9 +407,9 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
                                 <MaterialCommunityIcons name="target" size={scale(20)} color="red" onPress={() => GetCurrentLocation()} />
                             </View>
                             <View style={{ paddingLeft: scale(10), }}>
-                                <Pressable onPress={() => GetCurrentLocation()}>
+                                <TouchableOpacity onPress={() => GetCurrentLocation()}>
                                     <Text style={styles.text}>Detect Location</Text>
-                                </Pressable>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </View>
@@ -384,9 +423,9 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
                     </View>
 
                     <View>
-                        <Pressable style={styles.button} onPress={() => setVisible(!visible)}>
+                        <TouchableOpacity style={styles.button} onPress={() => setVisible(!visible)}>
                             <Text style={styles.text}>Enter Location Manually</Text>
-                        </Pressable>
+                        </TouchableOpacity>
                     </View>
                 </View>
 

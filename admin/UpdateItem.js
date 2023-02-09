@@ -59,7 +59,10 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
         // Ask the user for the permission to access the media library 
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
+        setloading(true)
+
         if (permissionResult.granted === false) {
+            setloading(false)
             alert("You've refused to allow this appp to access your photos!");
             return;
         }
@@ -67,6 +70,8 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
         const result = await ImagePicker.launchImageLibraryAsync();
 
         if (!result['canceled']) {
+            setloading(false)
+
             setItemImage(result['assets'][0]["uri"]);
         }
 
@@ -78,7 +83,10 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
         // Ask the user for the permission to access the camera
         const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
+        setloading(true)
+
         if (permissionResult.granted === false) {
+            setloading(false)
             alert("You've refused to allow this appp to access your camera!");
             return;
         }
@@ -86,6 +94,7 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
         const result = await ImagePicker.launchCameraAsync();
 
         if (!result['canceled']) {
+            setloading(false)
             setItemImage(result['assets'][0]["uri"]);
         }
     }
@@ -347,6 +356,12 @@ const UpdateItem = ({ title, description, image_url, price, category, id }) => {
                                             ItemImage !== '' && <Image
                                                 source={{ uri: ItemImage }}
                                                 style={styles.image}
+                                                onLoadStart={()=>{
+                                                    setloading(true)
+                                                }}
+                                                onLoadEnd={()=>{
+                                                    setloading(false)
+                                                }}
                                             />
                                         }
                                     </View>

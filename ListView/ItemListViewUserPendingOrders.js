@@ -156,9 +156,10 @@ const ItemListViewUserPendingOrders = ({ AllOrders, loading, setloading }) => {
 
                             // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
 
-                            // setloading(true)
+                            setloading(true)
 
                             if (!AllOrders[index].Longitude && !AllOrders[index].Latitude && AllOrders[index].Location !== '') {
+                                setloading(false)
                                 Alert.alert('Order Delivery Location', `Exact Location is not found. But Order Delivered to ${AllOrders[index].Location}`, [
                                     {
                                         text: 'OK',
@@ -169,6 +170,7 @@ const ItemListViewUserPendingOrders = ({ AllOrders, loading, setloading }) => {
                             if (AllOrders[index].Longitude && AllOrders[index].Latitude && AllOrders[index].Location !== '') {
                                 setlongitude(AllOrders[index].Longitude);
                                 setlatitude(AllOrders[index].Latitude);
+                                setloading(false)
                                 Alert.alert('Order Delivery Location', `${AllOrders[index].Location}`, [
                                     {
                                         text: 'OK',
@@ -177,7 +179,7 @@ const ItemListViewUserPendingOrders = ({ AllOrders, loading, setloading }) => {
                                 // setvisibleMap(true);
                             }
 
-                            // setloading(false)
+                            setloading(false)
 
                         }
                         }

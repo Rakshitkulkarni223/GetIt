@@ -121,7 +121,12 @@ const PaymentGateway = ({ navigation, route, setData, totalamount, AllConfirmedI
             }}>
 
                 <View style={{ margin: scale(10), }}>
-                    <Pressable style={styles.button} onPress={() => openPaymentApp('online')}>
+                    <Pressable style={styles.button} 
+                    onPress={
+                        // () => openPaymentApp('online')
+                        () => Alert.alert("Work in progress", "Only cash on delivery is avaliable")}
+                    disabled={true}
+                    >
                         <Text style={styles.text}>PAY ONLINE</Text>
                     </Pressable>
                 </View>
@@ -138,7 +143,7 @@ const PaymentGateway = ({ navigation, route, setData, totalamount, AllConfirmedI
                 </View>
 
                 <View style={{ margin: scale(10), }}>
-                    <Pressable style={styles.button} onPress={() => openPaymentApp('offline')} >
+                    <Pressable style={[styles.button,  { backgroundColor : '#706F71'}]} onPress={() => openPaymentApp('offline')} >
                         <Text style={styles.text}>CASH ON DELIVERY</Text>
                     </Pressable>
                 </View>

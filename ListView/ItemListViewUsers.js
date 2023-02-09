@@ -9,7 +9,7 @@ import { scale, moderateScale, verticalScale } from '../Dimensions';
 import { normalize } from '../FontResize';
 import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
-const Item = ({ setloading,index, setItemId, setItemCategory, showfooter, handleIncrease, qtyhandlervisible, handleDecrease, setItemName, setItemImage, setItemDesc, setItemPrice, id, ItemQuantity, title, image_url, price, description, category, displaycategory }) => (
+const Item = ({ setloading, index, setItemId, setItemCategory, showfooter, handleIncrease, qtyhandlervisible, handleDecrease, setItemName, setItemImage, setItemDesc, setItemPrice, id, ItemQuantity, title, image_url, price, description, category, displaycategory }) => (
     <>{displaycategory ? <Text style={{
         fontSize: normalize(13),
         fontWeight: "600",
@@ -59,14 +59,14 @@ const Item = ({ setloading,index, setItemId, setItemCategory, showfooter, handle
                 }}
                 >
                     <View style={{ borderWidth: scale(1), borderRadius: scale(10) }}>
-                    <Image source={{ uri: image_url }} style={styles.photo} 
-                onLoadStart={()=>{
-                    setloading(true)
-                }}
-                onLoadEnd={()=>{
-                    setloading(false)
-                }}
-                 />
+                        <Image source={{ uri: image_url }} style={styles.photo}
+                            onLoadStart={() => {
+                                setloading(true)
+                            }}
+                            onLoadEnd={() => {
+                                setloading(false)
+                            }}
+                        />
                     </View>
                     <View style={{
                         flexDirection: 'row',

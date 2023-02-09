@@ -105,6 +105,11 @@ const UserProfile = ({ navigation }) => {
                                 }}
 
                                 source={require('./assets/Profile.png')}
+
+                                onLoadStart={()=>setloading(true)}
+                                onLoadEnd={()=>{
+                                  setloading(false)
+                                }}
                             // source={{
                             //   uri: ProfilePic ? ProfilePic : 'Images:/Profile.png'
                             //   // '/assets/Profile.jpg'

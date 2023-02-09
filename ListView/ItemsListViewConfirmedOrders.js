@@ -1,5 +1,5 @@
 import React, { createRef, useEffect, useState } from 'react';
-import { SafeAreaView, SectionList, View, FlatList, StyleSheet, TextInput, Keyboard, Text, StatusBar, Image, TouchableOpacity, Alert, Modal } from 'react-native';
+import { SafeAreaView, SectionList, View, FlatList, StyleSheet, TextInput, Keyboard, Text, StatusBar, Image, TouchableOpacity, Alert, Modal, Linking } from 'react-native';
 import { AntDesign, MaterialCommunityIcons, Entypo, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import UpdateItem from '../admin/UpdateItem';
 import { app, auth, db, database } from "../Firebase";
@@ -36,14 +36,14 @@ const Item = ({ setloading, id, OrderId, title, image_url, price, description, c
                 // alignItems: "flex-start",
             }}>
                 <View>
-                <Image source={{ uri: image_url }} style={styles.photo} 
-                onLoadStart={()=>{
-                    setloading(true)
-                }}
-                onLoadEnd={()=>{
-                    setloading(false)
-                }}
-                 />
+                    <Image source={{ uri: image_url }} style={styles.photo}
+                        onLoadStart={() => {
+                            setloading(true)
+                        }}
+                        onLoadEnd={() => {
+                            setloading(false)
+                        }}
+                    />
                 </View>
                 <View style={{
                     marginTop: verticalScale(4),
@@ -218,7 +218,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, loading, setloading
 
 
 
-   
+
     useEffect(() => {
 
         setloading(true);
@@ -330,7 +330,10 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, loading, setloading
                                 Alert.alert('Exact Location Not Found', `But Location Address is mentioned as ${data[index].Location}`, [
                                     {
                                         text: 'Want to Call?',
-                                        // onPress: () => console.log("call.."),
+                                        onPress: async () => {
+                                            const url = `tel://${data[index].phoneNumber}`
+                                            await Linking.openURL(url)
+                                        },
                                         style: 'cancel',
                                     },
                                     {
@@ -347,6 +350,14 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, loading, setloading
                                 setlatitude(data[index].Latitude);
 
                                 Alert.alert('Order Delivery Location', `${data[index].Location}`, [
+                                    {
+                                        text: 'Want to Call?',
+                                        onPress: async () => {
+                                            const url = `tel://${data[index].phoneNumber}`
+                                            await Linking.openURL(url)
+                                        },
+                                        style: 'cancel',
+                                    },
                                     {
                                         text: 'OK',
                                     },

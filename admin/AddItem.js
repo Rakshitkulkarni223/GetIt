@@ -58,7 +58,7 @@ const AddItem = ({ navigation }) => {
     // This function is triggered when the "Select an image" button pressed
     const showImagePicker = async () => {
 
-        setloading(true)
+       
         // Ask the user for the permission to access the media library 
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -67,6 +67,8 @@ const AddItem = ({ navigation }) => {
             Alert.alert("You've refused to allow this appp to access your photos!");
             return;
         }
+
+        setloading(true)
 
         const result = await ImagePicker.launchImageLibraryAsync();
 
@@ -80,7 +82,7 @@ const AddItem = ({ navigation }) => {
     // This function is triggered when the "Open camera" button pressed
     const openCamera = async () => {
 
-        setloading(true)
+        
         // Ask the user for the permission to access the camera
         const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -89,6 +91,8 @@ const AddItem = ({ navigation }) => {
             alert("You've refused to allow this appp to access your camera!");
             return;
         }
+
+        setloading(true)
 
         const result = await ImagePicker.launchCameraAsync();
 

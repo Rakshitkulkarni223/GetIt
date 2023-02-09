@@ -227,6 +227,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                             setloading(true)
 
                             if (!AllOrders[index].Longitude && !AllOrders[index].Latitude && AllOrders[index].Location !== '') {
+                                setloading(false)
                                 Alert.alert('Exact Location Not Found', `But Location Address is mentioned as ${AllOrders[index].Location}`, [
                                     {
                                         text: 'Want to Call?',
@@ -242,6 +243,8 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                             }
 
                             if (AllOrders[index].Longitude && AllOrders[index].Latitude && AllOrders[index].Location !== '') {
+
+                                setloading(false)
                                 setlongitude(AllOrders[index].Longitude);
 
                                 setlatitude(AllOrders[index].Latitude);

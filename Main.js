@@ -247,12 +247,12 @@ const App = ({ navigation, loading, setloading, user }) => {
                         paddingLeft: scale(5),
                         justifyContent: 'center',
                     }}>
-                        <Pressable style={{
+                        <TouchableOpacity style={{
                             paddingLeft: scale(20),
-
                         }} onPress={() => {
                             navigation.replace('LoginWithOTP');
-                        }}>
+                        }}
+                        >
                             <Text style={{
                                 fontSize: normalize(16),
                                 lineHeight: verticalScale(20),
@@ -262,7 +262,7 @@ const App = ({ navigation, loading, setloading, user }) => {
                             }}>
                                 Login with mobile number
                             </Text>
-                        </Pressable>
+                        </TouchableOpacity>
                     </View>
 
                 </View>

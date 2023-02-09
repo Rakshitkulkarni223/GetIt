@@ -157,6 +157,8 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading }) =>
 
                             if (!AllOrders[index].Longitude && !AllOrders[index].Latitude && AllOrders[index].Location !== '') {
 
+                                setloading(false)
+
                                 Alert.alert('Order Delivery Location', `Exact Location is not found. But Order Delivered to ${AllOrders[index].Location}`, [
                                     {
                                         text: 'OK',
@@ -167,6 +169,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading }) =>
                             if (AllOrders[index].Longitude && AllOrders[index].Latitude && AllOrders[index].Location !== '') {
                                 setlongitude(AllOrders[index].Longitude);
                                 setlatitude(AllOrders[index].Latitude);
+                                setloading(false)
 
                                 Alert.alert('Order Delivery Location', `${AllOrders[index].Location}`, [
                                     {
