@@ -26,7 +26,7 @@ import { onValue, ref, set } from "firebase/database";
 
 import { normalize } from './FontResize';
 
-import { EvilIcons, FontAwesome, FontAwesome5, Ionicons, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
+import { AntDesign, EvilIcons, FontAwesome, FontAwesome5, Ionicons, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
 
 import { scale, moderateScale, verticalScale } from './Dimensions';
 import ActivityIndicatorElement from './ActivityIndicatorElement';
@@ -58,6 +58,32 @@ const Main = ({ navigation }) => {
             headerShown: false
         })
     }, [])
+
+    // useEffect(() => {
+    //     try {
+    //         // setloading(true)
+    //         const phoneNumber = auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3);
+    //         navigation.setOptions({
+    //             headerShown: true,
+    //             title: (admins.includes(auth.currentUser.phoneNumber))? "Dashboard Admin" :"Dashboard User", 
+    //             headerRight: () => (
+    //                 <AntDesign name="logout" size={24} color="black" onPress={() => signOut(auth).then(() => {
+    //                     setloading(false)
+    //                     Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
+    //                     navigation.replace('Main')
+    //                 }).catch((error) => {
+    //                     setloading(false)
+    //                     Alert.alert(`${phoneNumber}`, 'Logout Unsuccessfull!');
+    //                 })} />
+    //             ),
+    //             headerLeft: () => <></>
+    //         })
+    //     }
+    //     catch (error) {
+    //         // setloading(false)
+    //         setUser({ loggedIn: false })
+    //     }
+    // }, [user])
 
     useEffect(() => {
         try {
@@ -124,7 +150,7 @@ function AnimatedSplashScreen({ children, image }) {
         if (isAppReady) {
             Animated.timing(animation, {
                 toValue: 0,
-                duration: 1000,
+                duration: 3000,
                 useNativeDriver: true,
             }).start(() => setAnimationComplete(true));
         }
@@ -194,13 +220,15 @@ const App = ({ navigation, loading, setloading, user }) => {
                 <View style={{
                     flexDirection: 'row',
                     justifyContent: 'center',
-                    marginTop: verticalScale(20),
-                    borderWidth: scale(0.5),
+                    marginTop: verticalScale(50),
+                    borderWidth: scale(0.8),
+                    backgroundColor:'#39AA7F',
                     borderRadius: scale(100),
-                    borderColor: '#fff',
+                    borderColor: '#39AA7F',
                     padding: scale(30)
                 }}>
-                    <SimpleLineIcons name="basket" size={normalize(45)} color="#69B77F" />
+                    <Ionicons name="md-restaurant-outline" size={normalize(80)} color="black" />
+                    {/* <SimpleLineIcons name="basket" size={normalize(45)} color="#69B77F" /> */}
                 </View>
             </View>
 

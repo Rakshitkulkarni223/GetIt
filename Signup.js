@@ -51,7 +51,7 @@ const SignUp = ({ navigation, route }) => {
 
   const [message, showMessage] = useState();
 
-  const [ProfilePic, setProfilePic] = useState(route && route.params ? route.params.ProfilePic : '');
+  const [ProfilePic, setProfilePic] = useState(route && route.params ? route.params.ProfilePic : 'https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FProfile.png?alt=media&token=9b0173fb-4b95-4783-93c7-f928cffbd788');
 
   const [validatedEmail, setvalidatedEmail] = useState(false);
 
@@ -94,11 +94,11 @@ const SignUp = ({ navigation, route }) => {
     setvalidatedEmail(mailformat.test(email));
   }
 
-  const SaveInfo = async (ProfilePic,id, firstName, lastName, DOB, email, password) => {
+  const SaveInfo = async (ProfilePic, id, firstName, lastName, DOB, email, password) => {
 
     firstName = firstName ? firstName.trim() : firstName
     lastName = lastName ? lastName.trim() : lastName
-    email = email ? email.trim()  : email
+    email = email ? email.trim() : email
     password = password ? password.trim() : password
 
     set(ref(database, 'users/' + id), {
@@ -125,7 +125,7 @@ const SignUp = ({ navigation, route }) => {
 
     try {
       setloading(true)
-      SaveInfo(ProfilePic,auth.currentUser.phoneNumber, firstName, lastName, DOB, email, password);
+      SaveInfo(ProfilePic, auth.currentUser.phoneNumber, firstName, lastName, DOB, email, password);
       setloading(false)
       // setgotoDashboardUser(true)
       navigation.reset({
@@ -163,17 +163,18 @@ const SignUp = ({ navigation, route }) => {
 
   const showImagePicker = async () => {
 
-   
+
     setselectMode(false)
     // Ask the user for the permission to access the media library 
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
 
     if (permissionResult.granted === false) {
       setloading(false)
       Alert.alert("You've refused to allow this appp to access your photos!");
       return;
     }
-    setloading(true)
+   
 
     const result = await ImagePicker.launchImageLibraryAsync();
 
@@ -194,6 +195,7 @@ const SignUp = ({ navigation, route }) => {
     // Ask the user for the permission to access the camera
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
+
     if (permissionResult.granted === false) {
       setloading(false)
       alert("You've refused to allow this appp to access your camera!");
@@ -213,6 +215,8 @@ const SignUp = ({ navigation, route }) => {
   }
 
   const uploadImage = async (image, id) => {
+
+    setloading(true)
     try {
       const blob = await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -235,10 +239,10 @@ const SignUp = ({ navigation, route }) => {
       setloading(false)
 
       const url = await getDownloadURL(fileRef);
+      setloading(false)
       return url;
     }
     catch (error) {
-      console.log(error)
       setloading(false)
       Alert.alert("Image Not Uploaded!!");
     }
@@ -362,44 +366,44 @@ const SignUp = ({ navigation, route }) => {
 
             {ProfilePic ?
 
-            <View style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              marginLeft: scale(30),
-              marginBottom: verticalScale(10),
-              // marginTop: scale(10),
-            }}>
-
               <View style={{
-                flexDirection: 'column',
-                justifyContent: 'center'
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                marginLeft: scale(30),
+                marginBottom: verticalScale(10),
+                // marginTop: scale(10),
               }}>
-                <MaterialIcons name="delete-outline" size={normalize(24)} color="#D84329"
-                  onPress={() => {
-                    setProfilePic('')
-                    setselectMode(false)
-                  }}
-                />
-              </View>
 
-              <View style={{
-                flexDirection: 'column',
-                justifyContent: 'center',
-                marginLeft: scale(12),
-              }}>
-                <TouchableOpacity onPress={() => {
-                  setProfilePic('')
-                  setselectMode(false)
+                <View style={{
+                  flexDirection: 'column',
+                  justifyContent: 'center'
                 }}>
-                  <Text style={{
-                    fontSize: normalize(15),
-                    fontWeight: '600'
-                  }}>Remove Profile</Text>
-                </TouchableOpacity>
-              </View>
+                  <MaterialIcons name="delete-outline" size={normalize(24)} color="#D84329"
+                    onPress={() => {
+                      setProfilePic('https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FProfile.png?alt=media&token=9b0173fb-4b95-4783-93c7-f928cffbd788')
+                      setselectMode(false)
+                    }}
+                  />
+                </View>
 
-            </View> : undefined}
+                <View style={{
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  marginLeft: scale(12),
+                }}>
+                  <TouchableOpacity onPress={() => {
+                    setProfilePic('https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FProfile.png?alt=media&token=9b0173fb-4b95-4783-93c7-f928cffbd788')
+                    setselectMode(false)
+                  }}>
+                    <Text style={{
+                      fontSize: normalize(15),
+                      fontWeight: '600'
+                    }}>Remove Profile</Text>
+                  </TouchableOpacity>
+                </View>
+
+              </View> : undefined}
 
           </View>
         </Modal>
@@ -421,49 +425,23 @@ const SignUp = ({ navigation, route }) => {
           }}>
             {/* <FontAwesome5 name="user" size={normalize(25)} color="#4C486C" /> */}
 
-            {ProfilePic ?
-
-              <Image
-                style={{
-                  width: scale(170),
-                  height: verticalScale(160),
-                  borderRadius: scale(100),
-                  borderWidth: scale(1),
-                  borderColor: '#3F999E',
-                  resizeMode: 'cover'
-                }}
-                source={{
-                  uri: ProfilePic ? ProfilePic : require('./assets/Profile.png')
-                }}
-                onLoadStart={()=>setloading(true)}
-                onLoadEnd={()=>{
-                  setloading(false)
-                }}
-              />
-              :
-              <Image
-                style={{
-                  width: scale(170),
-                  height: verticalScale(160),
-                  borderRadius: scale(100),
-                  borderWidth: scale(1),
-                  borderColor: '#3F999E',
-                  resizeMode: 'cover'
-                }}
-
-                source={require('./assets/Profile.png')}
-                onLoadStart={()=>setloading(true)}
-                onLoadEnd={()=>{
-                  setloading(false)
-                }}
-              // source={{
-              //   uri: ProfilePic ? ProfilePic : 'Images:/Profile.png'
-              //   // '/assets/Profile.jpg'
-              //   // 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png'
-              //   // 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
-              // }}
-              />
-            }
+            <Image
+              style={{
+                width: scale(170),
+                height: verticalScale(160),
+                borderRadius: scale(100),
+                borderWidth: scale(1),
+                borderColor: '#3F999E',
+                resizeMode: 'cover'
+              }}
+              source={{
+                uri: ProfilePic
+              }}
+              onLoadStart={() => setloading(true)}
+              onLoadEnd={() => {
+                setloading(false)
+              }}
+            />
 
 
           </View>
@@ -650,7 +628,7 @@ const SignUp = ({ navigation, route }) => {
               backgroundColor: 'white',
             }} onPress={() => {
               setloading(true)
-              SaveInfo(route && route.params ? route.params.ProfilePic===ProfilePic?ProfilePic : route.params.ProfilePic: ProfilePic,auth.currentUser.phoneNumber, firstName, lastName, DOB, email, password);
+              SaveInfo(route && route.params ? route.params.ProfilePic === ProfilePic ? ProfilePic : route.params.ProfilePic : ProfilePic, auth.currentUser.phoneNumber, firstName, lastName, DOB, email, password);
               setloading(false)
               navigation.reset({
                 index: 0,

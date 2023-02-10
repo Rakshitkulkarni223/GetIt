@@ -98,6 +98,32 @@ const DashboardAdmin = ({ navigation, route }) => {
 
     const [loading, setloading] = useState(false);
 
+    // useEffect(() => {
+    //     try {
+    //         const phoneNumber = auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3);
+    //         navigation.setOptions({
+    //             headerShown: true,
+    //             title: 'Dashboard Admin',
+    //             headerRight: () => (
+    //                 <AntDesign name="logout" size={normalize(20)} color="black" onPress={() => signOut(auth).then(() => {
+    //                     Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
+    //                     navigation.reset({
+    //                         index: 0,
+    //                         routes: [{ name: 'Main' }],
+    //                     });
+    //                 }).catch((error) => {
+    //                     Alert.alert(`${phoneNumber}`, 'Logout Unsuccessfull!');
+    //                 })} />
+    //             ),
+    //         })
+    //     }
+    //     catch (error) {
+    //         setUser({ loggedIn: false })
+    //     }
+    // }, [])
+
+    
+
     useEffect(() => {
         try {
             const phoneNumber = auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3);

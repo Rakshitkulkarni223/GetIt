@@ -17,7 +17,7 @@ const UserProfile = ({ navigation }) => {
     const [password, setpassword] = useState('');
     const [DOB, setDOB] = useState('');
     const [email, setemail] = useState('');
-    const [ProfilePic, setProfilePic] = useState('');
+    const [ProfilePic, setProfilePic] = useState('https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FProfile.png?alt=media&token=9b0173fb-4b95-4783-93c7-f928cffbd788');
 
     const [loading, setloading] = useState(false);
 
@@ -76,48 +76,24 @@ const UserProfile = ({ navigation }) => {
                             marginLeft: scale(60),
                         }}
                     >
-                        {ProfilePic ?
 
-                            <Image
-                                style={{
-                                    width: scale(170),
-                                    height: verticalScale(160),
-                                    borderRadius: scale(100),
-                                    borderWidth: scale(1),
-                                    borderColor: '#3F999E',
-                                    resizeMode: 'cover'
-                                }}
-                                source={{
-                                    uri: ProfilePic ? ProfilePic : ''
-                                }}
-                                onLoadStart={() => {setloading(true)}}
-                                onLoadEnd={() => {setloading(false)}}
-                            />
-                            :
-                            <Image
-                                style={{
-                                    width: scale(170),
-                                    height: verticalScale(160),
-                                    borderRadius: scale(100),
-                                    borderWidth: scale(1),
-                                    borderColor: '#3F999E',
-                                    resizeMode: 'cover'
-                                }}
 
-                                source={require('./assets/Profile.png')}
+                        <Image
+                            style={{
+                                width: scale(170),
+                                height: verticalScale(160),
+                                borderRadius: scale(100),
+                                borderWidth: scale(1),
+                                borderColor: '#869BAD',
+                                resizeMode: 'cover'
+                            }}
+                            source={{
+                                uri: ProfilePic
+                            }}
+                            onLoadStart={() => { setloading(true) }}
+                            onLoadEnd={() => { setloading(false) }}
+                        />
 
-                                onLoadStart={()=>setloading(true)}
-                                onLoadEnd={()=>{
-                                  setloading(false)
-                                }}
-                            // source={{
-                            //   uri: ProfilePic ? ProfilePic : 'Images:/Profile.png'
-                            //   // '/assets/Profile.jpg'
-                            //   // 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png'
-                            //   // 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
-                            // }}
-                            />
-                        }
 
                     </View>
 
@@ -353,7 +329,7 @@ const UserProfile = ({ navigation }) => {
                         <Pressable style={{
                             alignItems: 'center',
                             justifyContent: 'center',
-                            paddingVertical: verticalScale(5),
+                            paddingVertical: verticalScale(7),
                             paddingHorizontal: scale(32),
                             borderRadius: scale(4),
                             elevation: scale(10),
@@ -365,13 +341,13 @@ const UserProfile = ({ navigation }) => {
                                 index: 0,
                                 routes: [{
                                     name: 'Signup',
-                                    params: { firstName: firstName, lastName: lastName, DOB: DOB, email: email, password: password , ProfilePic: ProfilePic}
+                                    params: { firstName: firstName, lastName: lastName, DOB: DOB, email: email, password: password, ProfilePic: ProfilePic }
                                 }
                                 ],
                             });
                         }}>
                             <Text style={{
-                                fontSize: normalize(16),
+                                fontSize: normalize(17),
                                 lineHeight: verticalScale(20),
                                 fontWeight: '600',
                                 letterSpacing: scale(0.5),

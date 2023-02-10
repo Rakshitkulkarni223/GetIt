@@ -114,7 +114,7 @@ const DashboardUser = ({ navigation, OrderId }) => {
                 headerShown: true,
                 title: "Dashboard User",
                 headerRight: () => (
-                    <AntDesign name="logout" size={24} color="black" onPress={() => signOut(auth).then(() => {
+                    <AntDesign name="logout" size={normalize(20)} color="black" onPress={() => signOut(auth).then(() => {
                         setloading(false)
                         Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
                         navigation.replace('Main')
