@@ -346,7 +346,7 @@ const SignUp = ({ navigation, route }) => {
                 flexDirection: 'column',
                 justifyContent: 'center'
               }}>
-                <Feather name="image" size={normalize(22)} color="#23A78D" />
+                <AntDesign name="picture" size={normalize(22)} color="#23A78D" />
               </View>
 
               <View style={{
@@ -628,7 +628,12 @@ const SignUp = ({ navigation, route }) => {
               backgroundColor: 'white',
             }} onPress={() => {
               setloading(true)
-              SaveInfo(route && route.params ? route.params.ProfilePic === ProfilePic ? ProfilePic : route.params.ProfilePic : ProfilePic, auth.currentUser.phoneNumber, firstName, lastName, DOB, email, password);
+              SaveInfo(route && route.params ? route.params.ProfilePic === ProfilePic ? ProfilePic : route.params.ProfilePic : ProfilePic, auth.currentUser.phoneNumber, 
+                route && route.params ? route.params.firstName === firstName ? firstName : route.params.firstName : '',
+                route && route.params ? route.params.lastName === lastName ? lastName : route.params.lastName : '',
+                route && route.params ? route.params.DOB === DOB ? DOB : route.params.DOB : '',
+                route && route.params ? route.params.email === email ? email : route.params.email : '',
+                route && route.params ? route.params.password === password ? password : route.params.password : '');
               setloading(false)
               navigation.reset({
                 index: 0,

@@ -35,7 +35,7 @@ const UserAccountDetails = ({ navigation }) => {
                         <View style={{
                             justifyContent: 'center'
                         }}>
-                        <FontAwesome5 name="user" size={verticalScale(18)} color="white" />
+                        <FontAwesome5 name="user" size={verticalScale(16)} color="white" />
                         </View>
                         <View style={{
                             justifyContent: 'center'
@@ -44,7 +44,7 @@ const UserAccountDetails = ({ navigation }) => {
                             style={{
                                 textAlignVertical: 'center',
                                 fontSize: verticalScale(16),
-                                marginLeft: scale(10),
+                                marginLeft: scale(14),
                                 color: 'white'
                             }}
                             onPress={()=>{

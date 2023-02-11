@@ -168,7 +168,7 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
 };
 
 
-const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAddress, longitude, setlongitude, latitude, setlatitude }) => {
+const DetectLocation = ({ navigation,loading,setloading,displayCurrentAddress, setDisplayCurrentAddress, longitude, setlongitude, latitude, setlatitude }) => {
 
     const [visible, setVisible] = useState(false);
     const [housename, sethousename] = useState('');
@@ -176,26 +176,14 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
     const [postalcode, setpostalcode] = useState('');
     const [cityname, setcityname] = useState('');
 
-    const [loading, setloading] = useState(false);
 
     const [isautomatic, setisautomatic] = useState(true);
 
     useEffect(() => {
+        setloading(false)
         GetCurrentLocation();
     }, [])
-
-    useEffect(() => {
-        const timerId = setTimeout(() => {
-           setloading(false)
-        }, 10000);
-        return () => {
-          clearInterval(timerId);
-        };
-      }, []);
     
-
-
-
     const GetCurrentLocation = async () => {
 
         // setloading(true)
@@ -219,7 +207,7 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
 
             await Location.requestForegroundPermissionsAsync();
 
-            setloading(true)
+            // setloading(true)
 
             let { coords } = await Location.getCurrentPositionAsync();
 
@@ -249,6 +237,7 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
                         address += ', ' + item.postalCode
                     }
                 }
+                setloading(false)
                 // let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
                 setDisplayCurrentAddress(address);
             }
@@ -334,7 +323,7 @@ const DetectLocation = ({ navigation, displayCurrentAddress, setDisplayCurrentAd
 
     return (
         <>
-            <ActivityIndicatorElement loading={loading} />
+            {/* <ActivityIndicatorElement loading={loading} /> */}
             <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 
                 <View style={{ margin: scale(15), }}>

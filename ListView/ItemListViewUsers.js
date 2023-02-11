@@ -1,15 +1,17 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert, TextInput, Keyboard, ActivityIndicator, Modal } from 'react-native';
-import { AntDesign, EvilIcons, Ionicons } from '@expo/vector-icons';
+import { AntDesign, EvilIcons, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { app, auth, db, database } from "../Firebase";
-import { ref, set, update } from "firebase/database";
+import { onValue, ref, set, update } from "firebase/database";
 
 import { scale, moderateScale, verticalScale } from '../Dimensions';
 
 import { normalize } from '../FontResize';
 import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
-const Item = ({ setloading, index, setItemId, setItemCategory, showfooter, handleIncrease, qtyhandlervisible, handleDecrease, setItemName, setItemImage, setItemDesc, setItemPrice, id, ItemQuantity, title, image_url, price, description, category, displaycategory }) => (
+
+
+const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating, TotalRating, RateItem, setItemCategory, showfooter, handleIncrease, qtyhandlervisible, handleDecrease, setItemName, setItemImage, setItemDesc, setItemPrice, id, ItemQuantity, title, image_url, price, description, category, displaycategory, setratingOne, ratingOne, setratingTwo, ratingTwo, setratingThree, ratingThree, setratingFour, ratingFour, setratingFive, ratingFive }) => (
     <>{displaycategory ? <Text style={{
         fontSize: normalize(13),
         fontWeight: "600",
@@ -21,14 +23,13 @@ const Item = ({ setloading, index, setItemId, setItemCategory, showfooter, handl
     }}>{category.toUpperCase()}</Text> : <></>}
         <View>
 
-            <View style={styles.container}>
+            <View style={[styles.container,
+            { paddingBottom: showfooter ? verticalScale(10) : verticalScale(18) }]}>
                 <View style={{
                     flex: 1,
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     paddingRight: scale(8),
-                    // alignItems: 'center',
-                    // alignItems: "flex-start",
                 }}>
                     <View>
                         <Text style={styles.title_item}>
@@ -38,16 +39,57 @@ const Item = ({ setloading, index, setItemId, setItemCategory, showfooter, handl
                             {description}
                         </Text>
                     </View>
-                    <View>
+
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start'
+                    }}>
+                        {
+                            avgRating === 0 ?
+                                <FontAwesome
+                                    name='star-o'
+                                    size={normalize(15)}
+                                    color="black"
+                                // style={{ paddingLeft: scale(1) }}
+                                />
+                                :
+                                <FontAwesome
+                                    name='star'
+                                    size={normalize(15)}
+                                    color="#f1c40f"
+                                // style={{ paddingLeft: scale(1) }}
+                                />
+                        }
+                        <Text style={{
+                            paddingLeft: scale(2),
+                            textAlignVertical: 'center'
+                        }}>
+                            <Text>{avgRating}/5, </Text>
+                            <Text style={{
+                                fontWeight: '600'
+                            }}>{totalUsers}</Text>
+                        </Text>
+                    </View>
+
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start'
+                    }}>
+                        {/* <FontAwesome name="rupee" size={normalize(15)} color="black" /> */}
                         <Text style={styles.title_price}>
-                            {price}/-
+                            ₹{price}
                         </Text>
                     </View>
-                    {ItemQuantity * price > 0 ? <View>
-                        <Text style={styles.total_item_price}>
-                            {ItemQuantity * price}/-
-                        </Text>
-                    </View>
+                    {ItemQuantity * price > 0 ?
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start'
+                        }}>
+                            {/* <FontAwesome name="rupee" size={normalize(18)} color="black" style={{ paddingTop: scale(12), }} /> */}
+                            <Text style={styles.total_item_price}>
+                                ₹{ItemQuantity * price}
+                            </Text>
+                        </View>
                         : <></>}
                 </View>
 
@@ -68,6 +110,81 @@ const Item = ({ setloading, index, setItemId, setItemCategory, showfooter, handl
                             }}
                         />
                     </View>
+                    {showfooter ?
+
+                        <View style={{
+                            flex: 1,
+                            flexDirection: 'column',
+                            justifyContent: 'center'
+                        }}>
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                            }}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-start',
+                                    marginTop: verticalScale(20),
+                                    marginBottom: verticalScale(2),
+                                }}>
+                                    <FontAwesome
+                                        name={ratingOne}
+                                        size={normalize(15)}
+                                        color={ratingOne === 'star-o' ? "black" : "#f1c40f"}
+                                        onPress={() => {
+                                            RateItem(index, 1)
+                                        }}
+                                    />
+                                    <FontAwesome
+                                        name={ratingTwo}
+                                        size={normalize(15)}
+                                        color={ratingTwo === 'star-o' ? "black" : "#f1c40f"}
+                                        onPress={() => {
+                                            RateItem(index, 2)
+                                        }}
+                                        style={{ paddingLeft: scale(1) }}
+                                    />
+                                    <FontAwesome
+                                        name={ratingThree}
+                                        size={normalize(15)}
+                                        color={ratingThree === 'star-o' ? "black" : "#f1c40f"}
+                                        onPress={() => {
+                                            RateItem(index, 3)
+                                        }}
+                                        style={{ paddingLeft: scale(1) }}
+                                    />
+                                    <FontAwesome
+                                        name={ratingFour}
+                                        size={normalize(15)}
+                                        color={ratingFour === 'star-o' ? "black" : "#f1c40f"}
+                                        onPress={() => {
+                                            RateItem(index, 4)
+                                        }}
+                                        style={{ paddingLeft: scale(1) }}
+                                    />
+                                    <FontAwesome
+                                        name={ratingFive}
+                                        size={normalize(15)}
+                                        color={ratingFive === 'star-o' ? "black" : "#f1c40f"}
+                                        onPress={() => {
+                                            RateItem(index, 5)
+                                        }}
+                                        style={{
+                                            paddingLeft: scale(1),
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                paddingRight: scale(2),
+                            }}>
+                                <Text>Rate </Text>
+                                <Text style={{ fontWeight: '600' }}>{title}</Text>
+                            </View>
+                        </View> : <></>}
+
                     <View style={{
                         flexDirection: 'row',
                         justifyContent: 'center',
@@ -94,7 +211,7 @@ const Item = ({ setloading, index, setItemId, setItemCategory, showfooter, handl
                                             position: 'absolute',
                                             marginTop: verticalScale(115),
                                             borderWidth: scale(1),
-                                            height: scale(23),
+                                            height: scale(22),
                                             marginLeft: scale(38),
                                             width: scale(80),
                                             borderColor: 'black',
@@ -182,7 +299,6 @@ const Item = ({ setloading, index, setItemId, setItemCategory, showfooter, handl
                                     fontWeight: "600"
                                 }}>{ItemQuantity}</Text>
                             </View> : <></>}
-
                     </View>
                 </View>
             </View>
@@ -302,6 +418,149 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
         setData(DATA)
     }, [DATA])
 
+    const RateItem = (index, ratingByUser) => {
+        const temp = data;
+        var id = data[index].key;
+
+        // var previousRating = temp[index].UserRating;
+
+        // var deleteRating = false;
+
+        if (ratingByUser === 1 && temp[index].ratingOne === 'star') {
+            temp[index].ratingOne = 'star-o'
+            temp[index].ratingTwo = 'star-o'
+            temp[index].ratingThree = 'star-o'
+            temp[index].ratingFour = 'star-o'
+            temp[index].ratingFive = 'star-o'
+            temp[index].UserRating = ratingByUser;
+        }
+        if (ratingByUser === 1 && temp[index].ratingOne === 'star-o') {
+            if (temp[index].UserRating === 0) {
+                temp[index].UserRating = ratingByUser;
+                temp[index].ratingOne = 'star'
+            }
+            else {
+                temp[index].UserRating = 0;
+                // deleteRating = true;
+            }
+        }
+
+        if (ratingByUser === 2 && temp[index].ratingTwo === 'star') {
+            temp[index].ratingTwo = 'star-o'
+            temp[index].ratingThree = 'star-o'
+            temp[index].ratingFour = 'star-o'
+            temp[index].ratingFive = 'star-o'
+            temp[index].UserRating = ratingByUser;
+        }
+        if (ratingByUser === 2 && temp[index].ratingTwo === 'star-o') {
+            temp[index].ratingOne = 'star'
+            temp[index].ratingTwo = 'star'
+            temp[index].UserRating = ratingByUser;
+        }
+
+        if (ratingByUser === 3 && temp[index].ratingThree === 'star') {
+            temp[index].ratingThree = 'star-o'
+            temp[index].ratingFour = 'star-o'
+            temp[index].ratingFive = 'star-o'
+            temp[index].UserRating = ratingByUser;
+        }
+        if (ratingByUser === 3 && temp[index].ratingThree === 'star-o') {
+            temp[index].ratingOne = 'star'
+            temp[index].ratingTwo = 'star'
+            temp[index].ratingThree = 'star'
+            temp[index].UserRating = ratingByUser;
+        }
+
+        if (ratingByUser === 4 && temp[index].ratingFour === 'star') {
+            temp[index].ratingFour = 'star-o'
+            temp[index].ratingFive = 'star-o'
+            temp[index].UserRating = ratingByUser;
+        }
+        if (ratingByUser === 4 && temp[index].ratingFour === 'star-o') {
+            temp[index].ratingOne = 'star'
+            temp[index].ratingTwo = 'star'
+            temp[index].ratingThree = 'star'
+            temp[index].ratingFour = 'star'
+            temp[index].UserRating = ratingByUser;
+        }
+
+        if (ratingByUser === 5 && temp[index].ratingFive === 'star') {
+            temp[index].ratingFive = 'star-o'
+            temp[index].UserRating = ratingByUser;
+        }
+        if (ratingByUser === 5 && temp[index].ratingFive === 'star-o') {
+            temp[index].ratingOne = 'star'
+            temp[index].ratingTwo = 'star'
+            temp[index].ratingThree = 'star'
+            temp[index].ratingFour = 'star'
+            temp[index].ratingFive = 'star'
+            temp[index].UserRating = ratingByUser;
+        }
+
+        set(ref(database, `userRatings/${auth.currentUser.phoneNumber}/${id}/`), {
+            rating: temp[index].UserRating
+        })
+
+        var allrating = 0;
+
+        var totalusers = 0
+
+        onValue(ref(database, `userRatings/`), (snapshot) => {
+            snapshot.forEach((child) => {
+                allrating += child.val()[temp[index].key]["rating"]
+                if (child.val()[temp[index].key]["rating"] !== 0) {
+                    totalusers += 1;
+                }
+            })
+        })
+
+        temp[index].TotalRating = allrating;
+        temp[index].totalUsers = totalusers;
+
+        temp[index].avgRating = totalusers === 0 ? 0 : Math.round(allrating / totalusers * 100) / 100
+
+        set(ref(database, `adminItemRatings/${id}/`), {
+            Rating: temp[index].TotalRating,
+            TotalUsers: temp[index].totalUsers
+        });
+
+        // if (temp[index].RatedBefore) {
+        //     if(deleteRating)
+        //     {
+        //         console.log(deleteRating)
+        //         set(ref(database, `adminItemRatings/${id}/`), {
+        //             Rating: temp[index].TotalRating + (temp[index].UserRating-previousRating),
+        //             TotalUsers: temp[index].totalUsers - 1
+        //         });
+        //     }
+        //     if(!deleteRating)
+        //     {
+        //         set(ref(database, `adminItemRatings/${id}/`), {
+        //             Rating: temp[index].TotalRating + (temp[index].UserRating-previousRating),
+        //             TotalUsers: temp[index].totalUsers 
+        //         });
+        //     }
+
+        // }
+        // if (!temp[index].RatedBefore) {
+        //     set(ref(database, `adminItemRatings/${id}/`), {
+        //         Rating:  temp[index].TotalRating + ratingByUser,
+        //         TotalUsers: temp[index].totalUsers + 1
+        //     });
+        //     temp[index].RatedBefore = true;
+        // }
+
+        // onValue(ref(database, `adminItemRatings/${id}/`), (snapshot) => {
+        //     if (snapshot.exists()) {
+        //         temp[index].TotalRating = snapshot.val()["Rating"]
+        //         temp[index].totalUsers = snapshot.val()["TotalUsers"]
+        //     }
+        // })
+
+        setData(temp)
+        setRefresh(Math.random());
+    }
+
     const handleIncrease = (index) => {
 
         setloading(true)
@@ -395,28 +654,45 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
             qtyhandlervisible={qtyhandlervisible}
             showfooter={showfooter}
             setloading={setloading}
+            ratingOne={item.ratingOne}
+            ratingTwo={item.ratingTwo}
+            ratingThree={item.ratingThree}
+            ratingFour={item.ratingFour}
+            ratingFive={item.ratingFive}
+            RateItem={RateItem}
+            totalUsers={item.totalUsers}
+            TotalRating={item.TotalRating}
+            UserRating={item.UserRating}
+            avgRating={item.avgRating}
         />
     );
 
     const checkcart = () => {
 
-        setloading(true);
+        if (showfooter) {
+            setloading(true);
 
-        searchRef.current.clear();
-        setQuery('');
-        setData(DATA);
+            searchRef.current.clear();
+            setQuery('');
+            setData(DATA);
 
-        if (totalamount <= 0) {
-            Alert.alert('No Items In Cart', `Please select atleast one item to order`, [
-                {
-                    text: 'OK',
-                },
-            ])
-            setloading(false)
+            if (totalamount <= 0) {
+                Alert.alert('No Items In Cart', `Please select atleast one item to order`, [
+                    {
+                        text: 'OK',
+                    },
+                ])
+                setloading(false)
+            }
+            else {
+                navigation.navigate("Confirm Order", { OrderId: OrderId })
+            }
         }
         else {
-            navigation.navigate("Confirm Order", { OrderId: OrderId })
+            // navigation.navigate('Detect Location')
+            console.log("Pay")
         }
+
     }
 
 
@@ -467,52 +743,63 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                             />
 
 
-                            {showfooter ? <View style={{
+
+                            <View style={{
                                 justifyContent: 'space-between',
                                 flexDirection: 'row',
-                                backgroundColor: 'white',
+                                backgroundColor: !showfooter ? '#40B895' : '#426995',
                                 height: verticalScale(35),
                             }}>
                                 <View
                                     style={{
+                                        // flexDirection : showfooter ? 'column' : 'row',
                                         justifyContent: 'center',
-                                        // width: scale(200),
-                                        borderColor: 'black',
-                                        // backgroundColor: 'white',
                                     }}
-                                ><Text style={{
-                                    fontSize: normalize(15),
-                                    paddingLeft: scale(8),
-                                    color: 'black',
-                                    fontWeight: '600'
-                                }} >Total Amount : {totalamount}/-</Text></View>
+                                >
+                                    <Text style={{
+                                        fontSize: normalize(15),
+                                        paddingHorizontal: scale(15),
+                                        color: !showfooter ? 'white' : 'white',
+                                        fontWeight: '600'
+                                    }} >₹{totalamount}</Text></View>
 
-                                <View
+                                {showfooter ? <View
                                     style={{
                                         justifyContent: 'center',
-                                        paddingLeft: scale(28),
-                                        paddingRight: scale(28),
-                                        borderLeftWidth: scale(1),
-                                        borderBottomWidth: scale(1),
-                                        borderRightWidth: scale(1),
-                                        borderColor: 'black',
-                                        backgroundColor: "#fa8072",
-                                        borderRadius: scale(5),
+                                        paddingHorizontal: scale(20)
                                     }}
-                                ><Text style={{
-                                    textAlign: 'center',
-                                    fontSize: normalize(18),
-                                    color: 'white',
-                                    fontWeight: '600'
-                                }} onPress={checkcart}>Order Now</Text></View>
+                                >
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        borderWidth: scale(0.6),
+                                        borderRadius: scale(5),
+                                        backgroundColor: 'white',
+                                        borderColor: 'white',
+                                        paddingVertical: verticalScale(4),
+                                        paddingHorizontal: scale(10)
+                                    }}>
+                                        <TouchableOpacity onPress={checkcart}>
+                                            <Text style={{
+                                                textAlign: 'center',
+                                                fontSize: normalize(18),
+                                                color: 'black',
+                                                fontWeight: '600'
+                                            }} > Order Now
+                                            </Text>
+                                        </TouchableOpacity>
+                                        {/* <AntDesign name="right" size={normalize(12)} color="white" /> */}
+                                    </View>
 
-                            </View> : <></>}
+                                </View> : <></>}
+
+                            </View>
 
 
-                            {!showfooter ? <View style={{
+                            {/* {!showfooter ? <View style={{
                                 justifyContent: 'center',
                                 flexDirection: 'row',
-                                backgroundColor: 'white',
+                                backgroundColor: '#426995',
                                 height: verticalScale(35),
                             }}>
                                 <View
@@ -525,10 +812,10 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                                 ><Text style={{
                                     fontSize: normalize(18),
                                     paddingLeft: scale(8),
-                                    color: 'black',
+                                    color: '#fff',
                                     fontWeight: '600'
-                                }} >Total Amount : {totalamount}/-</Text></View>
-                            </View> : <></>}
+                                }} >₹{totalamount}</Text></View>
+                            </View> : <></>} */}
 
                         </SafeAreaView>
                         :
@@ -569,11 +856,10 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // height: verticalScale(190),
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: scale(10),
-        paddingBottom: scale(25),
+        // paddingBottom: scale(15),
         marginLeft: scale(15),
         marginRight: scale(15),
         marginTop: scale(8),
@@ -591,11 +877,11 @@ const styles = StyleSheet.create({
     title_price: {
         fontSize: normalize(13),
         color: '#000',
-        // fontWeight: "600",
+        fontWeight: "600",
         // paddingTop: 40
     },
     total_item_price: {
-        fontSize: normalize(20),
+        fontSize: normalize(18),
         color: '#000',
         paddingTop: scale(10),
     },

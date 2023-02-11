@@ -14,11 +14,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import PaymentGateway from '../Payment';
 import DetectLocation from './DetectLocation';
 import ActivityIndicatorElement from '../ActivityIndicatorElement';
+import { normalize } from '../FontResize';
 
 
 const Tab = createBottomTabNavigator();
 
-function MyTabs({ navigation,loading, setloading,AllConfirmedItems, totalamount, OrderId, displayCurrentAddress, setDisplayCurrentAddress, longitude, setlongitude, latitude, setlatitude }) {
+function MyTabs({ navigation, loading, setloading, AllConfirmedItems, totalamount, OrderId, displayCurrentAddress, setDisplayCurrentAddress, longitude, setlongitude, latitude, setlatitude }) {
 
    return (
       <Tab.Navigator
@@ -30,11 +31,11 @@ function MyTabs({ navigation,loading, setloading,AllConfirmedItems, totalamount,
       >
          <Tab.Screen
             name="View Confirmed Items"
-            children={() => <ItemsListViewUsers DATA={AllConfirmedItems} OrderId={OrderId} totalamount={totalamount} qtyhandler={true} showfooter={false} loading={loading} setloading={setloading}/>}
+            children={() => <ItemsListViewUsers DATA={AllConfirmedItems} OrderId={OrderId} totalamount={totalamount} qtyhandler={true} showfooter={false} loading={loading} setloading={setloading} />}
             options={{
                tabBarLabel: 'View Confirmed Items',
                tabBarIcon: ({ color, size }) => (
-                  <MaterialIcons name="preview" color={color} size={size} />
+                  <MaterialIcons name="preview" color={color} size={normalize(size-5)} />
                ),
             }}
          />
@@ -48,11 +49,13 @@ function MyTabs({ navigation,loading, setloading,AllConfirmedItems, totalamount,
                setlongitude={setlongitude}
                latitude={latitude}
                setlatitude={setlatitude}
+               loading={loading}
+               setloading={setloading}
             />}
             options={{
                tabBarLabel: 'Detect Location',
                tabBarIcon: ({ color, size }) => (
-                  <Entypo name="location" color={color} size={size} />
+                  <Entypo name="location" color={color} size={normalize(size-5)} />
                ),
             }}
          />
@@ -101,7 +104,7 @@ function MyTabs({ navigation,loading, setloading,AllConfirmedItems, totalamount,
             options={{
                tabBarLabel: 'Payment Gateway',
                tabBarIcon: ({ color, size }) => (
-                  <FontAwesome5 name="cc-amazon-pay" color={color} size={size} />
+                  <FontAwesome5 name="cc-amazon-pay" color={color} size={normalize(size-5)} />
                ),
             }}
          />
@@ -130,6 +133,23 @@ const ConfiremdOrders = ({ navigation, route }) => {
 
    var amount = 0;
 
+   var adminRatings = '';
+
+   useEffect(() => {
+      setloading(true)
+      const getRating = onValue(ref(database, `adminItemRatings/`),
+         (snapshot) => {
+            if (snapshot.exists()) {
+               adminRatings = snapshot.val();
+            }
+            setloading(false)
+         })
+      return () => {
+
+         getRating();
+      }
+   }, [])
+
    useEffect(() => {
 
       setloading(true)
@@ -140,7 +160,19 @@ const ConfiremdOrders = ({ navigation, route }) => {
          snapshot.forEach((child) => {
             count = true;
             child.forEach((it) => {
+
+               var ItemRating = 0;
+               var ItemTotalRating = 0
+
+               var totalUsers = 0;
+
+
                if (it.val().ItemQuantity >= 1) {
+
+                  if (adminRatings && adminRatings.hasOwnProperty(it.key)) {
+                     ItemTotalRating = adminRatings[it.key]["Rating"]
+                     totalUsers = adminRatings[it.key]["TotalUsers"]
+                  }
 
                   var ItemId = it.key;
                   var ItemName = it.val().ItemName;
@@ -163,6 +195,9 @@ const ConfiremdOrders = ({ navigation, route }) => {
                      ItemImage: ItemImage,
                      ItemQuantity: ItemQuantity,
                      ItemAddedDate: ItemAddedDate,
+                     TotalRating: ItemTotalRating,
+                     totalUsers: totalUsers,
+                     avgRating: totalUsers === 0 ? 0 : Math.round(ItemTotalRating / totalUsers * 100) / 100,
                      OrderConfirmed: true,
                      OrderDelivered: false,
                      OrderPending: true
@@ -181,7 +216,7 @@ const ConfiremdOrders = ({ navigation, route }) => {
       <>
 
          <SafeAreaView style={styles.mainBody}>
-         <ActivityIndicatorElement loading={loading}/>
+            {/* <ActivityIndicatorElement loading={loading} /> */}
             <NavigationContainer independent={true}>
                <MyTabs navigation={navigation}
                   AllConfirmedItems={AllConfirmedItems}

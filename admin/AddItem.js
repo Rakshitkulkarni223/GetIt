@@ -158,6 +158,11 @@ const AddItem = ({ navigation }) => {
                 ItemAddedDate: new Date().toLocaleString(),
             });
 
+            set(ref(database, `adminItemRatings/${id}/`), {
+                Rating: 0,
+                TotalUsers: 0,
+            });
+
             setloading(false)
         }
         catch (error) {
