@@ -17,7 +17,7 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
         fontWeight: "600",
         marginLeft: scale(15),
         marginTop: scale(10),
-        color: 'white',
+        color: 'black',
         letterSpacing: scale(0.5),
         paddingRight: scale(15),
     }}>{category.toUpperCase()}</Text> : <></>}
@@ -64,9 +64,11 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                             paddingLeft: scale(2),
                             textAlignVertical: 'center'
                         }}>
-                            <Text>{avgRating}/5, </Text>
                             <Text style={{
                                 fontWeight: '600'
+                            }}>{avgRating}/5, </Text>
+                            <Text style={{
+                                fontWeight: '400'
                             }}>{totalUsers}</Text>
                         </Text>
                     </View>
@@ -187,11 +189,12 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
 
                     <View style={{
                         flexDirection: 'row',
-                        justifyContent: 'center',
+                        // justifyContent: 'space-between',
+                        justifyContent: 'flex-end',
                         position: 'absolute',
                         marginTop: verticalScale(115),
                         borderWidth: scale(1),
-                        height: scale(23),
+                        height: scale(22),
                         alignItems: 'center',
                         marginLeft: scale(38),
                         width: scale(80),
@@ -207,23 +210,29 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                     <View
                                         style={{
                                             flexDirection: 'row',
-                                            justifyContent: 'center',
-                                            position: 'absolute',
-                                            marginTop: verticalScale(115),
-                                            borderWidth: scale(1),
-                                            height: scale(22),
-                                            marginLeft: scale(38),
-                                            width: scale(80),
-                                            borderColor: 'black',
-                                            backgroundColor: 'white',
-                                            borderWidth: scale(0.5),
-                                            borderRadius: scale(5),
-                                            elevation: scale(10),
+                                            // justifyContent: 'center',
+                                            // position: 'absolute',
+                                            // marginTop: verticalScale(115),
+                                            // borderWidth: scale(1),
+                                            // height: scale(22),
+                                            // marginLeft: scale(38),
+                                            // width: scale(80),
+                                            // borderColor: 'black',
+                                            // backgroundColor: 'white',
+                                            // borderWidth: scale(0.5),
+                                            // borderRadius: scale(5),
+                                            // elevation: scale(10),
                                         }}
                                     >
-                                        <View style={{ justifyContent: 'center', flex: 1 }}
+                                        <View style={{ 
+                                            justifyContent: 'center', 
+                                            flex: 1, 
+                                            backgroundColor: '#5324A6',
+                                            borderTopLeftRadius: scale(4),
+                                            borderBottomLeftRadius: scale(4)
+                                        }}
                                         >
-                                            <AntDesign name="minus" size={scale(20)} color="black"
+                                            <AntDesign name="minus" size={scale(20)} color="white"
                                                 onPress={() => handleDecrease(index)}
                                                 style={{
                                                     textAlign: 'center',
@@ -238,9 +247,9 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                                     {
                                                         fontWeight: '600',
                                                         fontSize: normalize(15),
-                                                        backgroundColor: '#dcdcdc',
-                                                        borderLeftWidth: scale(0.5),
-                                                        borderRightWidth: scale(0.5),
+                                                        backgroundColor: '#fff',
+                                                        // borderLeftWidth: scale(0.5),
+                                                        // borderRightWidth: scale(0.5),
                                                         color: "black",
                                                         textAlign: 'center',
                                                         textAlignVertical: 'center',
@@ -249,9 +258,16 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                             }>{ItemQuantity}</Text>
                                         </View>
 
-                                        <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}
+                                        <View style={{ 
+                                            justifyContent: 'center', 
+                                            flex: 1, 
+                                            alignItems: 'center',
+                                            borderTopRightRadius: scale(4),
+                                            borderBottomRightRadius: scale(4),
+                                            backgroundColor: '#5324A6',
+                                        }}
                                         >
-                                            <Ionicons name="md-add-outline" size={scale(20)} color="black"
+                                            <Ionicons name="md-add-outline" size={scale(20)} color="white"
                                                 onPress={() => handleIncrease(index)}
                                                 style={{
                                                     textAlign: 'center',
@@ -260,14 +276,46 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                         </View>
                                     </View>
                                     :
-                                    <View>
-                                        <Text style={{
-                                            textAlignVertical: 'center',
-                                            textAlign: 'center',
-                                            color: "black",
-                                            fontSize: normalize(15),
-                                            fontWeight: "600"
-                                        }} onPress={() => handleIncrease(index)}>ADD</Text>
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        // justifyContent: 'space-around'
+                                    }}>
+                                        <View style={{
+                                            marginRight: scale(10),
+                                            // borderWidth: scale(1),
+                                            justifyContent: 'center'
+                                        }}>
+                                            <Text style={{
+                                                textAlignVertical: 'center',
+                                                textAlign: 'center',
+                                                color: "black",
+                                                fontSize: normalize(15),
+                                                fontWeight: "600",
+                                                letterSpacing: scale(0.4),
+                                            }} onPress={() => handleIncrease(index)}>Add</Text>
+                                        </View>
+                                        <View style={{
+                                            //  flex: 1, 
+                                            // justifyContent: 'center',
+                                            // alignItems: 'center',
+                                            // marginRight: scale(3),
+                                            paddingLeft: scale(2.5),
+                                            paddingRight: scale(3),
+                                            borderTopRightRadius: scale(4),
+                                            borderBottomRightRadius: scale(4),
+                                            // alignItems: 'center',
+                                            backgroundColor: '#5324A6',
+                                            borderLeftWidth: scale(0.6),
+                                            // backgroundColor: '#852FD2'
+                                        }}>
+                                            <Ionicons name="md-add-outline" size={scale(20)} color="white"
+                                                onPress={() => handleIncrease(index)}
+                                                style={{
+                                                    textAlign: 'center',
+                                                }}
+                                            />
+                                        </View>
+
                                     </View>
                                 }
                             </>
@@ -393,7 +441,7 @@ const contains = (items, query) => {
 };
 
 
-const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter, totalamount, settotalamount, loading, setloading }) => {
+const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter, totalamount, settotalamount, loading, setloading, displayCurrentAddress, totalConfirmedItems, longitude, latitude }) => {
 
     const [ItemName, setItemName] = useState("");
     const [ItemDesc, setItemDesc] = useState("");
@@ -406,19 +454,33 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
     // const [totalamount, settotalamount] = useState(0)
     const [query, setQuery] = useState('');
 
+
     const searchRef = createRef();
 
-
     const [data, setData] = useState(DATA);
+
+    const [totalItems, settotalItems] = useState(0);
+
+    useEffect(() => {
+        if (loading) {
+            setloading(false)
+        }
+        if (loading && data.length === 0) {
+            setloading(true)
+        }
+    }, [loading])
+
     useEffect(() => {
         setQuery('');
         if (searchRef && searchRef.current) {
             searchRef.current.clear()
         }
+        setloading(false);
+
         setData(DATA)
     }, [DATA])
 
-    const RateItem = (index, ratingByUser) => {
+    const RateItem = async (index, ratingByUser) => {
         const temp = data;
         var id = data[index].key;
 
@@ -507,22 +569,26 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
 
         onValue(ref(database, `userRatings/`), (snapshot) => {
             snapshot.forEach((child) => {
-                allrating += child.val()[temp[index].key]["rating"]
-                if (child.val()[temp[index].key]["rating"] !== 0) {
+                allrating += child.val()[id]["rating"]
+                if (child.val()[id]["rating"] !== 0) {
                     totalusers += 1;
+                    // console.log(child.val()[id]["rating"])
                 }
             })
+
+            temp[index].TotalRating = allrating;
+            temp[index].totalUsers = totalusers;
+
+            temp[index].avgRating = totalusers === 0 ? 0 : Math.round(allrating / totalusers * 100) / 100
+
+            update(ref(database, `adminItemRatings/${id}/`), {
+                Rating: allrating,
+                TotalUsers: totalusers
+            });
+
+            setData(temp)
+            setRefresh(Math.random());
         })
-
-        temp[index].TotalRating = allrating;
-        temp[index].totalUsers = totalusers;
-
-        temp[index].avgRating = totalusers === 0 ? 0 : Math.round(allrating / totalusers * 100) / 100
-
-        set(ref(database, `adminItemRatings/${id}/`), {
-            Rating: temp[index].TotalRating,
-            TotalUsers: temp[index].totalUsers
-        });
 
         // if (temp[index].RatedBefore) {
         //     if(deleteRating)
@@ -557,8 +623,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
         //     }
         // })
 
-        setData(temp)
-        setRefresh(Math.random());
+
     }
 
     const handleIncrease = (index) => {
@@ -575,6 +640,10 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
         var category = temp[index].ItemCategory;
 
         settotalamount(totalamount + parseFloat(price));
+
+        if (temp[index].ItemQuantity === 1) {
+            settotalItems(totalItems + 1)
+        }
 
         set(ref(database, `users/orders/${OrderId}/items/${category}/` + id), {
             ItemId: id,
@@ -612,6 +681,10 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
         var category = temp[index].ItemCategory;
 
         settotalamount(totalamount - parseFloat(price));
+
+        if (temp[index].ItemQuantity === 0) {
+            settotalItems(totalItems - 1)
+        }
 
 
         set(ref(database, `users/orders/${OrderId}/items/${category}/` + id), {
@@ -685,12 +758,41 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                 setloading(false)
             }
             else {
-                navigation.navigate("Confirm Order", { OrderId: OrderId })
+                console.log(displayCurrentAddress)
+                if (displayCurrentAddress) {
+                    navigation.navigate("Confirm Order",
+                        {
+                            OrderId: OrderId,
+                            displayCurrentAddress: displayCurrentAddress,
+                            totalItems: totalItems,
+                            longitude: longitude,
+                            latitude: latitude
+                        }
+                    )
+                }
+                else {
+                    Alert.alert('Location Not Found', `Please select/add location for next step`, [
+                        {
+                            text: 'OK',
+                        },
+                    ])
+                }
+
             }
         }
         else {
-            // navigation.navigate('Detect Location')
-            console.log("Pay")
+
+            navigation.navigate("Payment Gateway",
+                {
+                    totalamount: totalamount,
+                    AllConfirmedItems: DATA,
+                    OrderId: OrderId,
+                    displayCurrentAddress: displayCurrentAddress,
+                    totalItems: totalItems,
+                    longitude: longitude,
+                    latitude: latitude
+                }
+            )
         }
 
     }
@@ -702,15 +804,15 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
 
             <SafeAreaView style={{
                 flex: 1,
-                backgroundColor: '#3B3636'
-                // backgroundColor: ''
+                backgroundColor: '#fff',
+                // backgroundColor: 'white'
             }}>
                 {
                     DATA.length !== 0 ?
                         <SafeAreaView style={{
                             flex: 1,
-                            backgroundColor: '#3B3636'
-                            // backgroundColor: ''
+                            backgroundColor: '#3B3636',
+                            backgroundColor: '#EAEAEA'
                         }}>
                             <FlatList
                                 data={data}
@@ -744,78 +846,90 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
 
 
 
-                            <View style={{
-                                justifyContent: 'space-between',
-                                flexDirection: 'row',
-                                backgroundColor: !showfooter ? '#40B895' : '#426995',
-                                height: verticalScale(35),
-                            }}>
-                                <View
-                                    style={{
-                                        // flexDirection : showfooter ? 'column' : 'row',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <Text style={{
-                                        fontSize: normalize(15),
-                                        paddingHorizontal: scale(15),
-                                        color: !showfooter ? 'white' : 'white',
-                                        fontWeight: '600'
-                                    }} >₹{totalamount}</Text></View>
-
-                                {showfooter ? <View
-                                    style={{
-                                        justifyContent: 'center',
-                                        paddingHorizontal: scale(20)
-                                    }}
-                                >
-                                    <View style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        borderWidth: scale(0.6),
-                                        borderRadius: scale(5),
-                                        backgroundColor: 'white',
-                                        borderColor: 'white',
-                                        paddingVertical: verticalScale(4),
-                                        paddingHorizontal: scale(10)
-                                    }}>
-                                        <TouchableOpacity onPress={checkcart}>
+                            {(totalamount !== 0) ?
+                                <View style={{
+                                    justifyContent: 'space-between',
+                                    flexDirection: 'row',
+                                    backgroundColor: !showfooter ? '#7526B8' : '#546CB8',
+                                    height: verticalScale(40),
+                                    borderTopColor: 'white',
+                                    borderTopWidth: scale(0.6)
+                                }}>
+                                    <View
+                                        style={{
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        <View style={{
+                                            flexDirection: 'column',
+                                            // justifyContent: 'flex-start'
+                                        }}>
                                             <Text style={{
-                                                textAlign: 'center',
-                                                fontSize: normalize(18),
-                                                color: 'black',
-                                                fontWeight: '600'
-                                            }} > Order Now
+                                                fontSize: normalize(10),
+                                                paddingHorizontal: scale(15),
+                                                color: !showfooter ? 'white' : 'white',
+                                                // fontWeight: '600',
+                                                letterSpacing: scale(0.4),
+                                                fontFamily: 'sans-serif-medium'
+                                            }}>
+                                                {showfooter ? totalItems : totalConfirmedItems} items
                                             </Text>
-                                        </TouchableOpacity>
-                                        {/* <AntDesign name="right" size={normalize(12)} color="white" /> */}
+                                            <Text style={{
+                                                fontSize: normalize(15),
+                                                paddingHorizontal: scale(15),
+                                                color: !showfooter ? 'white' : 'white',
+                                                fontWeight: '600',
+                                                letterSpacing: scale(0.4),
+                                            }} >₹{totalamount}</Text></View>
                                     </View>
 
+                                    <View
+                                        style={{
+                                            justifyContent: 'center',
+                                            paddingHorizontal: scale(20)
+                                        }}
+                                    >
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
+                                            borderWidth: scale(0.6),
+                                            borderRadius: scale(5),
+                                            backgroundColor: 'white',
+                                            borderColor: 'white',
+                                            paddingVertical: verticalScale(4),
+                                            paddingHorizontal: scale(10)
+                                        }}>
+                                            <TouchableOpacity onPress={checkcart}>
+                                                <View style={{
+                                                    flexDirection: 'row',
+                                                    justifyContent: 'center'
+                                                }}>
+                                                    <View style={{
+                                                        justifyContent: 'center',
+
+                                                    }}>
+                                                        <Text style={{
+                                                            textAlign: 'center',
+                                                            fontSize: normalize(15),
+                                                            color: showfooter ? 'black' : '#D34386',
+                                                            fontWeight: '600',
+                                                            letterSpacing: scale(0.4),
+                                                            fontFamily: 'sans-serif-medium'
+                                                        }} > {showfooter ? "View Cart" : "Pay and GetIt"}
+                                                        </Text>
+                                                    </View>
+                                                    <View style={{
+                                                        justifyContent: 'center',
+                                                        paddingLeft: scale(5)
+                                                    }}>
+                                                        <AntDesign name="caretright" size={normalize(10)}
+                                                            color={showfooter ? "black" : '#D34386'} />
+                                                    </View>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
                                 </View> : <></>}
-
-                            </View>
-
-
-                            {/* {!showfooter ? <View style={{
-                                justifyContent: 'center',
-                                flexDirection: 'row',
-                                backgroundColor: '#426995',
-                                height: verticalScale(35),
-                            }}>
-                                <View
-                                    style={{
-                                        justifyContent: 'center',
-                                        // width: scale(200),
-                                        borderColor: 'black',
-                                        // backgroundColor: 'white',
-                                    }}
-                                ><Text style={{
-                                    fontSize: normalize(18),
-                                    paddingLeft: scale(8),
-                                    color: '#fff',
-                                    fontWeight: '600'
-                                }} >₹{totalamount}</Text></View>
-                            </View> : <></>} */}
 
                         </SafeAreaView>
                         :
@@ -865,8 +979,13 @@ const styles = StyleSheet.create({
         marginTop: scale(8),
         marginBottom: scale(9),
         marginVertical: verticalScale(0),
-        borderRadius: scale(10),
+        borderRadius: scale(8),
+        // borderBottomWidth: scale(1),
+        // borderLeftWidth: scale(1),
+        borderWidth: scale(0.9),
+        // borderBottomColor: '#000',
         backgroundColor: '#ffe4e1',
+        backgroundColor: '#BDF3CB',
         elevation: scale(5),
     },
     title_item: {

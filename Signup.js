@@ -130,7 +130,10 @@ const SignUp = ({ navigation, route }) => {
       // setgotoDashboardUser(true)
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Home' }],
+        routes: [{
+          name: 'Home',
+          params: { disableNotification: true }
+        }],
       });
     }
     catch (error) {
@@ -174,7 +177,7 @@ const SignUp = ({ navigation, route }) => {
       Alert.alert("You've refused to allow this appp to access your photos!");
       return;
     }
-   
+
 
     const result = await ImagePicker.launchImageLibraryAsync();
 
@@ -628,7 +631,7 @@ const SignUp = ({ navigation, route }) => {
               backgroundColor: 'white',
             }} onPress={() => {
               setloading(true)
-              SaveInfo(route && route.params ? route.params.ProfilePic === ProfilePic ? ProfilePic : route.params.ProfilePic : ProfilePic, auth.currentUser.phoneNumber, 
+              SaveInfo(route && route.params ? route.params.ProfilePic === ProfilePic ? ProfilePic : route.params.ProfilePic : ProfilePic, auth.currentUser.phoneNumber,
                 route && route.params ? route.params.firstName === firstName ? firstName : route.params.firstName : '',
                 route && route.params ? route.params.lastName === lastName ? lastName : route.params.lastName : '',
                 route && route.params ? route.params.DOB === DOB ? DOB : route.params.DOB : '',
@@ -637,7 +640,7 @@ const SignUp = ({ navigation, route }) => {
               setloading(false)
               navigation.reset({
                 index: 0,
-                routes: [{ name: 'Home' }],
+                routes: [{ name: 'Home' ,params: { disableNotification: true }}],
               });
             }}>
               <Text style={{

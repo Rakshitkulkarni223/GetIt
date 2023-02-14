@@ -168,7 +168,7 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
 };
 
 
-const DetectLocation = ({ navigation,loading,setloading,displayCurrentAddress, setDisplayCurrentAddress, longitude, setlongitude, latitude, setlatitude }) => {
+const DetectLocation = ({ navigation,route}) => {
 
     const [visible, setVisible] = useState(false);
     const [housename, sethousename] = useState('');
@@ -176,23 +176,24 @@ const DetectLocation = ({ navigation,loading,setloading,displayCurrentAddress, s
     const [postalcode, setpostalcode] = useState('');
     const [cityname, setcityname] = useState('');
 
+    const [loading, setloading] = useState(false);
+
+    // console.log(route.params)
+
 
     const [isautomatic, setisautomatic] = useState(true);
 
     useEffect(() => {
-        setloading(false)
         GetCurrentLocation();
     }, [])
     
     const GetCurrentLocation = async () => {
 
-        // setloading(true)
-
         setisautomatic(true);
 
-        setlatitude("");
-        setlongitude("");
-        setDisplayCurrentAddress('');
+        route.params.setlatitude("");
+        route.params.setlongitude("");
+        route.params.setdisplayCurrentAddress('');
 
         try {
 
@@ -207,7 +208,7 @@ const DetectLocation = ({ navigation,loading,setloading,displayCurrentAddress, s
 
             await Location.requestForegroundPermissionsAsync();
 
-            // setloading(true)
+      
 
             let { coords } = await Location.getCurrentPositionAsync();
 
@@ -215,8 +216,8 @@ const DetectLocation = ({ navigation,loading,setloading,displayCurrentAddress, s
 
             if (coords) {
                 const { latitude, longitude } = coords;
-                setlatitude(latitude);
-                setlongitude(longitude);
+                route.params.setlatitude(latitude);
+                route.params.setlongitude(longitude);
                 let response = await Location.reverseGeocodeAsync({
                     latitude,
                     longitude
@@ -237,15 +238,13 @@ const DetectLocation = ({ navigation,loading,setloading,displayCurrentAddress, s
                         address += ', ' + item.postalCode
                     }
                 }
-                setloading(false)
+                console.log(address)
                 // let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
-                setDisplayCurrentAddress(address);
+                route.params.setdisplayCurrentAddress(address);
             }
-            setloading(false)
         }
         catch (e) {
 
-            setloading(false)
             alert(
                 'Location Permission not granted.Please enable location Permission'
             );
@@ -254,13 +253,11 @@ const DetectLocation = ({ navigation,loading,setloading,displayCurrentAddress, s
 
     const getLocationFromAddress = async () => {
 
-        // setloading(true)
-
         setisautomatic(false)
 
-        setlatitude("");
-        setlongitude("");
-        setDisplayCurrentAddress('');
+        route.params.setlatitude("");
+        route.params.setlongitude("");
+        route.params.setdisplayCurrentAddress('');
         // let {location} =  await Location.geocodeAsync(`${housename} ${streetname} ${cityname} ${postalcode}`)
 
         let { coords } = await Location.geocodeAsync('1 Hacker Way');
@@ -273,7 +270,7 @@ const DetectLocation = ({ navigation,loading,setloading,displayCurrentAddress, s
                     text: 'Ok',
                 },
             ])
-            setDisplayCurrentAddress('');
+            route.params.setdisplayCurrentAddress('');
             return;
         }
         if (`${streetname}` === '') {
@@ -282,7 +279,7 @@ const DetectLocation = ({ navigation,loading,setloading,displayCurrentAddress, s
                     text: 'Ok',
                 },
             ])
-            setDisplayCurrentAddress('');
+            route.params.setdisplayCurrentAddress('');
             return;
         }
         if (`${cityname}` === '') {
@@ -291,7 +288,7 @@ const DetectLocation = ({ navigation,loading,setloading,displayCurrentAddress, s
                     text: 'Ok',
                 },
             ])
-            setDisplayCurrentAddress('');
+            route.params.setdisplayCurrentAddress('');
             return;
         }
         if (`${postalcode}` === '') {
@@ -300,15 +297,15 @@ const DetectLocation = ({ navigation,loading,setloading,displayCurrentAddress, s
                     text: 'Ok',
                 },
             ])
-            setDisplayCurrentAddress('');
+            route.params.setdisplayCurrentAddress('');
             return;
         }
 
-        setDisplayCurrentAddress(`${housename}, ${streetname}, ${cityname}, ${postalcode}`)
+        setdisplayCurrentAddress(`${housename}, ${streetname}, ${cityname}, ${postalcode}`)
         if (coords) {
             const { latitude, longitude } = coords;
-            setlatitude(latitude);
-            setlongitude(longitude);
+            route.params.setlatitude(latitude);
+            route.params.setlongitude(longitude);
         }
         setVisible(!visible)
 
@@ -317,13 +314,12 @@ const DetectLocation = ({ navigation,loading,setloading,displayCurrentAddress, s
         setcityname('');
         setpostalcode('');
 
-        setloading(false)
     }
 
 
     return (
         <>
-            {/* <ActivityIndicatorElement loading={loading} /> */}
+            <ActivityIndicatorElement loading={loading} />
             <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 
                 <View style={{ margin: scale(15), }}>
@@ -352,7 +348,7 @@ const DetectLocation = ({ navigation,loading,setloading,displayCurrentAddress, s
                     fontWeight: 'bold',
                     letterSpacing: scale(0.5),
 
-                }}>{displayCurrentAddress}</Text>
+                }}>{route.params.displayCurrentAddress}</Text>
 
 
 

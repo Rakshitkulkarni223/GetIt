@@ -6,7 +6,7 @@ import ItemsListViewUsers from '../ListView/ItemListViewUsers';
 import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
-const ViewItems = ({ navigation, OrderId }) => {
+const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, latitude }) => {
 
    const [AllItems, setAllItems] = useState([]);
 
@@ -84,8 +84,8 @@ const ViewItems = ({ navigation, OrderId }) => {
                   ItemQuantity: 0,
                   TotalRating: ItemTotalRating,
                   totalUsers: totalUsers,
-                  avgRating : totalUsers === 0 ? 0 : Math.round(ItemTotalRating/totalUsers * 100) / 100, 
-                  RatedBefore : RatedBefore,
+                  avgRating: totalUsers === 0 ? 0 : Math.round(ItemTotalRating / totalUsers * 100) / 100,
+                  RatedBefore: RatedBefore,
                   UserRating: ItemRating,
                   ratingOne: ItemRating === 0 ? 'star-o' : ItemRating >= 1 ? 'star' : 'star-o',
                   ratingTwo: ItemRating === 0 ? 'star-o' : ItemRating >= 2 ? 'star' : 'star-o',
@@ -115,6 +115,9 @@ const ViewItems = ({ navigation, OrderId }) => {
             totalamount={totalamount} settotalamount={settotalamount}
             loading={loading}
             setloading={setloading}
+            displayCurrentAddress={displayCurrentAddress}
+            longitude={longitude}
+            latitude={latitude}
          ></ItemsListViewUsers>
       </>
 

@@ -68,7 +68,7 @@ const Item = ({ setloading, id, OrderId, title, image_url, price, description, c
                     marginLeft: scale(2),
                 }}>
                     <Text style={styles.title_price}>
-                        {price}/-
+                        ₹{price}
                     </Text>
                 </View>
 
@@ -318,7 +318,7 @@ const ItemsListViewConfirmedOrders = ({ AllItems, AllOrders, loading, setloading
                             fontSize: normalize(16),
                             fontWeight: "600",
                             color: '#000'
-                        }}>{data[index].totalamount}/-</Text>
+                        }}>₹{data[index].totalamount}</Text>
                 </View>
                 <View>
                     <MaterialIcons name="location-pin" size={normalize(20)} color="#dc143c"

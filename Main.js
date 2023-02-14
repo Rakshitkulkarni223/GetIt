@@ -24,6 +24,8 @@ import { database } from "./Firebase";
 import { onValue, ref, set } from "firebase/database";
 
 
+import * as Notifications from 'expo-notifications';
+
 import { normalize } from './FontResize';
 
 import { AntDesign, EvilIcons, FontAwesome, FontAwesome5, Ionicons, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
@@ -38,6 +40,7 @@ import * as SplashScreen from "expo-splash-screen";
 import DashboardAdmin from './DashboardAdmin';
 import DashboardUser from './DashboardUser';
 import Home from './Home';
+import { NotificationHandler, NotificationPermission } from './NotificationHandler';
 
 
 // Instruct SplashScreen not to hide yet, we want to do this manually
@@ -58,32 +61,6 @@ const Main = ({ navigation }) => {
             headerShown: false
         })
     }, [])
-
-    // useEffect(() => {
-    //     try {
-    //         // setloading(true)
-    //         const phoneNumber = auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3);
-    //         navigation.setOptions({
-    //             headerShown: true,
-    //             title: (admins.includes(auth.currentUser.phoneNumber))? "Dashboard Admin" :"Dashboard User", 
-    //             headerRight: () => (
-    //                 <AntDesign name="logout" size={24} color="black" onPress={() => signOut(auth).then(() => {
-    //                     setloading(false)
-    //                     Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
-    //                     navigation.replace('Main')
-    //                 }).catch((error) => {
-    //                     setloading(false)
-    //                     Alert.alert(`${phoneNumber}`, 'Logout Unsuccessfull!');
-    //                 })} />
-    //             ),
-    //             headerLeft: () => <></>
-    //         })
-    //     }
-    //     catch (error) {
-    //         // setloading(false)
-    //         setUser({ loggedIn: false })
-    //     }
-    // }, [user])
 
     useEffect(() => {
         try {
@@ -209,6 +186,16 @@ const App = ({ navigation, loading, setloading, user }) => {
     SplashScreen.preventAutoHideAsync();
     setTimeout(SplashScreen.hideAsync, 1000)
 
+    // useEffect(() => {
+
+    // },[user])
+
+    // useEffect(()=>{
+    //     NotificationPermission();
+    // },[])
+
+
+
     return (
 
         <SafeAreaView style={{ flex: 1, backgroundColor: '#C35C70' }}>
@@ -222,7 +209,7 @@ const App = ({ navigation, loading, setloading, user }) => {
                     justifyContent: 'center',
                     marginTop: verticalScale(50),
                     borderWidth: scale(0.8),
-                    backgroundColor:'#39AA7F',
+                    backgroundColor: '#39AA7F',
                     borderRadius: scale(100),
                     borderColor: '#39AA7F',
                     padding: scale(30)

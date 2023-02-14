@@ -6,8 +6,9 @@ import ItemsListViewUsers from '../ListView/ItemListViewUsers';
 import { app, auth, db, database } from "../Firebase";
 import { ref, set, update, onValue } from "firebase/database";
 
+import { scale, verticalScale } from '../Dimensions';
 
-import { Entypo, MaterialCommunityIcons, FontAwesome5, SimpleLineIcons, MaterialIcons } from '@expo/vector-icons';
+import { Entypo, MaterialCommunityIcons, FontAwesome5, SimpleLineIcons, MaterialIcons, Ionicons, AntDesign } from '@expo/vector-icons';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
@@ -35,7 +36,7 @@ function MyTabs({ navigation, loading, setloading, AllConfirmedItems, totalamoun
             options={{
                tabBarLabel: 'View Confirmed Items',
                tabBarIcon: ({ color, size }) => (
-                  <MaterialIcons name="preview" color={color} size={normalize(size-5)} />
+                  <MaterialIcons name="preview" color={color} size={normalize(size - 5)} />
                ),
             }}
          />
@@ -55,7 +56,7 @@ function MyTabs({ navigation, loading, setloading, AllConfirmedItems, totalamoun
             options={{
                tabBarLabel: 'Detect Location',
                tabBarIcon: ({ color, size }) => (
-                  <Entypo name="location" color={color} size={normalize(size-5)} />
+                  <Entypo name="location" color={color} size={normalize(size - 5)} />
                ),
             }}
          />
@@ -104,7 +105,7 @@ function MyTabs({ navigation, loading, setloading, AllConfirmedItems, totalamoun
             options={{
                tabBarLabel: 'Payment Gateway',
                tabBarIcon: ({ color, size }) => (
-                  <FontAwesome5 name="cc-amazon-pay" color={color} size={normalize(size-5)} />
+                  <FontAwesome5 name="cc-amazon-pay" color={color} size={normalize(size - 5)} />
                ),
             }}
          />
@@ -123,11 +124,6 @@ const ConfiremdOrders = ({ navigation, route }) => {
 
    const [totalamount, settotalamount] = useState(0);
 
-   const [displayCurrentAddress, setDisplayCurrentAddress] = useState('');
-
-   const [longitude, setlongitude] = useState('');
-
-   const [latitude, setlatitude] = useState('');
 
    const [loading, setloading] = useState(false);
 
@@ -145,7 +141,7 @@ const ConfiremdOrders = ({ navigation, route }) => {
             setloading(false)
          })
       return () => {
-
+         setloading(false)
          getRating();
       }
    }, [])
@@ -206,18 +202,177 @@ const ConfiremdOrders = ({ navigation, route }) => {
                count = false;
             })
          })
+
          setAllConfirmedItems(items);
          settotalamount(amount);
          setloading(false)
       });
    }, [])
 
+   useEffect(() => {
+      // setVisible(false)
+      try {
+         var address = 'Detecting Location';
+         var addressNextLine = ''
+
+         if (route.params.displayCurrentAddress) {
+            address = '';
+            var addressDetails = route.params.displayCurrentAddress.split(',')
+            let i = 0;
+
+            for (i = addressDetails.length - 1; i > addressDetails.length - 3; i--) {
+               if (i !== addressDetails.length - 1) {
+                  addressNextLine = addressDetails[i] + addressNextLine
+               }
+               else {
+                  addressNextLine = ',' + addressDetails[i] + addressNextLine
+               }
+            }
+            addressNextLine = addressNextLine.trim();
+
+            for (let j = 0; j <= i; j++) {
+               if (j !== 0) {
+                  address += ',' + addressDetails[j]
+               }
+               else {
+                  address += addressDetails[j]
+               }
+            }
+            address = address.trim()
+         }
+         const phoneNumber = auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3);
+
+         navigation.setOptions({
+            headerShown: true,
+            headerLeft: () => <View style={{
+               flexDirection: 'row',
+               justifyContent: 'flex-start'
+            }}>
+               <View style={{
+                  flexDirection: 'column',
+                  justifyContent: 'center'
+               }}>
+                  <Ionicons name="arrow-back-sharp" size={normalize(21)} color="black"
+                     onPress={() => {
+                        navigation.goBack();
+                     }} />
+               </View>
+               <View style={{
+                  flexDirection: 'column',
+                  justifyContent: 'center'
+               }}>
+                  <Ionicons name="ios-location-sharp" size={normalize(17)} color="red" onPress={() => {
+                     Alert.alert('Delivery Location', `${route.params.displayCurrentAddress}`, [
+                        {
+                           text: 'Want to change?',
+                           onPress: () =>  navigation.goBack(),
+                           style: 'cancel',
+                        },
+                        {
+                           text: 'want to proceed'
+                        }
+                     ])
+                  }} />
+               </View>
+               <View style={{
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  paddingHorizontal: scale(3)
+               }}>
+
+                  <View style={{
+                     flexDirection: 'row',
+                     justifyContent: 'flex-start',
+                  }}>
+                     <View style={{ justifyContent: 'center' }}>
+                        <Text style={{
+                           fontWeight: '600',
+                           fontSize: normalize(14)
+                        }}
+                           onPress={() => {
+                              Alert.alert('Delivery Location', `${route.params.displayCurrentAddress}`, [
+                                 {
+                                    text: 'Want to change?',
+                                    onPress: () => navigation.goBack(),
+                                    style: 'cancel',
+                                 },
+                                 {
+                                    text: 'want to proceed'
+                                 }
+                              ])
+                           }}
+                        >{address}</Text>
+                     </View>
+                  </View>
+                  <View style={{
+                     flexDirection: 'row',
+                     justifyContent: 'flex-start',
+                  }}>
+                     <Text style={{ fontSize: normalize(10) }} onPress={() => {
+                        Alert.alert('Delivery Location', `${route.params.displayCurrentAddress}`, [
+                           {
+                              text: 'Want to change?',
+                              onPress: () => navigation.goBack(),
+                              style: 'cancel',
+                           },
+                           {
+                              text: 'want to proceed'
+                           }
+                        ])
+                     }} >{addressNextLine}</Text>
+                  </View>
+
+               </View>
+            </View>,
+            headerTitle: '',
+            headerStyle: {
+               backgroundColor: 'white',
+            },
+            // headerTintColor: '#fff',
+            // headerTitleStyle: {
+            //     fontSize: normalize(13),
+            //     fontWeight: '600',
+            //     color: 'black'
+            // },
+            headerRight: () => (
+               <AntDesign name="logout" size={normalize(18)} color="black" onPress={() => signOut(auth).then(() => {
+                  setloading(false)
+                  Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
+                  navigation.replace('Main')
+               }).catch((error) => {
+                  setloading(false)
+                  Alert.alert(`${phoneNumber}`, 'Logout Unsuccessfull!');
+               })} />
+            ),
+
+         })
+      }
+      catch (error) {
+         // setloading(false)
+         setUser({ loggedIn: false })
+      }
+   }, [route.params.displayCurrentAddress])
+
+
    return (
       <>
 
          <SafeAreaView style={styles.mainBody}>
-            {/* <ActivityIndicatorElement loading={loading} /> */}
-            <NavigationContainer independent={true}>
+            <ActivityIndicatorElement loading={loading} />
+            <ItemsListViewUsers navigation={navigation}
+               DATA={AllConfirmedItems}
+               OrderId={OrderId}
+               totalamount={totalamount}
+               totalConfirmedItems={route.params.totalItems}
+               qtyhandler={true}
+               showfooter={false}
+               loading={loading}
+               setloading={setloading}
+               displayCurrentAddress={route.params.displayCurrentAddress}
+               longitude={route.params.longitude}
+               latitude={route.params.latitude}
+            />
+            {/* <NavigationContainer independent={true}>
                <MyTabs navigation={navigation}
                   AllConfirmedItems={AllConfirmedItems}
                   totalamount={totalamount}
@@ -231,7 +386,7 @@ const ConfiremdOrders = ({ navigation, route }) => {
                   loading={loading}
                   setloading={setloading}
                />
-            </NavigationContainer>
+            </NavigationContainer> */}
          </SafeAreaView>
 
       </>

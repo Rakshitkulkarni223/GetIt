@@ -17,7 +17,7 @@ import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
 
-const Item = ({ setloading,id, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate }) => (
+const Item = ({ setloading, id, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate }) => (
     <>
         {displayCategory ? <Text style={{
             fontSize: normalize(13),
@@ -39,14 +39,14 @@ const Item = ({ setloading,id, OrderId, title, image_url, price, description, ca
                 // alignItems: "flex-start",
             }}>
                 <View>
-                <Image source={{ uri: image_url }} style={styles.photo} 
-                onLoadStart={()=>{
-                    setloading(true)
-                }}
-                onLoadEnd={()=>{
-                    setloading(false)
-                }}
-                 />
+                    <Image source={{ uri: image_url }} style={styles.photo}
+                        onLoadStart={() => {
+                            setloading(true)
+                        }}
+                        onLoadEnd={() => {
+                            setloading(false)
+                        }}
+                    />
                 </View>
                 <View style={{
                     marginTop: verticalScale(4),
@@ -71,7 +71,7 @@ const Item = ({ setloading,id, OrderId, title, image_url, price, description, ca
                     marginLeft: scale(2),
                 }}>
                     <Text style={styles.title_price}>
-                        {price}/-
+                        ₹{price}
                     </Text>
                 </View>
 
@@ -148,7 +148,7 @@ const ItemListViewUserPendingOrders = ({ AllOrders, loading, setloading }) => {
                             fontSize: normalize(16),
                             fontWeight: "600",
                             color: '#000'
-                        }}>{AllOrders[index].totalamount}/-</Text>
+                        }}>₹{AllOrders[index].totalamount}</Text>
                 </View>
                 <View>
                     <MaterialIcons name="location-pin" size={normalize(20)} color="#FA2E2E"

@@ -38,6 +38,8 @@ import UserChangePassword from "./UserChangePassword";
 import { normalize } from "./FontResize";
 import Main from "./Main";
 import Verification from "./Verification";
+import DetectLocation from "./users/DetectLocation";
+import PaymentGateway from "./Payment";
 
 const Stack = createNativeStackNavigator();
 
@@ -76,7 +78,9 @@ const App = () => (
       <Stack.Screen name="Signup" component={SignUp} />
       <Stack.Screen name="Dashboard Admin" component={DashboardAdmin} />
       <Stack.Screen name="Dashboard User" component={DashboardUser} />
+      <Stack.Screen name="Loaction" component={DetectLocation} />
       <Stack.Screen name="Confirm Order" component={ConfiremdOrders} />
+      <Stack.Screen name="Payment Gateway" component={PaymentGateway} />
       <Stack.Screen name="User Profile" component={UserProfile} />
       <Stack.Screen name="Change Password" component={UserChangePassword} />
     </Stack.Navigator>
