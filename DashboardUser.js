@@ -63,7 +63,7 @@ function MyTabs({ navigation, OrderId , displayCurrentAddress, longitude, latitu
                 }}
             />
 
-            <Tab.Screen
+            {/* <Tab.Screen
                 name="Pending Orders"
                 children={() => <UserPendingOrders navigation={navigation} />}
                 options={{
@@ -73,7 +73,7 @@ function MyTabs({ navigation, OrderId , displayCurrentAddress, longitude, latitu
                         <Feather name="shopping-bag" color={color} size={normalize(size - 8)} />
                     ),
                 }}
-            />
+            /> */}
 
             <Tab.Screen
                 name="Your Orders"

@@ -49,6 +49,8 @@ const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, lati
 
       setloading(true)
 
+      // console.log(auth.currentUser.uid)
+
       const getitems = onValue(itemsList, (snapshot) => {
 
          var items = [];
@@ -63,12 +65,12 @@ const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, lati
 
                var RatedBefore = false;
 
-               if (ratings && ratings.hasOwnProperty(it.key)) {
+               if (ratings && ratings[it.key] !== undefined) {
                   ItemRating = ratings[it.key]["rating"]
                   RatedBefore = true;
                }
 
-               if (adminRatings && adminRatings.hasOwnProperty(it.key)) {
+               if (adminRatings && adminRatings[it.key] !== undefined) {
                   ItemTotalRating = adminRatings[it.key]["Rating"]
                   totalUsers = adminRatings[it.key]["TotalUsers"]
                }

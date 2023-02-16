@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert, TextInput, Keyboard, ActivityIndicator, Modal } from 'react-native';
-import { AntDesign, EvilIcons, FontAwesome, Ionicons } from '@expo/vector-icons';
+import { AntDesign, EvilIcons, FontAwesome, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import { app, auth, db, database } from "../Firebase";
 import { onValue, ref, set, update } from "firebase/database";
 
@@ -224,9 +224,9 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                             // elevation: scale(10),
                                         }}
                                     >
-                                        <View style={{ 
-                                            justifyContent: 'center', 
-                                            flex: 1, 
+                                        <View style={{
+                                            justifyContent: 'center',
+                                            flex: 1,
                                             backgroundColor: '#5324A6',
                                             borderTopLeftRadius: scale(4),
                                             borderBottomLeftRadius: scale(4)
@@ -258,9 +258,9 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                             }>{ItemQuantity}</Text>
                                         </View>
 
-                                        <View style={{ 
-                                            justifyContent: 'center', 
-                                            flex: 1, 
+                                        <View style={{
+                                            justifyContent: 'center',
+                                            flex: 1,
                                             alignItems: 'center',
                                             borderTopRightRadius: scale(4),
                                             borderBottomRightRadius: scale(4),
@@ -345,7 +345,7 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                     color: "black",
                                     fontSize: normalize(15),
                                     fontWeight: "600"
-                                }}>{ItemQuantity}</Text>
+                                }}>{ItemQuantity} qty</Text>
                             </View> : <></>}
                     </View>
                 </View>
@@ -359,9 +359,9 @@ const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => 
         <View
             style={{
                 backgroundColor: '#fff',
-                padding: scale(5),
+                padding: scale(3),
                 marginTop: verticalScale(10),
-                marginHorizontal: scale(12),
+                marginHorizontal: scale(14),
                 borderRadius: scale(5),
                 borderColor: 'black',
                 borderWidth: scale(1),
@@ -372,19 +372,14 @@ const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => 
             }}
         >
             <View>
-                <Ionicons name="search" size={scale(16)} color="black" />
+                <Ionicons name="search" size={scale(15)} color="black" />
             </View>
             <View>
                 <TextInput
                     style={{
-                        // flex: 1,
-                        // backgroundColor: '#fff',
                         paddingHorizontal: scale(10),
                         marginRight: scale(40),
-                        // // marginLeft: scale(10),
-                        // // marginBottom: verticalScale(5),
                         fontSize: normalize(12),
-                        // fontFamily: 'sans-serif-light'
                     }}
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -645,7 +640,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
             settotalItems(totalItems + 1)
         }
 
-        set(ref(database, `users/orders/${OrderId}/items/${category}/` + id), {
+        set(ref(database, `users/${auth.currentUser.phoneNumber}/orders/${OrderId}/items/${category}/` + id), {
             ItemId: id,
             ItemName: title,
             ItemPrice: price,
@@ -654,10 +649,8 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
             ItemCategory: category,
             ItemQuantity: temp[index].ItemQuantity,
             ItemAddedDate: new Date().toLocaleString(),
-            OrderConfirmed: false,
-            OrderPending: false,
-            OrderDelivered: false
         });
+
         setData(temp);
         setRefresh(Math.random()); // <- Add if your view not Rerender
 
@@ -687,7 +680,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
         }
 
 
-        set(ref(database, `users/orders/${OrderId}/items/${category}/` + id), {
+        set(ref(database, `users/${auth.currentUser.phoneNumber}/orders/${OrderId}/items/${category}/` + id), {
             ItemId: id,
             ItemName: title,
             ItemPrice: price,
@@ -696,9 +689,6 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
             ItemCategory: category,
             ItemQuantity: temp[index].ItemQuantity,
             ItemAddedDate: new Date().toLocaleString(),
-            OrderConfirmed: false,
-            OrderPending: false,
-            OrderDelivered: false
         });
         setloading(false)
         setData(temp);
@@ -827,15 +817,17 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                                     }}>
                                         <Text style={{
                                             // padding: scale(34),
-                                            fontFamily: 'sans-serif-thin',
+                                            fontFamily: 'sans-serif-light',
                                             // fontWeight: '700',
                                             letterSpacing: scale(0.5),
-                                            color: 'white',
+                                            color: '#000',
                                             marginTop: verticalScale(5),
 
                                         }}>
-                                            <Text> No results for</Text>
-                                            <Text style={{ fontWeight: "bold" }}> {query}</Text>
+                                            <Text style={{
+                                                color: '#D20F0F'
+                                            }}> No results for</Text>
+                                            <Text style={{ fontWeight: "600" }}> "{query}"</Text>
                                         </Text>
 
                                     </View>
@@ -848,88 +840,180 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
 
                             {(totalamount !== 0) ?
                                 <View style={{
-                                    justifyContent: 'space-between',
                                     flexDirection: 'row',
-                                    backgroundColor: !showfooter ? '#7526B8' : '#546CB8',
-                                    height: verticalScale(40),
-                                    borderTopColor: 'white',
-                                    borderTopWidth: scale(0.6)
+                                    justifyContent: 'space-between',
+                                    borderTopWidth: scale(0.7),
+                                    borderColor: '#fff'
                                 }}>
-                                    <View
-                                        style={{
-                                            justifyContent: 'center',
-                                        }}
-                                    >
+                                    <View style={{
+                                        flex: 1,
+                                        flexDirection: 'column',
+                                        justifyContent: 'center',
+                                        paddingVertical: scale(5),
+                                        paddingHorizontal: scale(13),
+                                        backgroundColor: '#706F71',
+                                        backgroundColor: !showfooter ? '#5F26B1' : '#546CB8',
+                                    }}>
                                         <View style={{
                                             flexDirection: 'column',
-                                            // justifyContent: 'flex-start'
+                                            justifyContent: 'space-evenly'
                                         }}>
-                                            <Text style={{
-                                                fontSize: normalize(10),
-                                                paddingHorizontal: scale(15),
-                                                color: !showfooter ? 'white' : 'white',
-                                                // fontWeight: '600',
-                                                letterSpacing: scale(0.4),
-                                                fontFamily: 'sans-serif-medium'
+                                            <View style={{
+                                                flexDirection: 'column',
+                                                justifyContent: 'center'
                                             }}>
-                                                {showfooter ? totalItems : totalConfirmedItems} items
-                                            </Text>
-                                            <Text style={{
-                                                fontSize: normalize(15),
-                                                paddingHorizontal: scale(15),
-                                                color: !showfooter ? 'white' : 'white',
-                                                fontWeight: '600',
-                                                letterSpacing: scale(0.4),
-                                            }} >₹{totalamount}</Text></View>
+                                                <Text style={{
+                                                    fontSize: normalize(10),
+                                                    paddingHorizontal: scale(15),
+                                                    color: !showfooter ? 'white' : 'white',
+                                                    // fontWeight: '600',
+                                                    letterSpacing: scale(0.4),
+                                                    fontFamily: 'sans-serif-light'
+                                                }}>
+                                                    {showfooter ? totalItems : totalConfirmedItems} items
+                                                </Text>
+                                            </View>
+                                            <View style={{
+                                                flexDirection: 'column',
+                                                justifyContent: 'center'
+                                            }}>
+                                                <Text style={{
+                                                    fontSize: normalize(15),
+                                                    paddingHorizontal: scale(15),
+                                                    color: !showfooter ? 'white' : 'white',
+                                                    fontWeight: '600',
+                                                    letterSpacing: scale(0.4),
+                                                }} >₹{totalamount}</Text>
+                                            </View>
+                                        </View>
                                     </View>
 
-                                    <View
-                                        style={{
-                                            justifyContent: 'center',
-                                            paddingHorizontal: scale(20)
-                                        }}
-                                    >
-                                        <View style={{
-                                            flexDirection: 'row',
-                                            alignItems: 'center',
-                                            borderWidth: scale(0.6),
-                                            borderRadius: scale(5),
-                                            backgroundColor: 'white',
-                                            borderColor: 'white',
-                                            paddingVertical: verticalScale(4),
-                                            paddingHorizontal: scale(10)
-                                        }}>
+                                    <View style={{
+                                        flex: 1,
+                                        flexDirection: 'column',
+                                        justifyContent: 'center',
+                                        // borderLeftWidth: scale(0.7),
+                                        paddingVertical: scale(5),
+                                        paddingHorizontal: scale(13),
+                                        backgroundColor: '#6B74A3',
+                                        backgroundColor: !showfooter ? '#5F26B1' : '#546CB8',
+                                    }}>
                                             <TouchableOpacity onPress={checkcart}>
                                                 <View style={{
                                                     flexDirection: 'row',
-                                                    justifyContent: 'center'
+                                                    justifyContent: 'flex-end',
                                                 }}>
                                                     <View style={{
-                                                        justifyContent: 'center',
-
+                                                        flexDirection: 'column',
+                                                        justifyContent: 'center'
                                                     }}>
                                                         <Text style={{
-                                                            textAlign: 'center',
-                                                            fontSize: normalize(15),
-                                                            color: showfooter ? 'black' : '#D34386',
-                                                            fontWeight: '600',
-                                                            letterSpacing: scale(0.4),
-                                                            fontFamily: 'sans-serif-medium'
-                                                        }} > {showfooter ? "View Cart" : "Pay and GetIt"}
+                                                            fontSize: normalize(16),
+                                                            color: '#fff',
+                                                            fontWeight: '500',
+                                                            letterSpacing: scale(0.3),
+                                                            color: showfooter ? '#fff' : '#fff',
+                                                        }}
+                                                        >
+                                                            {showfooter ? "View Cart " : "Pay and GetIt "}
                                                         </Text>
                                                     </View>
+
                                                     <View style={{
-                                                        justifyContent: 'center',
-                                                        paddingLeft: scale(5)
+                                                        flexDirection: 'column',
+                                                        justifyContent: 'center'
                                                     }}>
                                                         <AntDesign name="caretright" size={normalize(10)}
-                                                            color={showfooter ? "black" : '#D34386'} />
+                                                            color={showfooter ? "#fff" : '#fff'} />
                                                     </View>
                                                 </View>
                                             </TouchableOpacity>
-                                        </View>
                                     </View>
-                                </View> : <></>}
+                                </View>
+                                // <View style={{
+                                //     justifyContent: 'space-between',
+                                //     flexDirection: 'row',
+                                //     backgroundColor: !showfooter ? '#7526B8' : '#546CB8',
+                                //     height: verticalScale(40),
+                                //     borderTopColor: 'white',
+                                //     borderTopWidth: scale(0.6)
+                                // }}>
+                                //     <View
+                                //         style={{
+                                //             justifyContent: 'center',
+                                //         }}
+                                //     >
+                                //         <View style={{
+                                //             flexDirection: 'column',
+                                //             // justifyContent: 'flex-start'
+                                //         }}>
+                                //             <Text style={{
+                                //                 fontSize: normalize(10),
+                                //                 paddingHorizontal: scale(15),
+                                //                 color: !showfooter ? 'white' : 'white',
+                                //                 // fontWeight: '600',
+                                //                 letterSpacing: scale(0.4),
+                                //                 fontFamily: 'sans-serif-medium'
+                                //             }}>
+                                //                 {showfooter ? totalItems : totalConfirmedItems} items
+                                //             </Text>
+                                //             <Text style={{
+                                //                 fontSize: normalize(15),
+                                //                 paddingHorizontal: scale(15),
+                                //                 color: !showfooter ? 'white' : 'white',
+                                //                 fontWeight: '600',
+                                //                 letterSpacing: scale(0.4),
+                                //             }} >₹{totalamount}</Text></View>
+                                //     </View>
+
+                                //     <View
+                                //         style={{
+                                //             justifyContent: 'center',
+                                //             paddingHorizontal: scale(20)
+                                //         }}
+                                //     >
+                                //         <View style={{
+                                //             flexDirection: 'row',
+                                //             alignItems: 'center',
+                                //             borderWidth: scale(0.6),
+                                //             borderRadius: scale(5),
+                                //             backgroundColor: 'white',
+                                //             borderColor: 'white',
+                                //             paddingVertical: verticalScale(4),
+                                //             paddingHorizontal: scale(10)
+                                //         }}>
+                                //             <TouchableOpacity onPress={checkcart}>
+                                //                 <View style={{
+                                //                     flexDirection: 'row',
+                                //                     justifyContent: 'center'
+                                //                 }}>
+                                //                     <View style={{
+                                //                         justifyContent: 'center',
+
+                                //                     }}>
+                                //                         <Text style={{
+                                //                             textAlign: 'center',
+                                //                             fontSize: normalize(15),
+                                //                             color: showfooter ? 'black' : '#D34386',
+                                //                             fontWeight: '600',
+                                //                             letterSpacing: scale(0.4),
+                                //                             fontFamily: 'sans-serif-medium'
+                                //                         }} > {showfooter ? "View Cart" : "Pay and GetIt"}
+                                //                         </Text>
+                                //                     </View>
+                                //                     <View style={{
+                                //                         justifyContent: 'center',
+                                //                         paddingLeft: scale(5)
+                                //                     }}>
+                                //                         <AntDesign name="caretright" size={normalize(10)}
+                                //                             color={showfooter ? "black" : '#D34386'} />
+                                //                     </View>
+                                //                 </View>
+                                //             </TouchableOpacity>
+                                //         </View>
+                                //     </View>
+                                // </View> 
+                                : <></>}
 
                         </SafeAreaView>
                         :

@@ -24,7 +24,7 @@ import { scale, moderateScale, verticalScale } from './Dimensions';
 
 import { normalize } from "./FontResize";
 import ActivityIndicatorElement from "./ActivityIndicatorElement";
-import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, Ionicons, MaterialIcons, SimpleLineIcons } from "@expo/vector-icons";
 import { NotificationHandler } from "./NotificationHandler";
 
 
@@ -227,7 +227,7 @@ const PaymentGateway = ({ navigation, route }) => {
                             justifyContent: 'center',
                         }}>
                             {timer === '00:00s' ? (
-                                NotificationHandler(`Order Not Placed ❌🙁 Order Id: ${route.params.OrderId}`, `Payment gateway expired, Please Re-order and GetIt.`),
+                                // NotificationHandler(auth.currentUser.phoneNumber,`Order Not Placed ❌🙁 Order Id: ${route.params.OrderId}`, `Payment gateway expired, Please Re-order and GetIt.`),
                                 Alert.alert('Order Not Confirmed', `Payment gateway expired, Please Re-order and GetIt.`, [
                                     {
                                         text: 'Ok',
@@ -235,7 +235,7 @@ const PaymentGateway = ({ navigation, route }) => {
                                         style: 'cancel',
                                     },
                                 ]))
-                                : <></>}
+                                : undefined}
                             <View>
                                 <MaterialIcons name="timer" size={normalize(16)} color="#F4C034" />
                             </View>
@@ -273,7 +273,8 @@ const PaymentGateway = ({ navigation, route }) => {
             paymentMode === 'online' ? await Linking.openURL(url) : false;
 
             for (var i = 0; i < route.params.AllConfirmedItems.length; i++) {
-                set(ref(database, `users/confirmedOrders/${route.params.OrderId}/items/${route.params.AllConfirmedItems[i]["ItemCategory"]}/` + route.params.AllConfirmedItems[i]["key"]), {
+
+                update(ref(database, `users/${auth.currentUser.phoneNumber}/orders/${route.params.OrderId}/items/${route.params.AllConfirmedItems[i]["ItemCategory"]}/` + route.params.AllConfirmedItems[i]["key"]), {
                     ItemId: route.params.AllConfirmedItems[i]["key"],
                     ItemName: route.params.AllConfirmedItems[i]["ItemName"],
                     ItemPrice: route.params.AllConfirmedItems[i]["ItemPrice"],
@@ -282,44 +283,25 @@ const PaymentGateway = ({ navigation, route }) => {
                     ItemCategory: route.params.AllConfirmedItems[i]["ItemCategory"],
                     ItemQuantity: route.params.AllConfirmedItems[i]["ItemQuantity"],
                     ItemAddedDate: route.params.AllConfirmedItems[i]["ItemAddedDate"],
-                    Location: route.params.displayCurrentAddress,
-                    phoneNumber: auth.currentUser.phoneNumber,
-                    Longitude: route.params.longitude,
-                    Latitude: route.params.latitude,
-                    OrderId: route.params.OrderId,
-                    OrderConfirmed: true,
-                    OrderPending: true,
-                    OrderDelivered: false
-                });
-
-
-                set(ref(database, `users/userpendingOrders/${auth.currentUser.phoneNumber}/${route.params.OrderId}/items/${route.params.AllConfirmedItems[i]["ItemCategory"]}/` + route.params.AllConfirmedItems[i]["key"]), {
-                    ItemId: route.params.AllConfirmedItems[i]["key"],
-                    ItemName: route.params.AllConfirmedItems[i]["ItemName"],
-                    ItemPrice: route.params.AllConfirmedItems[i]["ItemPrice"],
-                    ItemDesc: route.params.AllConfirmedItems[i]["ItemDesc"],
-                    ItemImage: route.params.AllConfirmedItems[i]["ItemImage"],
-                    ItemCategory: route.params.AllConfirmedItems[i]["ItemCategory"],
-                    ItemQuantity: route.params.AllConfirmedItems[i]["ItemQuantity"],
-                    ItemAddedDate: route.params.AllConfirmedItems[i]["ItemAddedDate"],
-                    Location: route.params.displayCurrentAddress,
-                    phoneNumber: auth.currentUser.phoneNumber,
-                    Longitude: route.params.longitude,
-                    Latitude: route.params.latitude,
-                    OrderId: route.params.OrderId,
-                    OrderConfirmed: true,
-                    OrderPending: true,
-                    OrderDelivered: false
                 });
             }
 
-            await set(ref(database, `users/orders/${route.params.OrderId}/items/`), {
+            set(ref(database, `users/${auth.currentUser.phoneNumber}/orders/${route.params.OrderId}/orderDetails`), {
+                Location: route.params.displayCurrentAddress,
+                Longitude: route.params.longitude,
+                Latitude: route.params.latitude,
+                phoneNumber: auth.currentUser.phoneNumber,
+                OrderId: route.params.OrderId
+            })
+
+            set(ref(database, `users/${auth.currentUser.phoneNumber}/orders/${route.params.OrderId}/orderStatus`), {
+                OrderStatus: -1
             })
 
             setloading(false)
 
-            await NotificationHandler(`Order Placed ✅🎊 Order Id: ${route.params.OrderId}`, `Delivery Location : ${route.params.displayCurrentAddress}`)
-            await NotificationHandler(`Thank you 🤩❤️`, `Please collect your order from our delivery agent.`)
+            // await NotificationHandler(auth.currentUser.phoneNumber, `Order Placed ✅🎊 Order Id: ${route.params.OrderId}`, `Delivery Location : ${route.params.displayCurrentAddress}`)
+            // await NotificationHandler(auth.currentUser.phoneNumber, `Thank you 🤩❤️`, `Please collect your order from our delivery agent.`)
 
             navigation.reset({
                 index: 0,
@@ -333,80 +315,254 @@ const PaymentGateway = ({ navigation, route }) => {
         }
     }
 
-    const DATA = [
-        {
-          id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-          title: 'First Item',
-        },
-        {
-          id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-          title: 'Second Item',
-        },
-        {
-          id: '58694a0f-3da1-471f-bd96-145571e29d72',
-          title: 'Third Item',
-        },
-      ];
-      
-      const Item = ({item, onPress, backgroundColor, textColor}) => (
-        <TouchableOpacity onPress={onPress} style={[styles.item, {backgroundColor}]}>
-          <Text style={[styles.title, {color: textColor}]}>{item.title}</Text>
-        </TouchableOpacity>
-      );
+    const Item = ({ index, Id, ItemName, ItemDesc, ItemImage, ItemPrice, ItemCategory, ItemQuantity }) => (
+        <View style={{
+            flex: 1,
+            flexDirection: 'column',
+            // justifyContent: 'center',
+            borderBottomWidth: scale(0.9),
+            backgroundColor: (index % 2) ? "#D6D3D3" : "#fff",
+            padding: scale(15)
+        }}>
+            <View style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between'
+            }}>
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    // borderWidth: scale(1)
+                }}>
+                    <Image source={{ uri: ItemImage }} style={styles.photo}
+                    />
+                </View>
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start'
+                }}>
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center'
+                    }}>
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start'
+                        }}>
+                            <Text style={{
+                                fontSize: normalize(13),
+                                letterSpacing: scale(0.2),
+                                fontWeight: '500'
+                            }}>{ItemName}</Text>
+                        </View>
 
-      const [selectedId, setSelectedId] = useState();
-      
-      const renderItem = ({item}) => {
-    
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start'
+                        }}>
+                            <Text style={{
+                                fontSize: normalize(10),
+                                fontStyle: 'italic',
+                                letterSpacing: scale(0.2)
+                            }}>
+                                {ItemDesc}
+                            </Text>
+                        </View>
+                    </View>
+                </View>
+
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                }}>
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center'
+                    }}>
+                        <Text style={{
+                            fontSize: normalize(12),
+                            letterSpacing: scale(0.2)
+                        }}>
+                            {ItemCategory}
+                        </Text>
+                    </View>
+                </View>
+
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                }}>
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-end'
+                    }}>
+                        <Text style={{
+                            fontSize: normalize(13),
+                            letterSpacing: scale(0.2),
+                            fontWeight: '500'
+                        }}>
+                            ₹{ItemPrice}
+                        </Text>
+                    </View>
+                </View>
+
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                }}>
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-end'
+                    }}>
+                        <Text style={{
+                            fontSize: normalize(13),
+                            letterSpacing: scale(0.2)
+                        }}>{ItemQuantity} qty</Text>
+                    </View>
+                </View>
+
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                }}>
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-end'
+                    }}>
+                        <Text style={{
+                            fontSize: normalize(13),
+                            letterSpacing: scale(0.2),
+                            fontWeight: '500'
+                        }}>₹{ItemPrice * ItemQuantity}</Text>
+                    </View>
+                </View>
+            </View>
+        </View>
+    );
+
+    const renderItem = ({ item, index }) => {
         return (
-          <Item
-            item={item}
-            onPress={() => setSelectedId(item.id)}
-            backgroundColor='white'
-            textColor='black'
-          />
+            <Item
+                index={index}
+                Id={item.key}
+                ItemName={item.ItemName}
+                ItemImage={item.ItemImage}
+                ItemDesc={item.ItemDesc}
+                ItemPrice={item.ItemPrice}
+                ItemCategory={item.ItemCategory}
+                ItemQuantity={item.ItemQuantity}
+            />
         );
-      };
+    };
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            {/* <ScrollView keyboardShouldPersistTaps="handled"
-                contentContainerStyle={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignContent: "center",
-                }}> */}
             <ActivityIndicatorElement loading={loading} />
             <View style={{
                 flex: 1,
                 flexDirection: 'column',
                 justifyContent: 'flex-start',
-                // margin: scale(25),
             }}>
                 <View style={{
-                    marginHorizontal: scale(15),
-                    marginTop: scale(10),
+                    // flex: 0.13,
+                    flexDirection: 'row',
+                    // justifyContent: 'space-between',
 
+                    padding: scale(10),
+                    borderBottomWidth: scale(0.5),
                 }}>
-                    <Text style={{
-                        fontSize: normalize(15),
-                        fontWeight: '400',
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center'
                     }}>
-                        Order Summary
-                    </Text>
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start'
+                        }}>
+                            <Text style={{
+                                fontSize: normalize(15),
+                                fontWeight: '400',
+                            }}>
+                                Order Summary
+                            </Text>
+                        </View>
+                    </View>
                 </View>
-                <View>
-                    <FlatList
-                        data={DATA}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id}
-                        extraData={selectedId}
-                    />
+
+                {
+                    route.params.AllConfirmedItems.length !== 0 ?
+
+                        <FlatList
+                            data={route.params.AllConfirmedItems}
+                            renderItem={renderItem}
+                            keyExtractor={(item, index) => String(index)}
+                        />
+                        :
+                        <></>
+                }
+
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    borderWidth: scale(0.8),
+                    paddingVertical: scale(10),
+                    paddingHorizontal: scale(13),
+                    backgroundColor: '#D74E67',
+                }}>
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                    }}>
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start'
+                        }}>
+                            <Text style={{
+                                 fontSize: normalize(16),
+                                 color: '#fff',
+                                 fontWeight: '500',
+                                 letterSpacing: scale(0.3)
+                            }}>{route.params.AllConfirmedItems.length} items</Text>
+                        </View>
+                    </View>
+
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center'
+                    }}>
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-end'
+                        }}>
+
+                            <Text style={{
+                                fontSize: normalize(16),
+                                color: '#fff',
+                                fontWeight: '500',
+                                letterSpacing: scale(0.3)
+                            }}
+                            >Total: ₹{route.params.totalamount}
+                            </Text>
+                        </View>
+                    </View>
                 </View>
+
                 <View style={{
                     flexDirection: 'row',
                     justifyContent: 'center',
-                    marginHorizontal: scale(10)
+                    marginHorizontal: scale(10),
+                    marginVertical: scale(5),
+                   
                 }}>
                     <View style={{
                         justifyContent: 'center',
@@ -422,35 +578,82 @@ const PaymentGateway = ({ navigation, route }) => {
                         }}>Only cash on delivery is avaliable.</Text>
                     </View>
                 </View>
-                <View style={{ margin: scale(10), }}>
-                    <Pressable style={[styles.button, { backgroundColor: '#706F71' }]}
-                        onPress={
-                            // () => openPaymentApp('online')
-                            () => Alert.alert("Work in progress", "Only cash on delivery is avaliable")}
-                        disabled={true}
-                    >
-                        <Text style={[styles.text, { color: '#d3d3d3' }]}>PAY ONLINE</Text>
-                    </Pressable>
-                </View>
 
                 <View style={{
                     flexDirection: 'row',
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
+                    borderTopWidth: scale(0.7)
                 }}>
-                    <Text style={{
-                        color: 'black', fontWeight: 'bold', letterSpacing: scale(0.3),
-                        marginBottom: verticalScale(10),
-                        marginTop: verticalScale(10)
-                    }}>OR</Text>
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        // borderWidth: scale(0.8),
+                        paddingVertical: scale(10),
+                        paddingHorizontal: scale(13),
+                        backgroundColor: '#706F71',
+                    }}>
+                        <Pressable
+                            onPress={
+                                // () => openPaymentApp('online')
+                                () => Alert.alert("Work in progress", "Only cash on delivery is avaliable")}
+                            disabled={true}
+                        >
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-evenly'
+                            }}>
+                                <View style={{
+                                    flexDirection: 'column',
+                                    justifyContent: 'center'
+                                }}>
+                                    <SimpleLineIcons name="ban" size={normalize(14)} color="#EA0404" />
+                                </View>
+                                <View style={{
+                                    flexDirection: 'column',
+                                    justifyContent: 'center'
+                                }}>
+                                    <Text style={{
+                                        fontSize: normalize(16),
+                                        color: '#C6C6C6',
+                                        fontWeight: '500',
+                                        letterSpacing: scale(0.3)
+                                    }}>PAY ONLINE</Text>
+                                </View>
+                            </View>
+                        </Pressable>
+                    </View>
+
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        // borderWidth: scale(0.8),
+                        borderLeftWidth: scale(0.7),
+                        paddingVertical: scale(10),
+                        paddingHorizontal: scale(13),
+                        backgroundColor: '#676EB4',
+                    }}>
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'center'
+                        }}>
+                            <Pressable onPress={() => openPaymentApp('offline')} >
+                                <Text style={{
+                                    fontSize: normalize(16),
+                                    color: '#fff',
+                                    fontWeight: '500',
+                                    letterSpacing: scale(0.3)
+                                }}
+                                >CASH ON DELIVERY
+                                </Text>
+                            </Pressable>
+                        </View>
+                    </View>
                 </View>
 
-                <View style={{ margin: scale(10), }}>
-                    <Pressable style={[styles.button]} onPress={() => openPaymentApp('offline')} >
-                        <Text style={styles.text}>CASH ON DELIVERY</Text>
-                    </Pressable>
-                </View>
+
             </View>
-            {/* </ScrollView> */}
         </SafeAreaView>
 
     );
@@ -465,23 +668,21 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         // marginTop: StatusBar.currentHeight || 0,
-      },
-      item: {
+    },
+    item: {
         padding: 20,
         marginVertical: 8,
         marginHorizontal: 16,
-      },
-      title: {
+    },
+    title: {
         fontSize: 32,
-      },
+    },
     button: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: verticalScale(7),
-        paddingHorizontal: scale(30),
+        // paddingVertical: verticalScale(7),
+        // paddingHorizontal: scale(30),
         borderRadius: scale(4),
         elevation: scale(18),
-        backgroundColor: 'black',
+        // backgroundColor: 'black',
     },
     text: {
         fontSize: normalize(14),
@@ -489,6 +690,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         letterSpacing: scale(0.75),
         color: 'white',
+    },
+    photo: {
+        height: verticalScale(30),
+        width: scale(30),
+        borderRadius: scale(4)
     },
 })
 

@@ -3,6 +3,9 @@ import { Text, View, Button, Platform, Alert } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 
+import { app, auth, db, database } from "./Firebase";
+import { onValue, ref, set, update } from "firebase/database";
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -11,18 +14,45 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export async function NotificationHandler(title, body, data) {
+export async function NotificationHandler(send, phoneNumber, title, body, data) {
 
-  console.log(title, body, data)
+  // console.log(title, body, data)
 
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: title,
-      body: body,
-      data: { data: data },
-    },
-    trigger: { seconds: 1 },
-  })
+  // await Notifications.scheduleNotificationAsync({
+  //   content: {
+  //     title: title,
+  //     body: body,
+  //     data: { data: data },
+  //   },
+  //   trigger: { seconds: 1 },
+  // })
+
+  var expoPushToken = ''
+
+  if (send) {
+
+    onValue(ref(database, `users/${phoneNumber}/`), async (users) => {
+      expoPushToken = users.val()["fcmToken"]
+      const message = {
+        to: expoPushToken,
+        sound: 'default',
+        title: title,
+        body: body,
+        data: { someData: data },
+      };
+
+      await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Accept-encoding': 'gzip, deflate',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      });
+    });
+  }
+
 }
 
 export async function NotificationData() {
@@ -46,8 +76,6 @@ export async function NotificationPermission() {
   }
 
   if (Device.isDevice) {
-
-    // console.log("ok")
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
     if (existingStatus !== 'granted') {
@@ -56,11 +84,11 @@ export async function NotificationPermission() {
     }
     if (finalStatus !== 'granted') {
       Alert.alert('Notification Permission Disabled', 'Please enable notification permissions to get updates about your order!');
-      // return;
+      return '';
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    // console.log(token);
   } else {
     Alert.alert('Device Not Found', 'Must use physical device for Push Notifications');
+    return '';
   }
 }

@@ -205,26 +205,26 @@ const AddItem = ({ navigation }) => {
 
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#3B3636' }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#E5E5E5' }}>
             <ScrollView>
                 <ActivityIndicatorElement loading={loading} />
-                <View style={{ padding: scale(18), marginTop: verticalScale(20) }}>
+                <View style={{ padding: scale(18), marginTop: verticalScale(20)}}>
                     <View
                         style={{
                             borderBottomWidth: scale(0.5),
                             borderRadius: scale(5),
                             marginTop: verticalScale(10),
-                            borderColor: 'white'
+                            borderColor: '#000'
                         }}
                     >
-                        <Text style={{ marginLeft: scale(10),fontSize : normalize(13),  marginTop: verticalScale(5), fontFamily: 'sans-serif-light', color: '#28E68A' }}>Item name</Text>
+                        <Text style={{ marginLeft: scale(10),fontSize : normalize(13),  marginTop: verticalScale(5), fontFamily: 'sans-serif-light', color: '#EB0505' }}>Item name</Text>
                         <TextInput
-                            style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), 
+                            style={{ marginLeft: scale(10), color: 'black', marginBottom: verticalScale(5), fontSize: normalize(14), 
                             fontFamily: ItemName ? 'sans-serif-light' : 'sans-serif-thin' }}
                             placeholder="Enter item name e.g Idli/Dosa"
                             keyboardType="default"
                             defaultValue={ItemName}
-                            placeholderTextColor='white'
+                            placeholderTextColor='#000'
                             cursorColor='#778899'
                             ref={ItemNameref}
                             clearButtonMode="always"
@@ -244,23 +244,23 @@ const AddItem = ({ navigation }) => {
                             borderBottomWidth: scale(0.5),
                             borderRadius: scale(5),
                             marginTop: verticalScale(10),
-                            borderColor: 'white'
+                            borderColor: '#000'
                         }}
                     >
                         <Text style={{
                             marginLeft: scale(10),
                             marginTop: verticalScale(5),
                             fontFamily: 'sans-serif-light',
-                            color: '#28E68A',
+                            color: '#EB0505',
                             fontSize : normalize(13), 
                         }}>Item description</Text>
                         <TextInput
-                            style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), 
+                            style={{ marginLeft: scale(10), color: 'black', marginBottom: verticalScale(5), fontSize: normalize(14), 
                             fontFamily: ItemDesc ? 'sans-serif-light' : 'sans-serif-thin' 
                         }}
                             placeholder="Enter item description"
                             keyboardType="default"
-                            placeholderTextColor='white'
+                            placeholderTextColor='#000'
                             cursorColor='#778899'
                             defaultValue={ItemDesc}
                             ref={ItemDescref}
@@ -282,16 +282,16 @@ const AddItem = ({ navigation }) => {
                             borderBottomWidth: scale(0.5),
                             borderRadius: scale(5),
                             marginTop: verticalScale(10),
-                            borderColor: 'white'
+                            borderColor: '#000'
                         }}
                     >
-                        <Text style={{ marginLeft: scale(10), color: '#28E68A',fontSize : normalize(13),  marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item category</Text>
+                        <Text style={{ marginLeft: scale(10), color: '#EB0505',fontSize : normalize(13),  marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item category</Text>
                         <TextInput
-                            style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14),
+                            style={{ marginLeft: scale(10), color: 'black', marginBottom: verticalScale(5), fontSize: normalize(14),
                              fontFamily: ItemCategory ? 'sans-serif-light' : 'sans-serif-thin'  }}
                             placeholder="Enter item category e.g Breakfast,Snacks..."
                             keyboardType="default"
-                            placeholderTextColor='white'
+                            placeholderTextColor='#000'
                             cursorColor='#778899'
                             defaultValue={ItemCategory}
                             ref={ItemCategoryref}
@@ -312,14 +312,14 @@ const AddItem = ({ navigation }) => {
                             borderBottomWidth: scale(0.5),
                             borderRadius: scale(5),
                             marginTop: verticalScale(10),
-                            borderColor: 'white'
+                            borderColor: '#000'
                         }}
                     >
-                        <Text style={{ marginLeft: scale(10), color: '#28E68A',fontSize : normalize(13), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>
+                        <Text style={{ marginLeft: scale(10), color: '#EB0505',fontSize : normalize(13), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>
                             Item price
                         </Text>
                         <TextInput
-                            style={{ marginLeft: scale(10), color: 'white', marginBottom: verticalScale(5), fontSize: normalize(14), 
+                            style={{ marginLeft: scale(10), color: 'black', marginBottom: verticalScale(5), fontSize: normalize(14), 
                             fontFamily: ItemPrice ? 'sans-serif-light' : 'sans-serif-thin'  }}
                             placeholder="Enter item price per plate"
                             autoCompleteType="tel"
@@ -327,7 +327,7 @@ const AddItem = ({ navigation }) => {
                             keyboardType="phone-pad"
                             clearButtonMode="always"
                             defaultValue={ItemPrice}
-                            placeholderTextColor='white'
+                            placeholderTextColor='#000'
                             textContentType="telephoneNumber"
                             ref={ItemPriceref}
                             returnKeyType="next"
@@ -346,10 +346,10 @@ const AddItem = ({ navigation }) => {
                             borderRadius: scale(5),
                             marginTop: verticalScale(10),
                             paddingBottom: scale(2),
-                            borderColor: 'white'
+                            borderColor: '#000'
                         }}
                     >
-                        <Text style={{ marginLeft: scale(10), fontSize : normalize(13), marginTop: verticalScale(5), fontFamily: 'sans-serif-light', color: '#28E68A' }}>Item Image</Text>
+                        <Text style={{ marginLeft: scale(10), fontSize : normalize(13), marginTop: verticalScale(5), fontFamily: 'sans-serif-light', color: '#EB0505' }}>Item Image</Text>
                         <View style={{
                             flexDirection: 'row',
                             justifyContent: 'center',
@@ -365,12 +365,12 @@ const AddItem = ({ navigation }) => {
                         <View style={{
                             flexDirection: 'row',
                             justifyContent: 'space-evenly',
-                            marginVertical: verticalScale(5),
+                            marginVertical: verticalScale(6),
                         }}>
                             <View
                             // style={{ paddingLeft: scale(80), paddingTop: verticalScale(5) }}
                             >
-                                <Feather name="image" size={scale(25)} color="white" onPress={
+                                <Feather name="image" size={normalize(25)} color="#000" onPress={
                                     showImagePicker
                                 } />
                                 {/* <MaterialIcons name="add-photo-alternate" size={scale(25)} color="black" onPress={
@@ -380,14 +380,14 @@ const AddItem = ({ navigation }) => {
                             <View
                             // style={{ paddingRight: scale(10), paddingTop: verticalScale(5) }}
                             >
-                                <Feather name="camera" size={scale(25)} color="white" onPress={
+                                <Feather name="camera" size={normalize(25)} color="#000" onPress={
                                     openCamera} />
                             </View>
 
                             {ItemImage ? <View
                             // style={{ paddingRight: scale(90), paddingTop: verticalScale(5)  }}
                             >
-                                <AntDesign name="delete" size={scale(25)} color="red" onPress={() => {
+                                <AntDesign name="delete" size={normalize(25)} color="#EB0505" onPress={() => {
                                     setItemImage('');
                                 }} />
                             </View> : <></>}
@@ -429,8 +429,8 @@ const styles = StyleSheet.create({
         paddingVertical: verticalScale(8),
         paddingHorizontal: scale(32),
         borderRadius: scale(4),
-        elevation: scale(10),
-        backgroundColor: '#6A89B1',
+        elevation: scale(5),
+        backgroundColor: '#525A87',
     },
     text: {
         fontSize: normalize(16),

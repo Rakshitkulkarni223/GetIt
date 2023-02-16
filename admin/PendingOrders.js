@@ -15,7 +15,7 @@ const PendingOrders = () => {
    const [toggle, settoggle]= useState(false);
 
 
-   const [itemsList,setitemsList] = useState(ref(database, 'users/confirmedOrders/'));
+   const [itemsList,setitemsList] = useState(ref(database, 'users/'));
 
    const [loading, setloading] = useState(false);
 
@@ -24,7 +24,7 @@ const PendingOrders = () => {
 
       setloading(true);
 
-      const getitems = onValue(itemsList, (snapshot) => {
+      const getitems = onValue(itemsList, (users) => {
          var items = [];
          var orders = [];
          var data = [];
@@ -32,55 +32,97 @@ const PendingOrders = () => {
          var flag = true;
          var showuser = true;
 
-         snapshot.forEach((child)=>{
+         users.forEach((allorders)=>{
+            allorders.forEach((snapshot)=>{
+            snapshot.forEach((child)=>{
 
-            items = [];
-            showuser = true;
-            var Location = '';
-            var totalamount = 0;
-            var Longitude = ''
-            var Latitude = ''
+               var Location = '';
+               var Longitude = ''
+               var Latitude = ''
+               var OrderStatus = -1;
+               var phoneNumber = '';
+               var OrderId = '';
 
-            var date = ''
 
-            child.forEach((it)=>{
-               it.forEach((item)=>{
-                  flag = true;
-                  item.forEach((eachitem)=>{
-                     totalamount += eachitem.val().ItemPrice*eachitem.val().ItemQuantity;
-                     Location = eachitem.val().Location;
-                     Longitude =eachitem.val().Longitude;
-                     Latitude = eachitem.val().Latitude;
-                     date = eachitem.val().ItemAddedDate;
+               items = [];
+               showuser = true;
+            
+               var totalamount = 0;
+               var date = ''
 
-                     items.push({
-                        key:eachitem.key,
-                        ItemCategory: item.key,
-                        displayCategory: flag,
-                        displayUser: showuser,
-                        OrderId: child.key,
-                        phoneNumber: eachitem.val().phoneNumber,
-                        ItemName: eachitem.val().ItemName,
-                        ItemDesc: eachitem.val().ItemDesc,
-                        ItemCategory: eachitem.val().ItemCategory,
-                        ItemPrice: eachitem.val().ItemPrice,
-                        ItemImage: eachitem.val().ItemImage,
-                        ItemQuantity: eachitem.val().ItemQuantity,
-                        ItemAddedDate: eachitem.val().ItemAddedDate,
+               child.forEach((it)=>{
+
+                  if(it.key=== "orderStatus")
+                  {
+                     it.forEach((status)=>{
+                        OrderStatus = status.val()
                      })
-                     showuser = false;
-                     flag = false;
+                  }
+
+                  if(it.key=== "orderDetails")
+                  {
+                     it.forEach((orderDetails)=>{
+                        if(orderDetails.key === 'Location')
+                        {
+                           Location =  orderDetails.val()
+                        }
+                        if(orderDetails.key === 'Longitude')
+                        {
+                           Longitude =  orderDetails.val()
+                        }
+                        if(orderDetails.key === 'Latitude')
+                        {
+                           Latitude =  orderDetails.val()
+                        }
+                        if(orderDetails.key === 'phoneNumber')
+                        {
+                           phoneNumber =  orderDetails.val()
+                        }
+                        if(orderDetails.key === 'OrderId')
+                        {
+                           OrderId =  orderDetails.val()
+                        }
+                     })
+                  }
+
+   
+                  it.forEach((item)=>{
+                     flag = true;
+                     item.forEach((eachitem)=>{
+                        totalamount += eachitem.val().ItemPrice*eachitem.val().ItemQuantity;
+                        
+                        date = eachitem.val().ItemAddedDate;
+
+                        items.push({
+                           key:eachitem.key,
+                           ItemCategory: item.key,
+                           displayCategory: flag,
+                           displayUser: showuser,
+                           ItemName: eachitem.val().ItemName,
+                           ItemDesc: eachitem.val().ItemDesc,
+                           ItemCategory: eachitem.val().ItemCategory,
+                           ItemPrice: eachitem.val().ItemPrice,
+                           ItemImage: eachitem.val().ItemImage,
+                           ItemQuantity: eachitem.val().ItemQuantity,
+                           ItemAddedDate: eachitem.val().ItemAddedDate,
+                        })
+                        showuser = false;
+                        flag = false;
+                     })
                   })
-                  
-               })
+               
             })
             data = items;
             orders.push({key: child.key,value: data, toggle: false,
                 totalamount: totalamount, Location: Location ,
                 Longitude: Longitude,Latitude: Latitude,
-                Date : date
+                Date : date, OrderStatus : OrderStatus, phoneNumber: phoneNumber, OrderId: OrderId
                });
          })
+      })
+
+
+      }) //users
 
          orders.sort(function(item1, item2) {
             var val1 = new Date(item1['Date']);

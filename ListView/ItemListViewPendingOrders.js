@@ -1,55 +1,26 @@
-import React, { useState } from 'react';
-import { SafeAreaView, Modal, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert } from 'react-native';
-import { AntDesign, MaterialCommunityIcons, Entypo, MaterialIcons } from '@expo/vector-icons';
+import React, { createRef, useEffect, useState } from 'react';
+import { SafeAreaView, Modal, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert, TextInput, Keyboard } from 'react-native';
+import { AntDesign, MaterialCommunityIcons, Entypo, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import UpdateItem from '../admin/UpdateItem';
 import { app, auth, db, database } from "../Firebase";
 import { ref, set, update } from "firebase/database";
 import GoogleMap from '../GoogleMap';
 
+import QRCode from 'react-native-qrcode-svg';
 import { scale, moderateScale, verticalScale } from '../Dimensions';
 
 import { normalize } from '../FontResize';
 import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
-const AddRemoveItem = (add, { id, OrderId, title, image_url, price, description, category, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude }) => {
-
-
-    {
-        add ? set(ref(database, `admin/confirmedOrdersByAdmin/${OrderId}/items/${category}/` + id), {
-            ItemId: id,
-            OrderId: OrderId,
-            ItemName: title,
-            ItemPrice: price,
-            ItemDesc: description,
-            ItemImage: image_url,
-            ItemCategory: category,
-            ItemQuantity: quantity,
-            ItemAddedDate: ItemAddedDate,
-            phoneNumber: phoneNumber,
-            Location: Location,
-            Longitude: Longitude,
-            Latitude: Latitude,
-            OrderConfirmed: true,
-            OrderConfirmedByAdmin: true,
-            OrderPending: true,
-            OrderDelivered: false
-        }) : false
-    }
-    set(ref(database, `users/confirmedOrders/${OrderId}/items/${category}/` + id), {
-    });
-
-}
-
-
-const Item = ({ id, setloading, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude }) => (
+const Item = ({ id, setloading, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, phoneNumber, OrderStatus, Location, Longitude, Latitude }) => (
     <>
         {displayCategory ? <Text style={{
             fontSize: normalize(13),
             fontWeight: "600",
             marginLeft: scale(15),
             marginTop: scale(10),
-            color: 'white',
+            color: 'black',
             letterSpacing: scale(0.5),
             paddingRight: scale(15),
         }}>{category.toUpperCase()}</Text> : <></>}
@@ -58,23 +29,40 @@ const Item = ({ id, setloading, OrderId, title, image_url, price, description, c
             <View style={{
                 flex: 1,
                 flexDirection: 'column',
-                justifyContent: 'space-around',
-                // paddingRight: scale(8),
-                // alignItems: 'center',
-                // alignItems: "flex-start",
+                alignItems: 'flex-start',
             }}>
-                <View>
-                <Image source={{ uri: image_url }} style={styles.photo} 
-                onLoadStart={()=>{
-                    setloading(true)
-                }}
-                onLoadEnd={()=>{
-                    setloading(false)
-                }}
-                 />
-                </View>
                 <View style={{
-                    marginTop: verticalScale(4),
+                    alignItems: 'center'
+                }}>
+                    <View>
+                        <Image source={{ uri: image_url }} style={styles.photo}
+                            onLoadStart={() => {
+                                setloading(true)
+                            }}
+                            onLoadEnd={() => {
+                                setloading(false)
+                            }}
+                        />
+                    </View>
+                    <View style={{
+                        marginTop: verticalScale(5)
+                    }}>
+                        <Text style={styles.title_price}>
+                            ₹{price}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+
+            <View style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}>
+                <View style={{
+                    // marginTop: verticalScale(4),
+                    justifyContent: 'center'
                 }}>
                     <Text style={styles.title_item}>
                         {title.toUpperCase()}
@@ -83,49 +71,49 @@ const Item = ({ id, setloading, OrderId, title, image_url, price, description, c
                         {description}
                     </Text>
                 </View>
-            </View>
 
+            </View>
             <View style={{
                 flex: 1,
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                // paddingRight: scale(8),
-                alignItems: 'center',
+                flexDirection: 'row',
+                justifyContent: 'center'
             }}>
 
-                <View >
-                    <Text style={styles.title_price}>
-                        {price}/-
-                    </Text>
-                </View>
-
-                <View >
-                    <Text style={styles.title_item}>
+                <View style={{
+                    justifyContent: 'center'
+                }}>
+                    <Text style={[styles.title_item, { fontWeight: '500' }]}>
                         {quantity}
                     </Text>
                 </View>
 
-                <View >
-                    <Text style={[styles.title_price, { fontWeight: '600' }]}>
-                        {quantity * price}/-
-                    </Text>
-                </View>
-
             </View>
-
 
             <View style={{
                 flex: 1,
                 flexDirection: 'row',
-                justifyContent: 'space-between',
-                // paddingRight: scale(8),
-                alignItems: 'center',
+                justifyContent: 'flex-end'
             }}>
+                <View style={{
+                    justifyContent: 'center'
+                }}>
+                    <Text style={[styles.title_price, { fontWeight: '600' }]}>
+                        ₹{quantity * price}
+                    </Text>
+                </View>
+            </View>
 
-                <View>
+            {/* <View style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+            }}> */}
+
+            {/* <View>
                     <AntDesign name="checkcircleo" size={24} color="green" onPress={() => {
                         setloading(true)
-                        AddRemoveItem(true, { id, OrderId, title, image_url, price, description, category, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude });
+                        AddRemoveItem(true, { id, OrderId, title, image_url, price, description, category, quantity, ItemAddedDate, phoneNumber, OrderStatus, Location, Longitude, Latitude });
                         setloading(false)
                     }} />
                 </View>
@@ -133,37 +121,156 @@ const Item = ({ id, setloading, OrderId, title, image_url, price, description, c
                 >
                     <Entypo name="cross" size={24} color="red" onPress={() => {
                         setloading(true)
-                        AddRemoveItem(false, { id, OrderId, title, image_url, price, description, category, quantity, ItemAddedDate, phoneNumber, Location, Longitude, Latitude });
+                        AddRemoveItem(false, { id, OrderId, title, image_url, price, description, category, quantity, ItemAddedDate, phoneNumber, OrderStatus, Location, Longitude, Latitude });
                         setloading(false)
                     }} />
-                </View>
-            </View>
+                </View> */}
+            {/* </View> */}
         </View>
     </>
 );
 
 
-const ConfirmAllItems = (AllOrders, index) => {
-    for (let item = 0; item < AllOrders[index].value.length; item++) {
-        AddRemoveItem(true,
+
+const AddRemoveItem = (add, { id, OrderId, title, image_url, price, description, category, quantity, ItemAddedDate, phoneNumber }) => {
+
+    if (add) {
+        set(ref(database, `users/${phoneNumber}/orders/${OrderId}/items/${category}/` + id), {
+            ItemId: id,
+            ItemName: title,
+            ItemPrice: price,
+            ItemDesc: description,
+            ItemImage: image_url,
+            ItemCategory: category,
+            ItemQuantity: quantity,
+            ItemAddedDate: ItemAddedDate
+        })
+
+        set(ref(database, `users/${phoneNumber}/orders/${OrderId}/orderStatus`), {
+            OrderStatus: 0
+        })
+    }
+    if (!add) {
+        set(ref(database, `users/${phoneNumber}/orders/${OrderId}/`), {
+        })
+    }
+}
+
+const OrderDelivered = (delivered, { OrderId, phoneNumber }) => {
+    if (delivered) {
+        set(ref(database, `users/${phoneNumber}/orders/${OrderId}/orderStatus`), {
+            OrderStatus: 1
+        })
+
+    }
+    if (!delivered) {
+        set(ref(database, `users/${phoneNumber}/orders/${OrderId}/orderStatus`), {
+            OrderStatus: 2
+        })
+
+    }
+}
+
+const ConfirmAllItems = (data, index, addorremove) => {
+    for (let item = 0; item < data[index].value.length; item++) {
+        AddRemoveItem(addorremove,
             {
-                id: AllOrders[index].value[item].key,
-                OrderId: AllOrders[index].value[item].OrderId,
-                title: AllOrders[index].value[item].ItemName,
-                image_url: AllOrders[index].value[item].ItemImage,
-                price: AllOrders[index].value[item].ItemPrice,
-                description: AllOrders[index].value[item].ItemDesc,
-                category: AllOrders[index].value[item].ItemCategory,
-                quantity: AllOrders[index].value[item].ItemQuantity,
-                ItemAddedDate: AllOrders[index].value[item].ItemAddedDate,
-                phoneNumber: AllOrders[index].value[item].phoneNumber,
-                Location: AllOrders[index].Location,
-                Longitude: AllOrders[index].Longitude,
-                Latitude: AllOrders[index].Latitude
+                id: data[index].value[item].key,
+                OrderId: data[index].OrderId,
+                title: data[index].value[item].ItemName,
+                image_url: data[index].value[item].ItemImage,
+                price: data[index].value[item].ItemPrice,
+                description: data[index].value[item].ItemDesc,
+                category: data[index].value[item].ItemCategory,
+                quantity: data[index].value[item].ItemQuantity,
+                ItemAddedDate: data[index].value[item].ItemAddedDate,
+                phoneNumber: data[index].phoneNumber,
             });
     }
-
 }
+
+
+const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => {
+    return (
+        <View
+            style={{
+                backgroundColor: '#fff',
+                padding: scale(3),
+                borderRadius: scale(5),
+                borderColor: 'black',
+                borderWidth: scale(1),
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                justifyContent: 'flex-start'
+            }}
+        >
+            <View>
+                <Ionicons name="search" size={scale(15)} color="black" />
+            </View>
+            <View>
+                <TextInput
+                    style={{
+                        paddingHorizontal: scale(10),
+                        marginRight: scale(40),
+                        fontSize: normalize(12),
+                    }}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    ref={searchRef}
+                    onSubmitEditing={Keyboard.dismiss}
+                    returnKeyType="next"
+                    cursorColor='#778899'
+                    clearButtonMode="always"
+                    letterSpacing={normalize(1.5)}
+                    onChangeText={queryText => handleSearch(queryText, DATA, setData, setQuery, setloading)}
+                    placeholder="Search Order Id"
+                />
+            </View>
+            {query ?
+                <View style={{
+                    marginLeft: scale(295),
+                    position: 'absolute'
+                }}>
+                    <Ionicons name="close" size={scale(18)} color="black"
+                        onPress={() => {
+                            setloading(true)
+                            setQuery('');
+                            setData(DATA)
+                            if (searchRef && searchRef.current) {
+                                searchRef.current.clear()
+                            }
+                            setloading(false)
+                        }} />
+                </View>
+                : <></>}
+        </View>
+    );
+}
+
+const handleSearch = (text, DATA, setData, setQuery, setloading) => {
+
+    setloading(true)
+
+    const formattedQuery = text;
+    const filteredData = DATA.filter((items) => {
+        return contains(items, formattedQuery);
+    });
+
+    setData(filteredData);
+    setQuery(text);
+    setloading(false)
+};
+
+const contains = (items, query) => {
+
+    if (items.key.includes(query) || items.value[0].ItemName.toLowerCase().includes(query) || items.value[0].ItemCategory.toLowerCase().includes(query) ||
+        items.value[0].ItemDesc.toLowerCase().includes(query)) {
+        return true;
+    }
+    return false;
+};
+
 
 const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }) => {
 
@@ -182,12 +289,45 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
     const [latitude, setlatitude] = useState('');
     const [longitude, setlongitude] = useState('');
 
+    const [query, setQuery] = useState('');
+    const [displayQRCode, setdisplayQRCode] = useState(false);
+
+    const searchRef = createRef();
+
+    const [index, setindex] = useState("");
+
+    const [data, setData] = useState(AllOrders);
+
+    useEffect(() => {
+        setvisibleMap(false);
+        setQuery('');
+        if (searchRef && searchRef.current) {
+            searchRef.current.clear()
+        }
+        setData(AllOrders)
+    }, [AllOrders])
+
+
     const toggleFunction = (index) => {
         setloading(true)
-        AllOrders[index].toggle = !AllOrders[index].toggle;
+        data[index].toggle = !data[index].toggle;
         setToggle(!toggle);
         setloading(false)
     };
+
+    const handlePressQRcode = (index) => {
+        try {
+            setloading(true)
+            setindex(index);
+            setdisplayQRCode(!displayQRCode);
+            settotalamount(data[index].totalamount);
+            setloading(false)
+        }
+        catch (err) {
+            setloading(false)
+        }
+    }
+
 
     const renderItem = ({ item, index }) => (
         <View>
@@ -197,101 +337,224 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginTop: scale(10),
-                padding: scale(16),
+                padding: scale(12),
                 borderRadius: scale(5),
-                backgroundColor: '#a9a9a9',
+                backgroundColor: '#6381C6',
+                borderWidth: scale(0.7),
                 elevation: scale(2),
             }}>
-                <View>
+                <View style={{
+                    justifyContent: 'center'
+                }}>
                     <Text onPress={() => toggleFunction(index)}
                         style={{
-                            fontSize: normalize(16),
+                            fontSize: normalize(14),
                             fontWeight: "600",
-                            color: 'black'
+                            color: '#fff'
                         }}>{index + 1}. {item.key}</Text>
                 </View>
-                <View>
-                    <Text onPress={() => toggleFunction(index)}
+                <View style={{
+                    justifyContent: 'center'
+                }}>
+                    <Text onPress={() =>
+                        handlePressQRcode(index)
+                    }
                         style={{
-                            fontSize: normalize(16),
+                            fontSize: normalize(14),
                             fontWeight: "600",
-                            color: 'black'
-                        }}>{AllOrders[index].totalamount}/-</Text>
+                            color: '#fff'
+                        }}>₹{data[index].totalamount}</Text>
                 </View>
-                <View>
-                    <MaterialIcons name="location-pin" size={normalize(20)} color="#dc143c"
+                <View style={{
+                    justifyContent: 'center'
+                }}>
+                    {
+                        data[index].OrderStatus === -1 ?
+
+                            <MaterialCommunityIcons name="clock-alert-outline" size={normalize(16)} color="black"
+                                onPress={() => {
+                                    Alert.alert('Order Status', 'Pending', [
+                                        {
+                                            text: "OK",
+                                        }
+                                    ])
+                                }}
+                            /> :
+
+                            data[index].OrderStatus === 0 ?
+                                <MaterialCommunityIcons name="clock-check-outline" size={normalize(16)} color="black" onPress={() => {
+                                    Alert.alert('Order Status', 'Confirmed', [
+                                        {
+                                            text: "OK",
+                                        }
+                                    ])
+
+                                }} />
+                                : data[index].OrderStatus === 1 ?
+                                    <MaterialCommunityIcons name="check-decagram" size={normalize(16)} color="#08CE65" onPress={() => {
+                                        Alert.alert('Order Status', 'Delivered', [
+                                            {
+                                                text: "OK",
+                                            }
+                                        ])
+
+                                    }} />
+                                    :
+                                    <MaterialCommunityIcons name="cancel" size={normalize(16)} color="#E52727" onPress={() => {
+                                        Alert.alert('Order Status', 'Not Delivered (cancelled)', [
+                                            {
+                                                text: "OK",
+                                            }
+                                        ])
+
+                                    }} />
+                    }
+                </View>
+
+                <View style={{
+                    justifyContent: 'center'
+                }}>
+                    <MaterialIcons name="location-pin" size={normalize(16)} color="#D5380D"
                         onPress={() => {
 
-                            // console.log( AllOrders[index].Longitude,  AllOrders[index].Latitude, AllOrders[index].Location)
+                            // console.log( data[index].Longitude,  data[index].Latitude, data[index].Location)
 
                             setloading(true)
 
-                            if (!AllOrders[index].Longitude && !AllOrders[index].Latitude && AllOrders[index].Location !== '') {
+                            if (data[index].OrderStatus === 1 || data[index].OrderStatus === 2) {
                                 setloading(false)
-                                Alert.alert('Exact Location Not Found', `But Location Address is mentioned as ${AllOrders[index].Location}`, [
-                                    {
-                                        text: 'Want to Call?',
-                                        // onPress: () => console.log("call.."),
-                                        style: 'cancel',
-                                    },
-                                    {
-                                        text: 'Want to Continue',
-                                        // onPress: () =>
-                                        //     console.log("continue..")
-                                    },
-                                ])
-                            }
-
-                            if (AllOrders[index].Longitude && AllOrders[index].Latitude && AllOrders[index].Location !== '') {
-
-                                setloading(false)
-                                setlongitude(AllOrders[index].Longitude);
-
-                                setlatitude(AllOrders[index].Latitude);
-
-                                Alert.alert('Order Delivery Location', `${AllOrders[index].Location}`, [
+                                Alert.alert('Order Delivery Location', `${data[index].Location}`, [
                                     {
                                         text: 'OK',
                                     },
                                 ])
-
-
-                                // setvisibleMap(true);
                             }
 
-                            setloading(false)
-
-                        }
-                        }
-                    />
-                </View>
-                <View>
-                    <MaterialCommunityIcons name="checkbox-marked-circle" size={normalize(20)} color="green"
-                        onPress={() => {
-
-                            setloading(true)
-
-                            Alert.alert('All items selected', 'Do you want confirm all items?', [
-                                {
-                                    text: "Cancel",
-                                    style: 'cancel'
-                                },
-                                {
-                                    text: "OK",
-                                    onPress: () => {
-                                        ConfirmAllItems(AllOrders, index)
-                                    }
+                            if (data[index].OrderStatus === -1 || data[index].OrderStatus === 0) {
+                                if (!data[index].Longitude && !data[index].Latitude && data[index].Location !== '') {
+                                    setloading(false)
+                                    Alert.alert('Exact Location Not Found', `But Location Address is mentioned as ${data[index].Location}`, [
+                                        {
+                                            text: 'Want to Call?',
+                                            onPress: async () => {
+                                                const url = `tel://${data[index].phoneNumber}`
+                                                await Linking.openURL(url)
+                                            },
+                                            style: 'cancel',
+                                        },
+                                        {
+                                            text: 'Want to Continue',
+                                        },
+                                    ])
                                 }
-                            ])
 
+                                if (data[index].Longitude && data[index].Latitude && data[index].Location !== '') {
 
+                                    setloading(false)
+                                    setlongitude(data[index].Longitude);
+
+                                    setlatitude(data[index].Latitude);
+
+                                    Alert.alert('Order Delivery Location', `${data[index].Location}`, [
+                                        {
+                                            text: 'OK',
+                                        },
+                                    ])
+                                    // setvisibleMap(true);
+                                }
+                            }
                             setloading(false)
-
-                        }}
+                        }
+                        }
                     />
                 </View>
+
+                {
+                    data[index].OrderStatus === 0 || data[index].OrderStatus === -1
+                        ?
+
+                        <View>
+                            <MaterialCommunityIcons name="checkbox-marked-circle" size={normalize(20)} color="green"
+                                onPress={() => {
+
+                                    if (data[index].OrderStatus === -1) {
+                                        Alert.alert('All items selected', 'Do you want confirm all items?', [
+                                            {
+                                                text: "Cancel",
+                                                style: 'cancel'
+                                            },
+                                            {
+                                                text: "OK",
+                                                onPress: () => {
+                                                    setloading(true)
+                                                    ConfirmAllItems(data, index, 1)
+                                                    setloading(false)
+                                                }
+                                            }
+                                        ])
+                                    }
+
+                                    if (data[index].OrderStatus === 0) {
+                                        Alert.alert('Order Delivered?', `Delivery Location: ${data[index].Location}`, [
+                                            {
+                                                text: "No, Not Delivered",
+                                                onPress: () => {
+                                                    setloading(true)
+                                                    OrderDelivered(0, {
+                                                        OrderId: data[index].OrderId,
+                                                        phoneNumber: data[index].phoneNumber
+                                                    })
+                                                    setloading(false)
+                                                }
+                                            },
+                                            {
+                                                text: "Yes, Delivered",
+                                                onPress: () => {
+                                                    setloading(true)
+                                                    OrderDelivered(1, {
+                                                        OrderId: data[index].OrderId,
+                                                        phoneNumber: data[index].phoneNumber
+                                                    })
+                                                    setloading(false)
+                                                }
+                                            }
+                                        ])
+                                    }
+                                }}
+                            />
+                        </View> : undefined}
+
+                {data[index].OrderStatus === -1 ?
+                    <View>
+
+                        <MaterialIcons name="delete-outline" size={normalize(20)} color="#E5453B"
+                            onPress={() => {
+
+
+                                Alert.alert('All items selected', 'Do you want cancel all items?', [
+                                    {
+                                        text: "Cancel",
+                                        style: 'cancel'
+                                    },
+                                    {
+                                        text: "OK",
+                                        onPress: () => {
+                                            setloading(true)
+                                            ConfirmAllItems(data, index, 0)
+                                            setloading(false)
+                                        }
+                                    }
+                                ])
+
+
+
+
+                            }}
+                        />
+                    </View> : undefined}
+
             </View>
-            {AllOrders[index].toggle ? <FlatList
+            {data[index].toggle ? <FlatList
                 data={item.value}
                 renderItem={({ item }) => (
                     <View>
@@ -299,7 +562,6 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                             id={item.key}
                             displayCategory={item.displayCategory}
                             displayUser={item.displayUser}
-                            OrderId={item.OrderId}
                             title={item.ItemName}
                             image_url={item.ItemImage}
                             description={item.ItemDesc}
@@ -307,10 +569,12 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                             category={item.ItemCategory}
                             quantity={item.ItemQuantity}
                             ItemAddedDate={item.ItemAddedDate}
-                            phoneNumber={item.phoneNumber}
-                            Location={AllOrders[index].Location}
-                            Longitude={AllOrders[index].Longitude}
-                            Latitude={AllOrders[index].Latitude}
+                            OrderId={data[index].OrderId}
+                            phoneNumber={data[index].phoneNumber}
+                            OrderStatus={data[index].OrderStatus}
+                            Location={data[index].Location}
+                            Longitude={data[index].Longitude}
+                            Latitude={data[index].Latitude}
                             setloading={setloading}
                         />
                     </View>
@@ -331,60 +595,158 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                     <SafeAreaView style={{
                         flex: 1,
                         padding: scale(15),
-                        backgroundColor: '#3B3636',
+                        backgroundColor: '#DFDFDF',
                     }}>
-                        {AllOrders.length !== 0 ?
-                            <FlatList
-                                data={AllOrders}
-                                renderItem={renderItem}
-                                keyExtractor={(item, index) => String(index)}
-                                ListEmptyComponent={
+                        {displayQRCode && data[index].OrderStatus === 1 ?
+                            <View style={{
+                                flex: 1,
+                                // padding: scale(15),
+                                borderRadius: scale(8),
+                                backgroundColor: '#fff',
+                            }}>
+                                <View style={{
+                                    flex: 1,
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-between',
+                                    marginBottom: verticalScale(10),
+                                    padding: scale(18),
+                                    // backgroundColor: 'pink',
+                                }}>
                                     <View style={{
-                                        flex: 1,
                                         flexDirection: 'column',
+                                        justifyContent: 'space-between',
+                                        padding: scale(10),
+                                        borderRadius: scale(5),
+                                        elevation: scale(5),
+                                        backgroundColor: 'lightblue'
+                                    }}
+                                    >
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'center',
+                                            padding: scale(5),
+                                            borderRadius: scale(5),
+                                            // elevation: 2,
+                                            // backgroundColor: 'lightgreen'
+                                        }}
+                                        >
+                                            <Text style={{
+                                                fontSize: normalize(16),
+                                                fontWeight: "600",
+                                                letterSpacing: scale(0.3)
+                                            }}>Order Id : {data[index].OrderId}</Text>
+                                        </View>
+
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'center',
+                                            padding: scale(5),
+                                            borderRadius: scale(5),
+                                            // elevation: 2,
+                                            // backgroundColor: 'lightgreen'
+                                        }}
+                                        >
+                                            <Text style={{
+                                                fontSize: normalize(16),
+                                                fontWeight: "600",
+                                                letterSpacing: scale(0.3)
+                                            }}>Total Amount : {data[index].totalamount}</Text>
+                                        </View>
+
+                                    </View>
+                                    <View style={{
+                                        flexDirection: 'row',
                                         justifyContent: 'center',
-                                        alignItems: 'center',
-                                        marginHorizontal: scale(15),
+                                        padding: scale(10),
+                                        borderRadius: scale(5),
+                                        borderWidth: scale(1),
+                                        borderRadius: scale(8),
+                                    }}
+                                    >
+                                        <QRCode
+                                            value={`upi://pay?pa=9480527929@ybl&pn=Rakshit Kulkarni&tn=Note&am=${data[index].totalamount}&cu=INR`}
+                                            size={normalize(240)}
+                                        // getRef={(c) => console.log(c)}
+                                        />
+                                    </View>
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                        padding: scale(10),
+                                        borderRadius: scale(5),
+                                        elevation: scale(2),
+                                        backgroundColor: 'lightgreen'
+                                    }}
+                                    >
+                                        <Text style={{
+                                            fontSize: normalize(16),
+                                            fontWeight: "600",
+                                            letterSpacing: scale(0.3)
+                                        }}
+                                            onPress={() => handlePressQRcode(index)}>Payment Done?</Text>
+                                    </View>
+                                </View>
+                            </View>
+                            :
+                            AllOrders.length !== 0 ?
+                                <FlatList
+                                    data={data}
+                                    renderItem={renderItem}
+                                    keyExtractor={(item, index) => String(index)}
+                                    ListEmptyComponent={
+                                        <View style={{
+                                            flex: 1,
+                                            flexDirection: 'column',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            marginHorizontal: scale(15),
+                                        }}>
+                                            <Text style={{
+                                                // padding: scale(34),
+                                                fontFamily: 'sans-serif-light',
+                                                // fontWeight: '700',
+                                                letterSpacing: scale(0.5),
+                                                color: '#000',
+                                                marginTop: verticalScale(5),
+
+                                            }}>
+                                                <Text style={{
+                                                    color: '#D20F0F'
+                                                }}> No results for</Text>
+                                                <Text style={{ fontWeight: "600" }}> "{query}"</Text>
+                                            </Text>
+
+                                        </View>
+                                    }
+                                    ListHeaderComponent={renderHeader(query, AllOrders, setData, setQuery, searchRef, setloading)}
+                                />
+                                :
+                                <View style={{
+                                    flex: 1,
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
+                                    {loading ? <Text style={{
+                                        marginTop: scale(50),
+                                        // padding: scale(34),
+                                        fontFamily: 'sans-serif-thin',
+                                        fontWeight: '700',
+                                        letterSpacing: scale(0.5),
+                                        color: 'red'
                                     }}>
+                                        Loading orders...
+                                    </Text> :
                                         <Text style={{
                                             fontWeight: '600',
                                             letterSpacing: scale(0.5),
                                             color: 'white',
                                             fontSize: normalize(15)
                                         }}>
-                                            No pending orders
+                                            No orders
                                         </Text>
-
-                                    </View>
-                                }
-                            />
-                            :
-                            <View style={{
-                                flex: 1,
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}>
-                                {loading ? <Text style={{
-                                    marginTop: scale(50),
-                                    // padding: scale(34),
-                                    fontFamily: 'sans-serif-thin',
-                                    fontWeight: '700',
-                                    letterSpacing: scale(0.5),
-                                    color: 'red'
-                                }}>
-                                    Loading pending orders...
-                                </Text> :
-                                    <Text style={{
-                                        fontWeight: '600',
-                                        letterSpacing: scale(0.5),
-                                        color: 'white',
-                                        fontSize: normalize(15)
-                                    }}>
-                                        No pending orders
-                                    </Text>
-                                }
-                            </View>
+                                    }
+                                </View>
                         }
                     </SafeAreaView>}
         </>
@@ -400,30 +762,31 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: scale(10),
-        paddingBottom: scale(15),
+        paddingBottom: scale(6),
         marginLeft: scale(15),
         marginRight: scale(15),
         marginTop: scale(8),
         marginBottom: scale(9),
-        marginVertical: verticalScale(0),
+        // marginVertical: verticalScale(0),
+        borderWidth: scale(0.7),
         borderRadius: scale(10),
-        backgroundColor: '#ffb6c1',
+        backgroundColor: '#63C683',
         elevation: scale(5),
     },
     title_item: {
         fontSize: normalize(13),
-        color: '#000',
+        color: '#fff',
         fontWeight: '600'
     },
     title_price: {
         fontSize: normalize(13),
-        color: '#000',
+        color: '#fff',
         fontWeight: '600'
         // paddingTop: 40
     },
     total_item_price: {
         fontSize: normalize(20),
-        color: '#000',
+        color: '#fff',
         paddingTop: scale(10),
     },
     container_addremove: {
@@ -446,6 +809,7 @@ const styles = StyleSheet.create({
     description: {
         fontSize: normalize(10),
         fontStyle: 'italic',
+        color: '#fff'
     },
     photo: {
         height: verticalScale(40),

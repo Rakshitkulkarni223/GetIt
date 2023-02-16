@@ -18,7 +18,7 @@ import ActivityIndicatorElement from './ActivityIndicatorElement';
 import SignUp from './Signup';
 import * as Notifications from 'expo-notifications';
 
-import { NotificationData, NotificationHandler, NotificationPermission } from './NotificationHandler';
+import { getToken, NotificationData, NotificationHandler, NotificationPermission } from './NotificationHandler';
 
 const Home = ({ navigation, route }) => {
 
@@ -36,9 +36,8 @@ const Home = ({ navigation, route }) => {
 
     var username = 'User';
 
-    useEffect(() => {
-        NotificationPermission();
-    }, []);
+    var token = '';
+
 
     useEffect(() => {
         GetCurrentLocation();
@@ -114,8 +113,7 @@ const Home = ({ navigation, route }) => {
                         if (route && route.params.disableNotification) {
                             console.log("ok")
                         }
-                        else 
-                        {
+                        else {
                             // NotificationHandler(`Hey, ${username}`, 'welocme back', 'Great to see you again!!');
                             // NotificationData()
                         }
@@ -147,7 +145,7 @@ const Home = ({ navigation, route }) => {
 
         setloading(true);
 
-        const unsubscribe = onAuthStateChanged(auth, (validuser) => {
+        const unsubscribe = onAuthStateChanged(auth,async (validuser) => {
             if (validuser) {
                 const uid = validuser.uid;
                 setOrderId(uuid.v4().substring(0, 8));

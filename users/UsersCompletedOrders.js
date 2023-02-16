@@ -11,7 +11,7 @@ const UsersCompletedOrders = ({navigation}) => {
 
    const [AllOrders, setAllOrders] = useState([]);
 
-   const [itemsList,setitemsList] = useState(ref(database, `users/completedOrders/${auth.currentUser.phoneNumber}/`));
+   const [itemsList,setitemsList] = useState(ref(database, `users/${auth.currentUser.phoneNumber}/orders`));
 
    const [loading, setloading] = useState(false);
    
@@ -40,18 +40,55 @@ const UsersCompletedOrders = ({navigation}) => {
             var Location= '';
             var Longitude = ''
             var Latitude = ''
-            var date = ''
+            var date = '';
+            var OrderStatus = -1;
+            var OrderId = '';
+            var phoneNumber = '';
+            
             
             child.forEach((it)=>{
+
+            
+               if(it.key=== "orderStatus")
+               {
+                  it.forEach((status)=>{
+                     OrderStatus = status.val()
+                  })
+               }
+
+               if(it.key=== "orderDetails")
+               {
+                  it.forEach((orderDetails)=>{
+                     if(orderDetails.key === 'Location')
+                     {
+                        Location =  orderDetails.val()
+                     }
+                     if(orderDetails.key === 'Longitude')
+                     {
+                        Longitude =  orderDetails.val()
+                     }
+                     if(orderDetails.key === 'Latitude')
+                     {
+                        Latitude =  orderDetails.val()
+                     }
+                     if(orderDetails.key === 'phoneNumber')
+                     {
+                        phoneNumber =  auth.currentUser.phoneNumber
+                     }
+                     if(orderDetails.key === 'OrderId')
+                     {
+                        OrderId =  orderDetails.val()
+                     }
+                  })
+               }
+
                it.forEach((item)=>{
                   flag = true;
+
                   item.forEach((eachitem)=>{
                      
                      totalamount += eachitem.val().ItemPrice*eachitem.val().ItemQuantity;
 
-                     Location = eachitem.val().Location;
-                     Longitude =eachitem.val().Longitude;
-                     Latitude = eachitem.val().Latitude;
                      date = eachitem.val().ItemAddedDate;
 
                      items.push({
@@ -59,8 +96,6 @@ const UsersCompletedOrders = ({navigation}) => {
                         ItemCategory: item.key,
                         displayCategory: flag,
                         displayUser: showuser,
-                        OrderId: child.key,
-                        AuthId: eachitem.val().AuthId,
                         ItemName: eachitem.val().ItemName,
                         ItemDesc: eachitem.val().ItemDesc,
                         ItemCategory: eachitem.val().ItemCategory,
@@ -78,7 +113,7 @@ const UsersCompletedOrders = ({navigation}) => {
             data = items;
             orders.push({key: child.key,value: data, toggle: false,  
                totalamount: totalamount, Location: Location ,Longitude: Longitude,Latitude: Latitude,
-               Date : date
+               Date : date, OrderStatus : OrderStatus, phoneNumber: phoneNumber, OrderId: OrderId
             });
          })
 

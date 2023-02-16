@@ -50,7 +50,7 @@ function MyTabs() {
                 options={{
                     tabBarLabel: 'Add Item',
                     tabBarIcon: ({ color, size }) => (
-                        <Octicons name="diff-added" color={color} size={size - 3} />
+                        <Octicons name="diff-added" color={color} size={size - 5} />
                     ),
                 }}
             />
@@ -60,21 +60,21 @@ function MyTabs() {
                 options={{
                     tabBarLabel: 'View Items',
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="preview" color={color} size={size} />
+                        <MaterialIcons name="preview" color={color} size={size-2} />
                     ),
                 }}
             />
             <Tab.Screen
-                name="Pending Orders"
+                name="Orders"
                 component={PendingOrders}
                 options={{
-                    tabBarLabel: 'Pending Orders',
+                    tabBarLabel: 'Orders',
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons name="clock-check" color={color} size={size} />
+                        <Ionicons name="md-basket" size={size} color={color} />
                     ),
                 }}
             />
-            <Tab.Screen
+            {/* <Tab.Screen
                 name="Confiremd Orders"
                 component={ConfirmedOrders}
                 options={{
@@ -83,7 +83,7 @@ function MyTabs() {
                         <MaterialCommunityIcons name="check-circle" color={color} size={size} />
                     ),
                 }}
-            />
+            /> */}
 
         </Tab.Navigator>
     );
@@ -141,6 +141,7 @@ const DashboardAdmin = ({ navigation, route }) => {
                         Alert.alert(`${phoneNumber}`, 'Logout Unsuccessfull!');
                     })} />
                 ),
+                headerLeft: ()=> (<></>)
             })
         }
         catch (error) {

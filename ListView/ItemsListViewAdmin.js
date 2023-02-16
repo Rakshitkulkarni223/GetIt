@@ -18,7 +18,7 @@ const Item = ({ setloading, setItemId, setupdate, setItemCategory, setItemName, 
         paddingRight: scale(15),
         marginLeft: scale(15),
         marginTop: scale(10),
-        color: 'white',
+        color: '#000',
         letterSpacing: scale(0.5),
     }}>{category.toUpperCase()}</Text> : <></>}
         <View style={styles.container}>
@@ -27,7 +27,9 @@ const Item = ({ setloading, setItemId, setupdate, setItemCategory, setItemName, 
                 flexDirection: 'column',
                 justifyContent: 'space-between',
             }}>
-                <View>
+                <View style={{
+                    alignItems: 'flex-start'
+                }}>
                     <Text style={styles.title_item}>
                         {title.toUpperCase()}
                     </Text>
@@ -35,9 +37,11 @@ const Item = ({ setloading, setItemId, setupdate, setItemCategory, setItemName, 
                         {description}
                     </Text>
                 </View>
-                <View
-                >
-                    <AntDesign name="edit" size={scale(20)} color="black" onPress={(e) => {
+                <View style={{
+                    marginTop: scale(3),
+                    alignItems: 'flex-start'
+                }}>
+                    <AntDesign name="edit" size={scale(18)} color="#1CDCB0" onPress={(e) => {
                         setItemName(title);
                         setItemDesc(description);
                         setItemImage(image_url);
@@ -49,30 +53,39 @@ const Item = ({ setloading, setItemId, setupdate, setItemCategory, setItemName, 
                 </View>
             </View>
 
-            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
-                <View>
+            <View style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'space-between'
+            }}>
+                <View style={{
+                    justifyContent: 'center'
+                }}>
                     <Text style={styles.title_price}>
-                        {price}/-
+                        ₹{price}
                     </Text>
                 </View>
                 <View
-                // style={styles.container_update}
-                >
-                    <MaterialCommunityIcons name="delete" size={scale(22)} color="red" onPress={async () => {
+                    style={{
+                        justifyContent: 'center'
+                    }}>
+                    <MaterialCommunityIcons name="delete" size={scale(20)} color="#DE293C" onPress={async () => {
                         set(ref(database, `admin/items/${category}/` + id), {
                         });
                     }} />
                 </View>
             </View>
-            <View>
-                <Image source={{ uri: image_url }} style={styles.photo} 
-                onLoadStart={()=>{
-                    setloading(true)
-                }}
-                onLoadEnd={()=>{
-                    setloading(false)
-                }}
-                 />
+            <View style={{
+                justifyContent: 'center'
+            }}>
+                <Image source={{ uri: image_url }} style={styles.photo}
+                    onLoadStart={() => {
+                        setloading(true)
+                    }}
+                    onLoadEnd={() => {
+                        setloading(false)
+                    }}
+                />
             </View>
         </View>
     </>
@@ -83,7 +96,7 @@ const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => 
         <View
             style={{
                 backgroundColor: '#fff',
-                padding: scale(5),
+                padding: scale(3),
                 marginTop: verticalScale(10),
                 marginHorizontal: scale(12),
                 borderRadius: scale(5),
@@ -96,7 +109,7 @@ const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => 
             }}
         >
             <View>
-                <Ionicons name="search" size={scale(16)} color="black" />
+                <Ionicons name="search" size={scale(15)} color="black" />
             </View>
             <View>
                 <TextInput
@@ -117,6 +130,7 @@ const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => 
                     returnKeyType="next"
                     cursorColor='#778899'
                     clearButtonMode="always"
+                    letterSpacing={normalize(1.5)}
                     onChangeText={queryText => handleSearch(queryText, DATA, setData, setQuery, setloading)}
                     placeholder="Search Items"
                 />
@@ -219,7 +233,7 @@ const ItemsListViewAdmin = ({ DATA, loading, setloading }) => {
     return (
         <SafeAreaView style={{
             flex: 1,
-            backgroundColor: '#3B3636'
+            backgroundColor: '#DFDFDF'
         }} keyboardShouldPersistTaps="handled"
         >
             <ActivityIndicatorElement loading={loading} />
@@ -245,15 +259,17 @@ const ItemsListViewAdmin = ({ DATA, loading, setloading }) => {
                                     }}>
                                         <Text style={{
                                             // padding: scale(34),
-                                            fontFamily: 'sans-serif-thin',
+                                            fontFamily: 'sans-serif-light',
                                             // fontWeight: '700',
                                             letterSpacing: scale(0.5),
-                                            color: 'white',
+                                            color: '#000',
                                             marginTop: verticalScale(5),
 
                                         }}>
-                                            <Text> No results for</Text>
-                                            <Text style={{ fontWeight: "bold" }}> {query}</Text>
+                                            <Text style={{
+                                                color: '#D20F0F'
+                                            }}> No results for</Text>
+                                            <Text style={{ fontWeight: "600" }}> "{query}"</Text>
                                         </Text>
 
                                     </View>
@@ -310,21 +326,22 @@ const styles = StyleSheet.create({
         marginBottom: scale(9),
         marginVertical: verticalScale(0),
         borderRadius: scale(10),
-        backgroundColor: '#ffe4e1',
+        backgroundColor: '#607BBA',
         elevation: scale(5),
     },
     title_item: {
         fontSize: normalize(13),
-        color: '#000',
+        color: '#fff',
         fontWeight: '600'
     },
     description: {
         fontSize: normalize(10),
         fontStyle: 'italic',
+        color: '#fff'
     },
     title_price: {
         fontSize: normalize(15),
-        color: '#000',
+        color: '#fff',
         fontWeight: '600'
         // paddingTop: 40
     },

@@ -20,7 +20,11 @@ import {
 import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from 'expo-firebase-recaptcha';
 import { admins, app, auth, database, firebaseConfig } from "./Firebase";
 import { PhoneAuthProvider, signInWithCredential } from 'firebase/auth';
-import { ref, child, get, onValue } from "firebase/database";
+import { ref, child, get, onValue, set } from "firebase/database";
+
+
+import * as Notifications from 'expo-notifications';
+
 
 import { scale, moderateScale, verticalScale } from './Dimensions';
 
@@ -30,6 +34,7 @@ import { normalize } from './FontResize';
 import ActivityIndicatorElement from './ActivityIndicatorElement';
 
 import { AntDesign, Feather, MaterialIcons, FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { NotificationPermission } from './NotificationHandler';
 
 
 const LoginWithOTP = ({ navigation }) => {
@@ -235,6 +240,11 @@ const LoginWithOTP = ({ navigation }) => {
                       await signInWithCredential(auth, credential);
                       if (admins.includes('+91' + phoneNumber)) {
                         setloading(false)
+                        await NotificationPermission()
+                        var token =  (await Notifications.getExpoPushTokenAsync()).data;
+                        await set(ref(database, 'users/' + '+91' + phoneNumber), {
+                          fcmToken: token
+                        })
                         navigation.reset({
                           index: 0,
                           routes: [{ name: "Dashboard Admin" }],

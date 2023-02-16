@@ -20,6 +20,8 @@ import { app, auth, db, storage } from "./Firebase";
 import { database } from "./Firebase";
 import { ref, set } from "firebase/database";
 
+import * as Notifications from 'expo-notifications';
+
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { SafeAreaView } from 'react-native';
 
@@ -34,6 +36,7 @@ import Main from './Main';
 
 import { ref as sref, uploadBytes, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from 'expo-image-picker';
+import { NotificationPermission } from './NotificationHandler';
 
 
 const SignUp = ({ navigation, route }) => {
@@ -101,6 +104,10 @@ const SignUp = ({ navigation, route }) => {
     email = email ? email.trim() : email
     password = password ? password.trim() : password
 
+    await NotificationPermission();
+
+    var token =  (await Notifications.getExpoPushTokenAsync()).data;
+
     set(ref(database, 'users/' + id), {
       ProfilePic: ProfilePic,
       firstName: firstName,
@@ -108,7 +115,8 @@ const SignUp = ({ navigation, route }) => {
       Dob: DOB,
       phoneNumber: auth.currentUser.phoneNumber,
       email: email,
-      password: password
+      password: password,
+      fcmToken: token
     });
   };
 
