@@ -13,6 +13,7 @@ import {
   Image,
   ScrollView,
   Modal,
+  Dimensions,
 } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -47,7 +48,7 @@ const SignUp = ({ navigation, route }) => {
 
   const [firstName, setfirstName] = useState(route && route.params ? route.params.firstName : '')
   const [lastName, setlastName] = useState(route && route.params ? route.params.lastName : '')
-  const [DOB, setDOB] = useState(route && route.params ? route.params.DOB : 'DD/MM/YYYY');
+  const [DOB, setDOB] = useState(route && route.params ? route.params.DOB === '' ? 'DD/MM/YYYY' : route.params.DOB : 'DD/MM/YYYY');
   const [DOBfontweight, setDOBfontweight] = useState('100');
   const [email, setemail] = useState(route && route.params ? route.params.email : '')
   const [password, setpassword] = useState(route && route.params ? route.params.password : '')
@@ -65,7 +66,17 @@ const SignUp = ({ navigation, route }) => {
       emailValidation(route.params.email);
     }
     navigation.setOptions({
+      headerLeft: () => <></>,
       title: route && route.params ? "Update Profile" : "User Profile",
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        // fontWeight: 'bold',
+        fontSize: normalize(15),
+      },
+      headerStyle: {
+        backgroundColor: '#46AA66',
+        // backgroundColor: '#8297C4',
+      },
     })
   }, [])
 
@@ -92,6 +103,7 @@ const SignUp = ({ navigation, route }) => {
   };
 
   const emailValidation = (email) => {
+    email = email.trim()
     setemail(email)
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     setvalidatedEmail(mailformat.test(email));
@@ -106,9 +118,9 @@ const SignUp = ({ navigation, route }) => {
 
     await NotificationPermission();
 
-    var token =  (await Notifications.getExpoPushTokenAsync()).data;
+    var token = (await Notifications.getExpoPushTokenAsync()).data;
 
-    set(ref(database, 'users/' + id), {
+    set(ref(database, `users/${id}/userDetails/`), {
       ProfilePic: ProfilePic,
       firstName: firstName,
       lastName: lastName,
@@ -140,7 +152,11 @@ const SignUp = ({ navigation, route }) => {
         index: 0,
         routes: [{
           name: 'Home',
-          params: { disableNotification: true }
+          params: {
+            disableNotification: true, changeAddress: false, Location: route.params.displayCurrentAddress,
+            Longitude: route.params.longitude,
+            Latitude: route.params.latitude
+          }
         }],
       });
     }
@@ -261,7 +277,7 @@ const SignUp = ({ navigation, route }) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#D8DFE7' }}>
       <ScrollView>
 
         {route && route.params ? <View></View> :
@@ -292,7 +308,7 @@ const SignUp = ({ navigation, route }) => {
             flexDirection: 'column',
             justifyContent: 'center',
             top: "40%",
-            backgroundColor: '#B6C0E1',
+            backgroundColor: '#413D3D',
             // height: verticalScale(30),
             borderWidth: scale(1),
             borderColor: 'black',
@@ -307,7 +323,7 @@ const SignUp = ({ navigation, route }) => {
               justifyContent: 'flex-end',
               marginLeft: scale(30),
             }}>
-              <AntDesign name="close" size={normalize(20)} color="red"
+              <AntDesign name="close" size={normalize(18)} color="red"
                 onPress={() => {
                   setselectMode(false)
                 }}
@@ -325,7 +341,7 @@ const SignUp = ({ navigation, route }) => {
                 flexDirection: 'column',
                 justifyContent: 'center'
               }}>
-                <Feather name="camera" size={normalize(22)} color="#3F5393" />
+                <Feather name="camera" size={normalize(20)} color="#715AE1" />
               </View>
 
               <View style={{
@@ -335,8 +351,10 @@ const SignUp = ({ navigation, route }) => {
               }}>
                 <TouchableOpacity onPress={openCamera}>
                   <Text style={{
-                    fontSize: normalize(15),
-                    fontWeight: '600'
+                    fontSize: normalize(14),
+                    fontWeight: '600',
+                    letterSpacing: scale(0.3),
+                    color: '#fff'
                   }}>Open Camera</Text>
                 </TouchableOpacity>
               </View>
@@ -357,7 +375,7 @@ const SignUp = ({ navigation, route }) => {
                 flexDirection: 'column',
                 justifyContent: 'center'
               }}>
-                <AntDesign name="picture" size={normalize(22)} color="#23A78D" />
+                <AntDesign name="picture" size={normalize(20)} color="#23A78D" />
               </View>
 
               <View style={{
@@ -367,15 +385,17 @@ const SignUp = ({ navigation, route }) => {
               }}>
                 <TouchableOpacity onPress={showImagePicker}>
                   <Text style={{
-                    fontSize: normalize(15),
-                    fontWeight: '600'
+                    fontSize: normalize(14),
+                    fontWeight: '600',
+                    letterSpacing: scale(0.3),
+                    color: '#fff'
                   }}>Select From Gallery</Text>
                 </TouchableOpacity>
               </View>
 
             </View>
 
-            {ProfilePic ?
+            {ProfilePic !== 'https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FProfile.png?alt=media&token=9b0173fb-4b95-4783-93c7-f928cffbd788' ?
 
               <View style={{
                 flex: 1,
@@ -390,7 +410,7 @@ const SignUp = ({ navigation, route }) => {
                   flexDirection: 'column',
                   justifyContent: 'center'
                 }}>
-                  <MaterialIcons name="delete-outline" size={normalize(24)} color="#D84329"
+                  <MaterialIcons name="delete-outline" size={normalize(20)} color="#D84329"
                     onPress={() => {
                       setProfilePic('https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FProfile.png?alt=media&token=9b0173fb-4b95-4783-93c7-f928cffbd788')
                       setselectMode(false)
@@ -408,8 +428,10 @@ const SignUp = ({ navigation, route }) => {
                     setselectMode(false)
                   }}>
                     <Text style={{
-                      fontSize: normalize(15),
-                      fontWeight: '600'
+                      fontSize: normalize(14),
+                      fontWeight: '600',
+                      letterSpacing: scale(0.3),
+                      color: '#fff'
                     }}>Remove Profile</Text>
                   </TouchableOpacity>
                 </View>
@@ -438,9 +460,9 @@ const SignUp = ({ navigation, route }) => {
 
             <Image
               style={{
-                width: scale(170),
-                height: verticalScale(160),
-                borderRadius: scale(100),
+                width: Dimensions.get('window').width * 0.5,
+                height: Dimensions.get('window').width * 0.5,
+                borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
                 borderWidth: scale(1),
                 borderColor: '#3F999E',
                 resizeMode: 'cover'
@@ -528,7 +550,7 @@ const SignUp = ({ navigation, route }) => {
               }}
               onPress={showDatePicker}
             >
-              {DOB === "DD/MM/YYYY" ? route && route.params ? route.params.DOB : DOB : DOB}
+              {DOB === "DD/MM/YYYY" ? route && route.params ? route.params.DOB === '' ? DOB : DOB : DOB : DOB}
             </Text>
             <DateTimePickerModal
               isVisible={isDatePickerVisible}
@@ -595,7 +617,7 @@ const SignUp = ({ navigation, route }) => {
                 fontSize: normalize(14),
                 fontFamily: 'sans-serif-light'
               }}
-              placeholder={route && route.params ? "Password cannot be updated" : "Must have atleast 6 characters"}
+              placeholder={route && route.params ? "Password cannot be updated here" : "Must have atleast 6 characters"}
               keyboardType="default"
               secureTextEntry
               editable={route && route.params ? false : true}
@@ -633,7 +655,7 @@ const SignUp = ({ navigation, route }) => {
               paddingVertical: verticalScale(8),
               paddingHorizontal: scale(32),
               borderRadius: scale(4),
-              elevation: scale(10),
+              elevation: scale(4),
               borderWidth: scale(1),
               borderColor: 'black',
               backgroundColor: 'white',
@@ -648,7 +670,14 @@ const SignUp = ({ navigation, route }) => {
               setloading(false)
               navigation.reset({
                 index: 0,
-                routes: [{ name: 'Home' ,params: { disableNotification: true }}],
+                routes: [{
+                  name: 'Home',
+                  params: {
+                    disableNotification: true, changeAddress: false, Location: route.params.displayCurrentAddress,
+                    Longitude: route.params.longitude,
+                    Latitude: route.params.latitude
+                  }
+                }],
               });
             }}>
               <Text style={{
@@ -686,7 +715,7 @@ const styles = StyleSheet.create({
     paddingVertical: verticalScale(8),
     paddingHorizontal: scale(32),
     borderRadius: scale(4),
-    elevation: scale(10),
+    elevation: scale(4),
     backgroundColor: 'black',
   },
   text: {

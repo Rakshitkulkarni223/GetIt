@@ -1,5 +1,5 @@
 import React, { useState, createRef, useEffect } from "react";
-import { SafeAreaView, View, Text, Image, Pressable } from "react-native";
+import { SafeAreaView, View, Text, Image, Pressable, ScrollView, Dimensions } from "react-native";
 
 import { FontAwesome5, MaterialIcons, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 
@@ -10,7 +10,7 @@ import { scale, moderateScale, verticalScale } from './Dimensions';
 import { normalize } from "./FontResize";
 import ActivityIndicatorElement from "./ActivityIndicatorElement";
 
-const UserProfile = ({ navigation }) => {
+const UserProfile = ({ navigation, route }) => {
 
     const [firstName, setfirstName] = useState('');
     const [lastName, setlastName] = useState('');
@@ -23,7 +23,7 @@ const UserProfile = ({ navigation }) => {
 
     useEffect(() => {
         setloading(true)
-        onValue(ref(database, `users/${auth.currentUser.phoneNumber}/`), (snapshot) => {
+        onValue(ref(database, `users/${auth.currentUser.phoneNumber}/userDetails/`), (snapshot) => {
             snapshot.forEach((child) => {
                 if (child.key === 'firstName') {
                     setfirstName(child.val())
@@ -57,305 +57,311 @@ const UserProfile = ({ navigation }) => {
     return (
         <>
             <SafeAreaView
-                style={{ flex: 1, backgroundColor: '#3B3636' }}
+                style={{ flex: 1, backgroundColor: '#D8E0E7' }}
             >
-                <ActivityIndicatorElement loading={loading} />
-
-                <View
-                    style={{
-                        flex: 0.1,
-                        margin: scale(20),
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
-                    }}
-                >
+                <ScrollView>
+                    <ActivityIndicatorElement loading={loading} />
 
                     <View
                         style={{
-                            marginBottom: scale(5),
-                            marginLeft: scale(60),
+                            flex: 0.1,
+                            margin: scale(20),
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
                         }}
                     >
 
-
-                        <Image
-                            style={{
-                                width: scale(170),
-                                height: verticalScale(160),
-                                borderRadius: scale(100),
-                                borderWidth: scale(1),
-                                borderColor: '#869BAD',
-                                resizeMode: 'cover'
-                            }}
-                            source={{
-                                uri: ProfilePic
-                            }}
-                            onLoadStart={() => { setloading(true) }}
-                            onLoadEnd={() => { setloading(false) }}
-                        />
-
-
-                    </View>
-
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            padding: scale(5),
-                            borderBottomWidth: scale(0.5),
-                            borderColor: 'white'
-                        }}
-                    >
                         <View
                             style={{
-                                flex: 1,
-                                flexDirection: 'column',
-                                justifyContent: 'space-evenly',
-                            }}
-                        >
-                            <View style={{ marginBottom: scale(3) }}>
-                                <Text
-                                    style={{
-                                        fontSize: normalize(14),
-                                        fontFamily: 'sans-serif-thin',
-                                        color: 'white'
-                                    }}
-                                >Legal name</Text>
-                            </View>
-                            <View>
-                                <Text
-                                    style={{
-                                        fontSize: normalize(15),
-                                        fontFamily: 'sans-serif-light',
-                                        color: 'white'
-                                    }}
-                                >{firstName + ' ' + lastName}</Text>
-                            </View>
-                        </View>
-
-
-                    </View>
-
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            padding: scale(5),
-                            borderBottomWidth: scale(0.5),
-                            borderColor: 'white'
-                        }}
-                    >
-                        <View
-                            style={{
-                                flex: 1,
-                                flexDirection: 'column',
-                                justifyContent: 'space-evenly',
-                            }}
-                        >
-                            <View style={{ marginBottom: scale(3) }}>
-                                <Text
-                                    style={{
-                                        fontSize: normalize(14),
-                                        fontFamily: 'sans-serif-thin',
-                                        color: 'white'
-                                    }}
-                                >Date of birth</Text>
-                            </View>
-                            <View>
-                                <Text
-                                    style={{
-                                        fontSize: normalize(15),
-                                        fontFamily: 'sans-serif-light',
-                                        color: 'white'
-                                    }}
-                                >{DOB}</Text>
-                            </View>
-                        </View>
-                    </View>
-
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            padding: scale(5),
-                            borderBottomWidth: scale(0.5),
-                            borderColor: 'white'
-                        }}
-                    >
-                        <View
-                            style={{
-                                flex: 1,
-                                flexDirection: 'column',
-                                justifyContent: 'space-evenly'
-                            }}
-                        >
-                            <View style={{ marginBottom: scale(3) }}>
-                                <Text
-                                    style={{
-                                        fontSize: normalize(14),
-                                        fontFamily: 'sans-serif-thin',
-                                        color: 'white'
-                                    }}
-                                >Phone Number</Text>
-                            </View>
-                            <View>
-                                <Text
-                                    style={{
-                                        fontSize: normalize(15),
-                                        fontFamily: 'sans-serif-light',
-                                        color: 'white'
-                                    }}
-                                >{auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3)}</Text>
-                            </View>
-                        </View>
-                    </View>
-
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            padding: scale(5),
-                            borderBottomWidth: scale(0.5),
-                            borderColor: 'white'
-                        }}
-                    >
-                        <View
-                            style={{
-                                flex: 1,
-                                flexDirection: 'column',
-                                justifyContent: 'space-evenly',
-                            }}
-                        >
-                            <View style={{ marginBottom: scale(3) }}>
-                                <Text
-                                    style={{
-                                        fontSize: normalize(14),
-                                        fontFamily: 'sans-serif-thin',
-                                        color: 'white'
-                                    }}
-                                >Email</Text>
-                            </View>
-                            <View>
-                                <Text
-                                    style={{
-                                        fontSize: normalize(15),
-                                        fontFamily: 'sans-serif-light',
-                                        color: 'white'
-                                    }}
-                                >{email}</Text>
-                            </View>
-                        </View>
-                    </View>
-
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            padding: scale(5),
-                            borderBottomWidth: scale(0.5),
-                            borderColor: 'white'
-                        }}
-                    >
-                        <View
-                            style={{
-                                flex: 1,
-                                flexDirection: 'column',
-                                justifyContent: 'space-evenly'
-                            }}
-                        >
-                            <View style={{ marginBottom: scale(3) }}>
-                                <Text
-                                    style={{
-                                        fontSize: normalize(14),
-                                        fontFamily: 'sans-serif-thin',
-                                        color: 'white'
-                                    }}
-                                >Password</Text>
-                            </View>
-                            <View>
-                                <Text
-                                    style={{
-                                        fontSize: normalize(15),
-                                        fontFamily: 'sans-serif-light',
-                                        color: 'white'
-                                    }}
-                                >{password}</Text>
-                            </View>
-                        </View>
-
-
-                    </View>
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            padding: scale(5),
-                            paddingTop: verticalScale(7),
-                            borderBottomWidth: scale(0.5),
-                            borderColor: 'white'
-                        }}
-                    >
-                        <View
-                            style={{
-                                flex: 1,
                                 flexDirection: 'row',
-                                justifyContent: 'space-between'
+                                justifyContent: 'center',
+                                marginBottom: scale(5),
                             }}
                         >
-                            <View style={{ marginBottom: scale(3) }}>
-                                <Text
-                                    style={{
-                                        fontSize: normalize(15),
-                                        fontFamily: 'sans-serif-light',
-                                        color: 'white'
-                                    }}
-                                    onPress={() => {
-                                        navigation.navigate('Change Password')
-                                    }}
-                                >Change Password</Text>
+                            <Image
+                                style={{
+                                    // width: scale(170),
+                                    // height: verticalScale(160),
+                                    width: Dimensions.get('window').width * 0.35,
+                                    height: Dimensions.get('window').width * 0.35,
+                                    // borderRadius: scale(60),
+                                    borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
+                                    borderWidth: scale(1),
+                                    borderColor: '#869BAD',
+                                    resizeMode: 'cover'
+                                }}
+                                source={{
+                                    uri: ProfilePic
+                                }}
+                                onLoadStart={() => { setloading(true) }}
+                                onLoadEnd={() => { setloading(false) }}
+                            />
+
+
+                        </View>
+
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                padding: scale(5),
+                                borderBottomWidth: scale(0.5),
+                                borderColor: '#000'
+                            }}
+                        >
+                            <View
+                                style={{
+                                    flex: 1,
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-evenly',
+                                }}
+                            >
+                                <View style={{ marginBottom: scale(3) }}>
+                                    <Text
+                                        style={{
+                                            fontSize: normalize(14),
+                                            fontFamily: 'sans-serif-thin',
+                                            color: '#000'
+                                        }}
+                                    >Legal name</Text>
+                                </View>
+                                <View>
+                                    <Text
+                                        style={{
+                                            fontSize: normalize(15),
+                                            fontFamily: 'sans-serif-light',
+                                            color: '#000'
+                                        }}
+                                    >{firstName + ' ' + lastName}</Text>
+                                </View>
                             </View>
-                            <View>
-                                <AntDesign name="right" size={normalize(16)} color="white"
-                                    onPress={() => {
-                                        navigation.navigate('Change Password')
-                                    }}
-                                />
+
+
+                        </View>
+
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                padding: scale(5),
+                                borderBottomWidth: scale(0.5),
+                                borderColor: '#000'
+                            }}
+                        >
+                            <View
+                                style={{
+                                    flex: 1,
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-evenly',
+                                }}
+                            >
+                                <View style={{ marginBottom: scale(3) }}>
+                                    <Text
+                                        style={{
+                                            fontSize: normalize(14),
+                                            fontFamily: 'sans-serif-thin',
+                                            color: '#000'
+                                        }}
+                                    >Date of birth</Text>
+                                </View>
+                                <View>
+                                    <Text
+                                        style={{
+                                            fontSize: normalize(15),
+                                            fontFamily: 'sans-serif-light',
+                                            color: '#000'
+                                        }}
+                                    >{DOB}</Text>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                    <View style={{
-                        marginTop: verticalScale(25),
-                    }}>
-                        <Pressable style={{
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            paddingVertical: verticalScale(7),
-                            paddingHorizontal: scale(32),
-                            borderRadius: scale(4),
-                            elevation: scale(10),
-                            borderWidth: scale(1),
-                            borderColor: 'black',
-                            backgroundColor: '#3EA879',
-                        }} onPress={() => {
-                            navigation.reset({
-                                index: 0,
-                                routes: [{
-                                    name: 'Signup',
-                                    params: { firstName: firstName, lastName: lastName, DOB: DOB, email: email, password: password, ProfilePic: ProfilePic }
-                                }
-                                ],
-                            });
+
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                padding: scale(5),
+                                borderBottomWidth: scale(0.5),
+                                borderColor: '#000'
+                            }}
+                        >
+                            <View
+                                style={{
+                                    flex: 1,
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-evenly'
+                                }}
+                            >
+                                <View style={{ marginBottom: scale(3) }}>
+                                    <Text
+                                        style={{
+                                            fontSize: normalize(14),
+                                            fontFamily: 'sans-serif-thin',
+                                            color: '#000'
+                                        }}
+                                    >Phone Number</Text>
+                                </View>
+                                <View>
+                                    <Text
+                                        style={{
+                                            fontSize: normalize(15),
+                                            fontFamily: 'sans-serif-light',
+                                            color: '#000'
+                                        }}
+                                    >{auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3)}</Text>
+                                </View>
+                            </View>
+                        </View>
+
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                padding: scale(5),
+                                borderBottomWidth: scale(0.5),
+                                borderColor: '#000'
+                            }}
+                        >
+                            <View
+                                style={{
+                                    flex: 1,
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-evenly',
+                                }}
+                            >
+                                <View style={{ marginBottom: scale(3) }}>
+                                    <Text
+                                        style={{
+                                            fontSize: normalize(14),
+                                            fontFamily: 'sans-serif-thin',
+                                            color: '#000'
+                                        }}
+                                    >Email</Text>
+                                </View>
+                                <View>
+                                    <Text
+                                        style={{
+                                            fontSize: normalize(15),
+                                            fontFamily: 'sans-serif-light',
+                                            color: '#000'
+                                        }}
+                                    >{email}</Text>
+                                </View>
+                            </View>
+                        </View>
+
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                padding: scale(5),
+                                borderBottomWidth: scale(0.5),
+                                borderColor: '#000'
+                            }}
+                        >
+                            <View
+                                style={{
+                                    flex: 1,
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-evenly'
+                                }}
+                            >
+                                <View style={{ marginBottom: scale(3) }}>
+                                    <Text
+                                        style={{
+                                            fontSize: normalize(14),
+                                            fontFamily: 'sans-serif-thin',
+                                            color: '#000'
+                                        }}
+                                    >Password</Text>
+                                </View>
+                                <View>
+                                    <Text
+                                        style={{
+                                            fontSize: normalize(15),
+                                            fontFamily: 'sans-serif-light',
+                                            color: '#000'
+                                        }}
+                                    >{password}</Text>
+                                </View>
+                            </View>
+
+
+                        </View>
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                padding: scale(5),
+                                paddingTop: verticalScale(7),
+                                borderBottomWidth: scale(0.5),
+                                borderColor: '#000'
+                            }}
+                        >
+                            <View
+                                style={{
+                                    flex: 1,
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between'
+                                }}
+                            >
+                                <View style={{ marginBottom: scale(3) }}>
+                                    <Text
+                                        style={{
+                                            fontSize: normalize(15),
+                                            fontFamily: 'sans-serif-light',
+                                            color: '#000'
+                                        }}
+                                        onPress={() => {
+                                            navigation.navigate('Change Password')
+                                        }}
+                                    >Change Password</Text>
+                                </View>
+                                <View>
+                                    <AntDesign name="right" size={normalize(16)} color="#000"
+                                        onPress={() => {
+                                            navigation.navigate('Change Password')
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                        <View style={{
+                            marginTop: verticalScale(25),
                         }}>
-                            <Text style={{
-                                fontSize: normalize(17),
-                                lineHeight: verticalScale(20),
-                                fontWeight: '600',
-                                letterSpacing: scale(0.5),
-                                color: 'white',
-                            }}>Update Profile</Text>
-                        </Pressable>
+                            <Pressable style={{
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                paddingVertical: verticalScale(7),
+                                paddingHorizontal: scale(32),
+                                borderRadius: scale(4),
+                                elevation: scale(10),
+                                borderWidth: scale(1),
+                                borderColor: 'black',
+                                backgroundColor: '#3EA879',
+                            }} onPress={() => {
+                                navigation.reset({
+                                    index: 0,
+                                    routes: [{
+                                        name: 'Signup',
+                                        params: { firstName: firstName, lastName: lastName, DOB: DOB, email: email, password: password, ProfilePic: ProfilePic,  displayCurrentAddress : route.params.displayCurrentAddress,
+                                            longitude:  route.params.longitude,
+                                            latitude:  route.params.latitude }
+                                    }
+                                    ],
+                                });
+                            }}>
+                                <Text style={{
+                                    fontSize: normalize(17),
+                                    lineHeight: verticalScale(20),
+                                    fontWeight: '600',
+                                    letterSpacing: scale(0.5),
+                                    color: '#fff',
+                                }}>Update Profile</Text>
+                            </Pressable>
+                        </View>
                     </View>
-                </View>
+                </ScrollView>
             </SafeAreaView>
         </>
     )

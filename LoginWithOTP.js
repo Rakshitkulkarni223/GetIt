@@ -33,7 +33,7 @@ import FlashMessage, { showMessage } from 'react-native-flash-message';
 import { normalize } from './FontResize';
 import ActivityIndicatorElement from './ActivityIndicatorElement';
 
-import { AntDesign, Feather, MaterialIcons, FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { AntDesign, Feather, MaterialIcons, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { NotificationPermission } from './NotificationHandler';
 
 
@@ -57,11 +57,11 @@ const LoginWithOTP = ({ navigation }) => {
     navigation.setOptions({
       title: !verificationId ? "Login" : "",
       headerLeft: () => (
-        verificationId ? <Ionicons name="chevron-back-sharp" size={normalize(20)} color="black" onPress={()=>{
+        verificationId ? <Ionicons name="chevron-back-sharp" size={normalize(20)} color="black" onPress={() => {
           setVerificationId()
           setVerificationCode()
           setPhoneNumber()
-        }}/> : <></>
+        }} /> : <></>
       )
     })
   }, [verificationId])
@@ -89,7 +89,7 @@ const LoginWithOTP = ({ navigation }) => {
       message: msg,
       type: type,
       animationDuration: 650,
-      duration: 2000,
+      duration: 5000,
       position: 'top',
       icon: () => (
         <View style={{
@@ -107,6 +107,9 @@ const LoginWithOTP = ({ navigation }) => {
     setMessage('');
   }
 
+  const [selectMode, setselectMode] = useState(false);
+
+  const [adminPhoneNumber, setadminPhoneNumber] = useState('');
 
   return (
     <>
@@ -145,11 +148,13 @@ const LoginWithOTP = ({ navigation }) => {
                 flexDirection: 'row',
                 justifyContent: 'center',
                 marginTop: verticalScale(50),
-                borderWidth: scale(0.4),
+                borderWidth: scale(0.5),
+                borderColor: '#909191',
+                backgroundColor: "#C6C7C7",
                 borderRadius: scale(100),
                 padding: scale(30)
               }}>
-                <Feather name="message-square" size={normalize(50)} color="black" />
+                <MaterialCommunityIcons name="message-badge" size={normalize(50)} color="#39516F" />
               </View>
             </View>
 
@@ -230,6 +235,160 @@ const LoginWithOTP = ({ navigation }) => {
                 displayFlashMessage(message.text, message.type)
                 : undefined}
 
+              <Modal visible={selectMode} transparent={true}>
+
+                <View style={{
+                  flex: 1,
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}>
+
+                  <View style={{
+                    // flex: 0.5,
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    backgroundColor: '#656F95',
+                    borderWidth: scale(1),
+                    borderColor: '#33A086',
+                    borderRadius: scale(8),
+                    marginHorizontal: scale(20),
+                  }}>
+                    <View style={{
+                      flexDirection: 'row',
+                      justifyContent: 'flex-end',
+                      marginLeft: scale(30),
+                    }}>
+                      <AntDesign name="close" size={normalize(18)} color="#fff"
+                        onPress={() => {
+                          setselectMode(false)
+                        }}
+                      />
+                    </View>
+
+                    <View style={{
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      marginVertical: verticalScale(20)
+                    }}>
+                      <MaterialIcons name="verified-user" size={normalize(40)} color="#3CCA7E" />
+                    </View>
+
+                    <View style={{
+                      padding: scale(3),
+                      // borderRightWidth: scale(1),
+                      marginVertical: verticalScale(20),
+                      justifyContent: 'center'
+                    }}>
+                      <Text style={{
+                        fontSize: normalize(16),
+                        textAlignVertical: 'center',
+                        padding: scale(10),
+                        color: '#fff',
+                        letterSpacing: scale(0.2)
+                      }}
+                      >Please enter your mobile number to become an admin</Text>
+                    </View>
+
+                    <View style={{
+                      flexDirection: 'row',
+                      justifyContent: 'flex-start',
+                      marginHorizontal: scale(10),
+                      borderWidth: scale(1),
+                      borderColor: "#000",
+                      marginVertical: verticalScale(20)
+                    }}>
+                      <View style={{
+                        padding: scale(4),
+                        borderRightWidth: scale(1),
+                        justifyContent: 'center',
+                        backgroundColor: "#87858E",
+                        // padding: scale(2)
+                      }}>
+                        <Text style={{
+                          fontSize: normalize(16),
+                          padding: scale(0),
+                          textAlignVertical: 'center',
+                          color: '#fff'
+                        }}>+91</Text>
+                      </View>
+                      <View style={{
+                        justifyContent: 'flex-start',
+                        marginHorizontal: scale(5),
+                        width: '65%',
+                        flexDirection: 'row',
+                      }}>
+                        <TextInput
+                          style={{ fontSize: normalize(16), color: '#fff', fontWeight: '300' }}
+                          placeholder="Enter Mobile Number"
+                          cursorColor='#fff'
+                          placeholderTextColor="#fff"
+                          autoCompleteType="tel"
+                          letterSpacing={normalize(1.8)}
+                          keyboardType="phone-pad"
+                          textContentType="telephoneNumber"
+                          onChangeText={setadminPhoneNumber}
+                          onSubmitEditing={Keyboard.dismiss}
+                        />
+                      </View>
+
+                    </View>
+
+                    <View style={{
+                      marginHorizontal: scale(5),
+                      marginVertical: verticalScale(10)
+                    }}>
+                      <TouchableOpacity style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingVertical: verticalScale(8),
+                        paddingHorizontal: scale(30),
+                        borderRadius: scale(4),
+                        elevation: scale(5),
+                        backgroundColor: 'black',
+                        marginVertical: verticalScale(5),
+                        borderColor: '#fff',
+                        marginHorizontal: scale(3),
+                        borderWidth: scale(0.5)
+                      }}
+                        onPress={async () => {
+                          if (!adminPhoneNumber || adminPhoneNumber.length !== 10) {
+                            setMessage({ text: `Error: Invalid Mobile Number!!`, type: 'danger' });
+                          }
+                          else {
+                            try {
+
+                              await NotificationPermission()
+                              var token = (await Notifications.getExpoPushTokenAsync()).data;
+                              await set(ref(database, `adminList/` + '+91' + adminPhoneNumber), {
+                                fcmToken: token,
+                              })
+                              Alert.alert("Login as Admin", 'Please login with your registered admin mobile number.')
+                              navigation.reset({
+                                index: 0,
+                                routes: [{ name: "LoginWithOTP" }],
+                              });
+                            }
+                            catch (error) {
+                              console.log(error)
+                            }
+
+                          }
+                        }}
+                      >
+                        <Text style={{
+                          letterSpacing: scale(0.4),
+                          fontSize: normalize(15),
+                          color: '#fff',
+                          fontWeight: '600'
+                        }}>MAKE ADMIN</Text>
+                      </TouchableOpacity>
+                    </View>
+
+                  </View>
+                </View>
+
+              </Modal>
+
 
               <View>
                 <TouchableOpacity style={[styles.button, { marginTop: verticalScale(15) }]}
@@ -238,20 +397,18 @@ const LoginWithOTP = ({ navigation }) => {
                     try {
                       const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
                       await signInWithCredential(auth, credential);
+
                       if (admins.includes('+91' + phoneNumber)) {
                         setloading(false)
-                        await NotificationPermission()
-                        var token =  (await Notifications.getExpoPushTokenAsync()).data;
-                        await set(ref(database, 'users/' + '+91' + phoneNumber), {
-                          fcmToken: token
-                        })
-                        navigation.reset({
-                          index: 0,
-                          routes: [{ name: "Dashboard Admin" }],
-                        });
+                        setselectMode(true)
                       }
                       else {
                         setloading(false)
+                        await NotificationPermission()
+                        var token = (await Notifications.getExpoPushTokenAsync()).data;
+                        await set(ref(database, `usersList/` + '+91' + phoneNumber), {
+                          fcmToken: token,
+                        })
                         navigation.reset({
                           index: 0,
                           routes: [{ name: "Home" }],
@@ -259,7 +416,12 @@ const LoginWithOTP = ({ navigation }) => {
                       }
                     } catch (err) {
                       setloading(false)
-                      setMessage({ text: `Error: ${err.message}`, type : 'danger' });
+                      await NotificationPermission()
+                      var token = (await Notifications.getExpoPushTokenAsync()).data;
+                      await set(ref(database, `usersList/` + '+91' + phoneNumber), {
+                        fcmToken: token,
+                      })
+                      setMessage({ text: `Error: ${err.message}`, type: 'danger' });
                     }
                   }}
                 >
@@ -357,12 +519,13 @@ const LoginWithOTP = ({ navigation }) => {
                   flexDirection: 'row',
                   justifyContent: 'center',
                   marginTop: verticalScale(50),
-                  borderWidth: scale(0.4),
+                  borderWidth: scale(0.5),
+                  backgroundColor: '#6CA589',
                   borderRadius: scale(100),
                   padding: scale(30)
                 }}>
 
-                  <AntDesign name="mobile1" size={normalize(50)} color="#457FA4" />
+                  <AntDesign name="mobile1" size={normalize(50)} color="#39516F" />
                 </View>
               </View>
 
@@ -395,11 +558,9 @@ const LoginWithOTP = ({ navigation }) => {
                   letterSpacing: scale(0.5)
                 }}>
 
-
                   <Text>We will send you a </Text>
                   <Text style={{ fontWeight: '600' }}>One Time Passoword </Text>
                   <Text>on your mobile number</Text>
-
 
                 </Text>
               </View>
@@ -459,25 +620,31 @@ const LoginWithOTP = ({ navigation }) => {
 
                   <View style={{
                     // flex: 1,
-                    marginLeft: scale(40),
+                    marginLeft: scale(35),
                     justifyContent: 'center',
                   }}>
                     {phoneNumber && phoneNumber.length === 10 ? <Feather name="check-circle" size={normalize(18)} color="#249A5A" /> : <></>}
                   </View>
-                  
+
                 </View>
-              
 
 
-                <TouchableOpacity style={[styles.button,{ marginTop: verticalScale(15) }]}
+
+                <TouchableOpacity style={[styles.button, { marginTop: verticalScale(15) }]}
                   onPress={async () => {
                     setloading(true)
                     try {
                       if (!phoneNumber || phoneNumber.length !== 10) {
                         setloading(false)
-                        setMessage({ text: `Error: Invalid Mobile Number!!`, type: 'danger' });
+                        setMessage({ text: `Error: Invalid Mobile Number!! Please Enter 10 digit mobile number.`, type: 'danger' });
+                        return;
                       }
                       else {
+                        if (!phoneNumber.match(/^\d{10}$/)) {
+                          setloading(false)
+                          setMessage({ text: `Error: Invalid Mobile Number!! Please enter only digits.`, type: 'danger' });
+                          return;
+                        }
                         const phoneProvider = new PhoneAuthProvider(auth);
                         const verificationId = await phoneProvider.verifyPhoneNumber(
                           '+91' + phoneNumber,
@@ -502,9 +669,9 @@ const LoginWithOTP = ({ navigation }) => {
             </View>
           </ScrollView>
         }
-          {message ?
-                  displayFlashMessage()
-                  : undefined}
+        {message ?
+          displayFlashMessage()
+          : undefined}
         {/* </KeyboardAvoidingView> */}
       </SafeAreaView>
     </>

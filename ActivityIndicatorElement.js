@@ -5,6 +5,7 @@ import {
     TextInput,
     View,
     Text,
+    NativeModules,
     ScrollView,
     Image,
     Button,
@@ -15,26 +16,35 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
     Modal,
+    Dimensions,
 } from "react-native";
-
 
 import { scale } from './Dimensions';
 
 import { normalize } from './FontResize';
 
 
+
+
 const ActivityIndicatorElement = ({ loading }) => {
 
     const [color, setColor] = useState('teal');
 
+    const colorArray = [ "#5C9B73", "#5C6D9B", "#899B5C", "#B37E65","#3C9B9B"
+      ];
+
     useEffect(() => {
         const id = setInterval(() => {
-            setColor((color) => color == 'teal' ? 'royalblue' : 'teal');
+            var index = Math.floor(Math.random() * colorArray.length);
+            // console.log(index)
+            setColor((colorArray[index]))
         }, 500);
         return () => clearInterval(id);
     }, []);
 
+
     const [lineLength] = useState(new Animated.Value(0));
+
 
     useEffect(() => {
         Animated.timing(lineLength, {
@@ -45,26 +55,30 @@ const ActivityIndicatorElement = ({ loading }) => {
     }, []);
 
     const lineStyle = {
-        height: 3,
+        height: 4,
         backgroundColor: color,
         transform: [{ scaleX: lineLength }],
     };
 
-    // console.log(StatusBar.currentHeight)
-
     return (
 
         <Modal visible={loading} transparent={true}>
-            <View style={{
-                position:'absolute', left:0, right:0, bottom:0, top: normalize(StatusBar.currentHeight+1)
-                // position: 'absolute',
-                // flex: 0.8,
-                // flexDirection: 'column',
-                // justifyContent: 'flex-end',
+            <SafeAreaView style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'flex-start'
             }}>
-                {/* <ActivityIndicator  size="large" color={color} animating={true} /> */}
-                <Animated.View style={lineStyle} />
-            </View>
+                <View style={{
+                    position: 'absolute', left: 0, right: 0, bottom: 0, top: 56
+                    // position: 'absolute',
+                    // flex: 0.8,
+                    // flexDirection: 'column',
+                    // justifyContent: 'flex-end',
+                }}>
+                    {/* <ActivityIndicator  size="large" color={color} animating={true} /> */}
+                    <Animated.View style={lineStyle} />
+                </View>
+            </SafeAreaView>
         </Modal>
 
     );

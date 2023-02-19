@@ -308,7 +308,7 @@ const ConfiremdOrders = ({ navigation, route }) => {
                      flexDirection: 'row',
                      justifyContent: 'flex-start',
                   }}>
-                     <Text style={{ fontSize: normalize(10) }} onPress={() => {
+                     <Text style={{ fontSize: normalize(10), color: "#fff" }} onPress={() => {
                         Alert.alert('Delivery Location', `${route.params.displayCurrentAddress}`, [
                            {
                               text: 'Want to change?',
@@ -326,8 +326,9 @@ const ConfiremdOrders = ({ navigation, route }) => {
             </View>,
             headerTitle: '',
             headerStyle: {
-               backgroundColor: 'white',
-            },
+               backgroundColor: '#77C98D',
+               backgroundColor: '#8297C4',
+           },
             // headerTintColor: '#fff',
             // headerTitleStyle: {
             //     fontSize: normalize(13),
@@ -335,7 +336,7 @@ const ConfiremdOrders = ({ navigation, route }) => {
             //     color: 'black'
             // },
             headerRight: () => (
-               <AntDesign name="logout" size={normalize(18)} color="black" onPress={() => signOut(auth).then(() => {
+               <AntDesign name="logout" size={normalize(18)} color="#BF0505" onPress={() => signOut(auth).then(() => {
                   setloading(false)
                   Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
                   navigation.replace('Main')
@@ -352,6 +353,7 @@ const ConfiremdOrders = ({ navigation, route }) => {
          setUser({ loggedIn: false })
       }
    }, [route.params.displayCurrentAddress])
+
 
 
    return (
@@ -371,6 +373,7 @@ const ConfiremdOrders = ({ navigation, route }) => {
                displayCurrentAddress={route.params.displayCurrentAddress}
                longitude={route.params.longitude}
                latitude={route.params.latitude}
+               adminList={route.params.adminList}
             />
             {/* <NavigationContainer independent={true}>
                <MyTabs navigation={navigation}

@@ -16,6 +16,7 @@ import {
     ScrollView,
     KeyboardAvoidingView,
     Keyboard,
+    Image,
 } from 'react-native';
 import { createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 
@@ -55,6 +56,7 @@ const Main = ({ navigation }) => {
 
     const [user, setUser] = useState({ loggedIn: false });
 
+
     useEffect(() => {
         navigation.setOptions({
             title: "",
@@ -69,7 +71,7 @@ const Main = ({ navigation }) => {
                 if (validuser) {
                     const uid = validuser.uid;
                     setloading(false)
-                    setUser({ loggedIn: true, email: validuser.email })
+                    setUser({ loggedIn: true, phoneNumber: validuser.phoneNumber })
                 } else {
                     setloading(false)
                     setUser({ loggedIn: false })
@@ -91,7 +93,7 @@ const Main = ({ navigation }) => {
             {user.loggedIn ? <Home navigation={navigation} />
                 :
                 <AnimatedAppLoader image={{ uri: Constants.manifest.splash.image }}>
-                    <ActivityIndicatorElement loading={loading} />
+                    {/* <ActivityIndicatorElement loading={loading} /> */}
                     <App navigation={navigation} loading={loading} setloading={setloading} user={user} />
                 </AnimatedAppLoader>}
         </>
@@ -186,49 +188,72 @@ const App = ({ navigation, loading, setloading, user }) => {
     SplashScreen.preventAutoHideAsync();
     setTimeout(SplashScreen.hideAsync, 1000)
 
-    // useEffect(() => {
+    const [placeholder, setPlaceholder] = useState('');
 
-    // },[user])
-
-    // useEffect(()=>{
-    //     NotificationPermission();
-    // },[])
-
-
+    const string = 'Welcome to GetIt', index = React.useRef(0);
+  
+    useEffect(() => {
+      function tick() {
+        setPlaceholder((prev) => prev + string[index.current]);
+        index.current++;
+      }
+      if (index.current < string.length) {
+        let addChar = setInterval(tick, 100);
+        return () => clearInterval(addChar);
+      }
+    }, [placeholder]);
+  
 
     return (
 
         <SafeAreaView style={{ flex: 1, backgroundColor: '#C35C70' }}>
-            <ActivityIndicatorElement loading={loading} />
+            {/* <ActivityIndicatorElement loading={loading} /> */}
             <View style={{
                 flexDirection: 'row',
                 justifyContent: 'center',
             }}>
                 <View style={{
-                    flexDirection: 'row',
+                    flexDirection: 'column',
                     justifyContent: 'center',
                     marginTop: verticalScale(50),
-                    borderWidth: scale(0.8),
-                    backgroundColor: '#39AA7F',
-                    borderRadius: scale(100),
-                    borderColor: '#39AA7F',
-                    padding: scale(30)
+                    // borderWidth: scale(0.8),
+                    // backgroundColor: '#797581',
+                    // borderRadius: scale(6),
+                    // borderColor: '#626365',
+                    padding: scale(10)
                 }}>
-                    <Ionicons name="md-restaurant-outline" size={normalize(80)} color="black" />
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center'
+                    }}>
+                        {/* <Ionicons name="md-restaurant-outline" size={normalize(80)} color="#fff" /> */}
+                        <Image
+                                    source={{ uri: "https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FIcon.png?alt=media&token=c2102a2d-4777-4170-895b-df792be9d172" }}
+                                    style={{
+                                        marginTop: verticalScale(5),
+                                        marginBottom: verticalScale(5),
+                                        width: scale(180),
+                                        height: verticalScale(160),
+                                        resizeMode: 'cover'
+                                    }}
+                                />
+                    </View>
                     {/* <SimpleLineIcons name="basket" size={normalize(45)} color="#69B77F" /> */}
                 </View>
             </View>
 
             <View style={{
                 flex: 0.8,
-                flexDirection: 'column', justifyContent: 'center'
+                flexDirection: 'column', justifyContent: 'center',
             }}>
                 <View style={{ padding: scale(18), marginTop: verticalScale(5) }}>
                     <Text style={{
-                        fontSize: scale(30),
-                        fontWeight: '200',
-                        color: '#d3d3d3'
-                    }}>Welcome to GetIt</Text>
+                        fontSize: scale(25),
+                        // fontWeight: '200',
+                        color: '#E5E5E5',
+                        letterSpacing: scale(0.25),
+                        fontFamily: 'monospace'
+                    }}>{placeholder.toUpperCase()}</Text>
                 </View>
 
                 <View
@@ -269,13 +294,13 @@ const App = ({ navigation, loading, setloading, user }) => {
                         }}
                         >
                             <Text style={{
-                                fontSize: normalize(16),
+                                fontSize: normalize(14),
                                 lineHeight: verticalScale(20),
                                 fontWeight: '600',
                                 letterSpacing: scale(0.5),
                                 color: 'white',
                             }}>
-                                Login with mobile number
+                                {"Login with mobile number".toUpperCase()}
                             </Text>
                         </TouchableOpacity>
                     </View>

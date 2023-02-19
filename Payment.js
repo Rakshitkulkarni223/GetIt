@@ -11,9 +11,8 @@ import {
     Image,
     Button,
     Keyboard,
-    TouchableOpacity,
     KeyboardAvoidingView,
-    Pressable,
+    TouchableOpacity,
     FlatList,
 } from "react-native";
 
@@ -25,7 +24,7 @@ import { scale, moderateScale, verticalScale } from './Dimensions';
 import { normalize } from "./FontResize";
 import ActivityIndicatorElement from "./ActivityIndicatorElement";
 import { AntDesign, Ionicons, MaterialIcons, SimpleLineIcons } from "@expo/vector-icons";
-import { NotificationHandler } from "./NotificationHandler";
+import { NotificationHandler, NotificationHandlerAdmin } from "./NotificationHandler";
 
 
 const PaymentGateway = ({ navigation, route }) => {
@@ -50,6 +49,10 @@ const PaymentGateway = ({ navigation, route }) => {
         };
     }
 
+
+    // useEffect(()=>{
+    //     console.log(route.params.adminList[0]["fcmToken"])
+    //  },[])
 
     const startTimer = (e) => {
         let { total, hours, minutes, seconds } = getTimeRemaining(e);
@@ -300,18 +303,24 @@ const PaymentGateway = ({ navigation, route }) => {
 
             setloading(false)
 
-            // await NotificationHandler(auth.currentUser.phoneNumber, `Order Placed ✅🎊 Order Id: ${route.params.OrderId}`, `Delivery Location : ${route.params.displayCurrentAddress}`)
-            // await NotificationHandler(auth.currentUser.phoneNumber, `Thank you 🤩❤️`, `Please collect your order from our delivery agent.`)
+            for(let i=0;i<route.params.adminList.length;i++)
+            {
+                await NotificationHandlerAdmin(true,route.params.adminList[i]['fcmToken'], `New Order Arrived ✨🤩 Order Id: ${route.params.OrderId}`, `Delivery Location : ${route.params.displayCurrentAddress}`)
+            }
+
+            await NotificationHandler(true,auth.currentUser.phoneNumber, `Order Placed ✅🎊 Order Id: ${route.params.OrderId}`, `Delivery Location : ${route.params.displayCurrentAddress}`)
+            await NotificationHandler(true,auth.currentUser.phoneNumber, `Thank you 🤩❤️`, `Please collect your order from our delivery agent.`)
 
             navigation.reset({
                 index: 0,
-                routes: [{ name: 'Home', params: { disableNotification: true } }],
+                routes: [{ name: 'Home', params: { disableNotification: true, changeAddress: false,  Location: route.params.displayCurrentAddress,
+                    Longitude: route.params.longitude,
+                    Latitude: route.params.latitude,} }],
             });
         }
         catch (err) {
             setloading(false)
             Alert.alert(err);
-            console.error('ERROR : ', err);
         }
     }
 
@@ -319,10 +328,9 @@ const PaymentGateway = ({ navigation, route }) => {
         <View style={{
             flex: 1,
             flexDirection: 'column',
-            // justifyContent: 'center',
             borderBottomWidth: scale(0.9),
             backgroundColor: (index % 2) ? "#D6D3D3" : "#fff",
-            padding: scale(15)
+            padding: scale(10)
         }}>
             <View style={{
                 flex: 1,
@@ -353,7 +361,7 @@ const PaymentGateway = ({ navigation, route }) => {
                             justifyContent: 'flex-start'
                         }}>
                             <Text style={{
-                                fontSize: normalize(13),
+                                fontSize: normalize(12),
                                 letterSpacing: scale(0.2),
                                 fontWeight: '500'
                             }}>{ItemName}</Text>
@@ -364,7 +372,7 @@ const PaymentGateway = ({ navigation, route }) => {
                             justifyContent: 'flex-start'
                         }}>
                             <Text style={{
-                                fontSize: normalize(10),
+                                fontSize: normalize(8),
                                 fontStyle: 'italic',
                                 letterSpacing: scale(0.2)
                             }}>
@@ -402,7 +410,7 @@ const PaymentGateway = ({ navigation, route }) => {
                         justifyContent: 'flex-end'
                     }}>
                         <Text style={{
-                            fontSize: normalize(13),
+                            fontSize: normalize(12),
                             letterSpacing: scale(0.2),
                             fontWeight: '500'
                         }}>
@@ -421,7 +429,7 @@ const PaymentGateway = ({ navigation, route }) => {
                         justifyContent: 'flex-end'
                     }}>
                         <Text style={{
-                            fontSize: normalize(13),
+                            fontSize: normalize(12),
                             letterSpacing: scale(0.2)
                         }}>{ItemQuantity} qty</Text>
                     </View>
@@ -437,7 +445,7 @@ const PaymentGateway = ({ navigation, route }) => {
                         justifyContent: 'flex-end'
                     }}>
                         <Text style={{
-                            fontSize: normalize(13),
+                            fontSize: normalize(12),
                             letterSpacing: scale(0.2),
                             fontWeight: '500'
                         }}>₹{ItemPrice * ItemQuantity}</Text>
@@ -527,7 +535,7 @@ const PaymentGateway = ({ navigation, route }) => {
                             justifyContent: 'flex-start'
                         }}>
                             <Text style={{
-                                 fontSize: normalize(16),
+                                 fontSize: normalize(14),
                                  color: '#fff',
                                  fontWeight: '500',
                                  letterSpacing: scale(0.3)
@@ -546,7 +554,7 @@ const PaymentGateway = ({ navigation, route }) => {
                         }}>
 
                             <Text style={{
-                                fontSize: normalize(16),
+                                fontSize: normalize(14),
                                 color: '#fff',
                                 fontWeight: '500',
                                 letterSpacing: scale(0.3)
@@ -593,7 +601,7 @@ const PaymentGateway = ({ navigation, route }) => {
                         paddingHorizontal: scale(13),
                         backgroundColor: '#706F71',
                     }}>
-                        <Pressable
+                        <TouchableOpacity
                             onPress={
                                 // () => openPaymentApp('online')
                                 () => Alert.alert("Work in progress", "Only cash on delivery is avaliable")}
@@ -614,14 +622,14 @@ const PaymentGateway = ({ navigation, route }) => {
                                     justifyContent: 'center'
                                 }}>
                                     <Text style={{
-                                        fontSize: normalize(16),
+                                        fontSize: normalize(14),
                                         color: '#C6C6C6',
                                         fontWeight: '500',
                                         letterSpacing: scale(0.3)
                                     }}>PAY ONLINE</Text>
                                 </View>
                             </View>
-                        </Pressable>
+                        </TouchableOpacity>
                     </View>
 
                     <View style={{
@@ -638,16 +646,16 @@ const PaymentGateway = ({ navigation, route }) => {
                             flexDirection: 'row',
                             justifyContent: 'center'
                         }}>
-                            <Pressable onPress={() => openPaymentApp('offline')} >
+                            <TouchableOpacity onPress={() => openPaymentApp('offline')} >
                                 <Text style={{
-                                    fontSize: normalize(16),
+                                    fontSize: normalize(14),
                                     color: '#fff',
                                     fontWeight: '500',
                                     letterSpacing: scale(0.3)
                                 }}
                                 >CASH ON DELIVERY
                                 </Text>
-                            </Pressable>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>

@@ -41,7 +41,9 @@ import * as Location from 'expo-location';
 
 const Tab = createBottomTabNavigator();
 
-function MyTabs({ navigation, OrderId , displayCurrentAddress, longitude, latitude}) {
+function MyTabs({ navigation, OrderId , displayCurrentAddress, longitude, latitude,adminList}) {
+
+
 
     return (
         <Tab.Navigator
@@ -53,7 +55,7 @@ function MyTabs({ navigation, OrderId , displayCurrentAddress, longitude, latitu
         >
             <Tab.Screen
                 name="All Items"
-                children={() => <ViewItems navigation={navigation} OrderId={OrderId} displayCurrentAddress={displayCurrentAddress} longitude={longitude}
+                children={() => <ViewItems navigation={navigation} OrderId={OrderId} displayCurrentAddress={displayCurrentAddress} longitude={longitude} adminList={adminList}
                 latitude={latitude}/>}
                 options={{
                     tabBarLabel: "All Items",
@@ -88,7 +90,9 @@ function MyTabs({ navigation, OrderId , displayCurrentAddress, longitude, latitu
 
             <Tab.Screen
                 name="Profile"
-                children={() => <UserAccountDetails navigation={navigation} />}
+                children={() => <UserAccountDetails navigation={navigation} displayCurrentAddress={displayCurrentAddress}
+                longitude={longitude}
+                latitude={latitude} />}
                 options={{
                     tabBarLabel: "Profile",
                     tabBarIcon: ({ color, size }) => (
@@ -328,7 +332,7 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
 };
 
 
-const DashboardUser = ({ navigation, OrderId, displayCurrentAddress, setdisplayCurrentAddress, longitude, setlongitude, latitude, setlatitude, GetCurrentLocation }) => {
+const DashboardUser = ({ navigation, OrderId, displayCurrentAddress, setdisplayCurrentAddress, longitude, setlongitude, latitude, setlatitude, GetCurrentLocation, adminList }) => {
 
     // const [OrderId, setOrderId] = useState("");
 
@@ -480,7 +484,7 @@ const DashboardUser = ({ navigation, OrderId, displayCurrentAddress, setdisplayC
                 //     color: 'black'
                 // },
                 headerRight: () => (
-                    <AntDesign name="logout" size={normalize(18)} color="black" onPress={() => signOut(auth).then(() => {
+                    <AntDesign name="logout" size={normalize(18)} color="#BF0505" onPress={() => signOut(auth).then(() => {
                         setloading(false)
                         Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
                         navigation.replace('Main')
@@ -636,6 +640,7 @@ const DashboardUser = ({ navigation, OrderId, displayCurrentAddress, setdisplayC
                 displayCurrentAddress={displayCurrentAddress}
                 longitude={longitude}
                 latitude={latitude}
+                adminList={adminList}
                 />
             </NavigationContainer>
             <ModalInput

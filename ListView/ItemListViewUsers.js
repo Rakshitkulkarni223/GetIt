@@ -436,7 +436,7 @@ const contains = (items, query) => {
 };
 
 
-const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter, totalamount, settotalamount, loading, setloading, displayCurrentAddress, totalConfirmedItems, longitude, latitude }) => {
+const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter, totalamount, settotalamount, loading, setloading, displayCurrentAddress, totalConfirmedItems, longitude, latitude, adminList }) => {
 
     const [ItemName, setItemName] = useState("");
     const [ItemDesc, setItemDesc] = useState("");
@@ -448,6 +448,9 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
     const [qtyhandlervisible, setqtyhandlervisible] = useState(qtyhandler);
     // const [totalamount, settotalamount] = useState(0)
     const [query, setQuery] = useState('');
+
+    
+  
 
 
     const searchRef = createRef();
@@ -621,6 +624,11 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
 
     }
 
+    useEffect(()=>{
+        console.log(adminList)
+     },[])
+
+     
     const handleIncrease = (index) => {
 
         setloading(true)
@@ -756,7 +764,8 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                             displayCurrentAddress: displayCurrentAddress,
                             totalItems: totalItems,
                             longitude: longitude,
-                            latitude: latitude
+                            latitude: latitude,
+                            adminList : adminList
                         }
                     )
                 }
@@ -772,6 +781,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
         }
         else {
 
+            console.log(adminList)
             navigation.navigate("Payment Gateway",
                 {
                     totalamount: totalamount,
@@ -780,7 +790,8 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                     displayCurrentAddress: displayCurrentAddress,
                     totalItems: totalItems,
                     longitude: longitude,
-                    latitude: latitude
+                    latitude: latitude,
+                    adminList : adminList
                 }
             )
         }

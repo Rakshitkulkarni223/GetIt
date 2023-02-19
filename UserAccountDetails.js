@@ -6,13 +6,13 @@ import { FontAwesome5,MaterialIcons, MaterialCommunityIcons  } from '@expo/vecto
 import { scale, moderateScale, verticalScale} from './Dimensions';
 import ActivityIndicatorElement from "./ActivityIndicatorElement";
 
-const UserAccountDetails = ({ navigation }) => {
+const UserAccountDetails = ({ navigation, displayCurrentAddress, longitude, latitude }) => {
 
     const [loading, setloading] = useState(false);
 
     return (
             <SafeAreaView
-                style={{ flex: 1, backgroundColor: '#3B3636' }}
+                style={{ flex: 1, backgroundColor: '#D4D7D6' }}
             >
                  <ActivityIndicatorElement loading={loading} />
                 <View
@@ -29,13 +29,13 @@ const UserAccountDetails = ({ navigation }) => {
                         justifyContent: 'flex-start',
                         padding: scale(10),
                         borderWidth: scale(0.5),
-                        borderColor: 'white'
+                        borderColor: '#000'
                     }}
                     >
                         <View style={{
                             justifyContent: 'center'
                         }}>
-                        <FontAwesome5 name="user" size={verticalScale(16)} color="white" />
+                        <FontAwesome5 name="user" size={verticalScale(14)} color="#000" />
                         </View>
                         <View style={{
                             justifyContent: 'center'
@@ -43,12 +43,16 @@ const UserAccountDetails = ({ navigation }) => {
                             <Text
                             style={{
                                 textAlignVertical: 'center',
-                                fontSize: verticalScale(16),
+                                fontSize: verticalScale(14),
                                 marginLeft: scale(14),
-                                color: 'white'
+                                color: '#000'
                             }}
                             onPress={()=>{
-                                navigation.navigate('User Profile')
+                                navigation.navigate('User Profile',{
+                                    displayCurrentAddress : displayCurrentAddress,
+                                    longitude: longitude,
+                                    latitude: latitude,
+                                })
                             }}
                             >My profile</Text>
                         </View>
@@ -59,13 +63,13 @@ const UserAccountDetails = ({ navigation }) => {
                         justifyContent: 'flex-start',
                         padding: scale(10),
                         borderWidth: scale(0.5),
-                        borderColor: 'white'
+                        borderColor: '#000'
                     }}
                     >
                         <View style={{
                             justifyContent: 'center'
                         }}>
-                        <MaterialCommunityIcons name="information-outline" size={verticalScale(18)} color="white" />
+                        <MaterialCommunityIcons name="information-outline" size={verticalScale(16)} color="#000" />
                         </View>
                         <View style={{
                             justifyContent: 'center'
@@ -73,9 +77,9 @@ const UserAccountDetails = ({ navigation }) => {
                             <Text
                             style={{
                                 textAlignVertical: 'center',
-                                fontSize: verticalScale(16),
+                                fontSize: verticalScale(14),
                                 marginLeft: scale(10),
-                                color: 'white'
+                                color: '#000'
                             }}
                             >About us</Text>
                         </View>
@@ -85,14 +89,14 @@ const UserAccountDetails = ({ navigation }) => {
                         flexDirection: 'row',
                         justifyContent: 'flex-start',
                         padding: scale(10),
-                        borderColor: 'white',
+                        borderColor: '#000',
                         borderWidth: scale(0.5),
                     }}
                     >
                         <View style={{
                             justifyContent: 'center'
                         }}>
-                        <MaterialIcons name="contact-support" size={verticalScale(18)} color="white" />
+                        <MaterialIcons name="contact-support" size={verticalScale(16)} color="#000" />
                         </View>
                         <View style={{
                             justifyContent: 'center'
@@ -100,9 +104,9 @@ const UserAccountDetails = ({ navigation }) => {
                             <Text
                             style={{
                                 textAlignVertical: 'center',
-                                fontSize: verticalScale(16),
+                                fontSize: verticalScale(14),
                                 marginLeft: scale(10),
-                                color: 'white'
+                                color: '#000'
                             }}
                             >Contact us</Text>
                         </View>

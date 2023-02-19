@@ -1,6 +1,6 @@
 import React, { createRef, useEffect, useState } from 'react';
-import { SafeAreaView, Modal, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert, TextInput, Keyboard } from 'react-native';
-import { AntDesign, MaterialCommunityIcons, Entypo, MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { SafeAreaView, Modal, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert, TextInput, Keyboard, Linking } from 'react-native';
+import { AntDesign, MaterialCommunityIcons, Entypo, MaterialIcons, Ionicons, Feather } from '@expo/vector-icons';
 import UpdateItem from '../admin/UpdateItem';
 import { app, auth, db, database } from "../Firebase";
 import { ref, set, update } from "firebase/database";
@@ -11,6 +11,7 @@ import { scale, moderateScale, verticalScale } from '../Dimensions';
 
 import { normalize } from '../FontResize';
 import ActivityIndicatorElement from '../ActivityIndicatorElement';
+import { NotificationHandler } from '../NotificationHandler';
 
 
 const Item = ({ id, setloading, OrderId, title, image_url, price, description, category, displayCategory, quantity, ItemAddedDate, phoneNumber, OrderStatus, Location, Longitude, Latitude }) => (
@@ -132,7 +133,7 @@ const Item = ({ id, setloading, OrderId, title, image_url, price, description, c
 
 
 
-const AddRemoveItem = (add, { id, OrderId, title, image_url, price, description, category, quantity, ItemAddedDate, phoneNumber }) => {
+const AddRemoveItem = async(add, { id, OrderId, title, image_url, price, description, category, quantity, ItemAddedDate, phoneNumber }) => {
 
     if (add) {
         set(ref(database, `users/${phoneNumber}/orders/${OrderId}/items/${category}/` + id), {
@@ -149,25 +150,30 @@ const AddRemoveItem = (add, { id, OrderId, title, image_url, price, description,
         set(ref(database, `users/${phoneNumber}/orders/${OrderId}/orderStatus`), {
             OrderStatus: 0
         })
+        await NotificationHandler(true,phoneNumber,`Order Confimred 😍🎉 Order Id: ${OrderId}`, `Your order will be delivered soon.`)
     }
     if (!add) {
         set(ref(database, `users/${phoneNumber}/orders/${OrderId}/`), {
         })
+        await NotificationHandler(true,phoneNumber,`Order Not Confimred ❌ Order Id: ${OrderId}`, `Sorry,🙁 your order has been cancelled due to some reason.`)
     }
 }
 
-const OrderDelivered = (delivered, { OrderId, phoneNumber }) => {
+const OrderDelivered = async (delivered, { OrderId, phoneNumber, Location }) => {
     if (delivered) {
         set(ref(database, `users/${phoneNumber}/orders/${OrderId}/orderStatus`), {
             OrderStatus: 1
         })
+
+        await NotificationHandler(true,phoneNumber,`Order Delivered 🍽️😋 Order Id: ${OrderId}`, `Order delivered to ${Location}`)
+        // await NotificationHandler(true,phoneNumber,`Thank you ❤️`, ``)
 
     }
     if (!delivered) {
         set(ref(database, `users/${phoneNumber}/orders/${OrderId}/orderStatus`), {
             OrderStatus: 2
         })
-
+        await NotificationHandler(true,phoneNumber,`Order Not Delivered ❌ Order Id: ${OrderId}`, `Sorry,🙁 your order has been cancelled due to some reason.`)
     }
 }
 
@@ -304,6 +310,14 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
         if (searchRef && searchRef.current) {
             searchRef.current.clear()
         }
+        AllOrders.sort(function (item1, item2) {
+            var val1 = item1['OrderStatus'];
+            var val2 = item2['OrderStatus'];
+            if (val1 > val2) return 1;
+            if (val1 < val2) return -1;
+            return 0;
+        });
+
         setData(AllOrders)
     }, [AllOrders])
 
@@ -371,7 +385,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                     {
                         data[index].OrderStatus === -1 ?
 
-                            <MaterialCommunityIcons name="clock-alert-outline" size={normalize(16)} color="black"
+                            <MaterialCommunityIcons name="clock-alert-outline" size={normalize(16)} color="#F0C903"
                                 onPress={() => {
                                     Alert.alert('Order Status', 'Pending', [
                                         {
@@ -382,7 +396,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                             /> :
 
                             data[index].OrderStatus === 0 ?
-                                <MaterialCommunityIcons name="clock-check-outline" size={normalize(16)} color="black" onPress={() => {
+                                <MaterialCommunityIcons name="clock-check-outline" size={normalize(16)} color="#B7F003" onPress={() => {
                                     Alert.alert('Order Status', 'Confirmed', [
                                         {
                                             text: "OK",
@@ -457,7 +471,15 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
 
                                     Alert.alert('Order Delivery Location', `${data[index].Location}`, [
                                         {
-                                            text: 'OK',
+                                            text: 'Want to Call?',
+                                            onPress: async () => {
+                                                const url = `tel://${data[index].phoneNumber}`
+                                                await Linking.openURL(url)
+                                            },
+                                            style: 'cancel',
+                                        },
+                                        {
+                                            text: 'Want to Continue',
                                         },
                                     ])
                                     // setvisibleMap(true);
@@ -473,8 +495,10 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                     data[index].OrderStatus === 0 || data[index].OrderStatus === -1
                         ?
 
-                        <View>
-                            <MaterialCommunityIcons name="checkbox-marked-circle" size={normalize(20)} color="green"
+                        <View style={{
+                            justifyContent: 'center'
+                        }}>
+                            <Feather name="check-square" size={normalize(16)} color="#03F081"
                                 onPress={() => {
 
                                     if (data[index].OrderStatus === -1) {
@@ -502,7 +526,8 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                                                     setloading(true)
                                                     OrderDelivered(0, {
                                                         OrderId: data[index].OrderId,
-                                                        phoneNumber: data[index].phoneNumber
+                                                        phoneNumber: data[index].phoneNumber,
+                                                        Location: data[index].Location
                                                     })
                                                     setloading(false)
                                                 }
@@ -513,7 +538,8 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                                                     setloading(true)
                                                     OrderDelivered(1, {
                                                         OrderId: data[index].OrderId,
-                                                        phoneNumber: data[index].phoneNumber
+                                                        phoneNumber: data[index].phoneNumber,
+                                                        Location: data[index].Location
                                                     })
                                                     setloading(false)
                                                 }
@@ -527,7 +553,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                 {data[index].OrderStatus === -1 ?
                     <View>
 
-                        <MaterialIcons name="delete-outline" size={normalize(20)} color="#E5453B"
+                        <MaterialIcons name="delete-outline" size={normalize(18)} color="#E5453B"
                             onPress={() => {
 
 
@@ -597,7 +623,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                         padding: scale(15),
                         backgroundColor: '#DFDFDF',
                     }}>
-                        {displayQRCode && data[index].OrderStatus === 1 ?
+                        {displayQRCode && data[index].OrderStatus === 0 ?
                             <View style={{
                                 flex: 1,
                                 // padding: scale(15),
@@ -740,7 +766,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                                         <Text style={{
                                             fontWeight: '600',
                                             letterSpacing: scale(0.5),
-                                            color: 'white',
+                                            color: 'black',
                                             fontSize: normalize(15)
                                         }}>
                                             No orders

@@ -6,7 +6,7 @@ import ItemsListViewUsers from '../ListView/ItemListViewUsers';
 import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
-const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, latitude }) => {
+const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, latitude , adminList}) => {
 
    const [AllItems, setAllItems] = useState([]);
 
@@ -19,6 +19,9 @@ const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, lati
    var adminRatings = '';
 
    var ratings = '';
+
+ 
+
 
    useEffect(() => {
       const getRating = onValue(ref(database, `userRatings/${auth.currentUser.phoneNumber}/`),
@@ -109,6 +112,8 @@ const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, lati
 
    }, [])
 
+
+
    return (
       <>
          <ActivityIndicatorElement loading={loading} />
@@ -120,6 +125,7 @@ const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, lati
             displayCurrentAddress={displayCurrentAddress}
             longitude={longitude}
             latitude={latitude}
+            adminList={adminList}
          ></ItemsListViewUsers>
       </>
 

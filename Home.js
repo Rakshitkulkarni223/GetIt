@@ -30,9 +30,39 @@ const Home = ({ navigation, route }) => {
 
     const [loading, setloading] = useState(false);
 
-    const [displayCurrentAddress, setdisplayCurrentAddress] = useState('');
-    const [longitude, setlongitude] = useState('');
-    const [latitude, setlatitude] = useState('');
+    const [displayCurrentAddress, setdisplayCurrentAddress] = useState(route && route.params ? route.params.Location  : '');
+    const [longitude, setlongitude] = useState(route && route.params ? route.params.Longitude : '');
+    const [latitude, setlatitude] = useState(route && route.params ? route.params.Latitude : '');
+
+    const [showAddress, setshowAddress] = useState(route && route.params ? route.params.changeAddress : true)
+
+
+    const [adminList, setadminList] = useState([]);
+
+    const [adminPhoneNumbers, setadminPhoneNumbers] = useState([]);
+
+    useEffect(() => {
+
+        const getAdminList = onValue(ref(database, `adminList/`), (snapshot) => {
+            var allAdmins = [];
+            var phoneNumbersAdmin = [];
+            if (snapshot.exists()) {
+                snapshot.forEach((child) => {
+                    phoneNumbersAdmin.push(child.key)
+                    allAdmins.push({
+                        phoneNumber: child.key,
+                        fcmToken: child.val()["fcmToken"]
+                    })
+                })
+                setadminList(allAdmins)
+                setadminPhoneNumbers(phoneNumbersAdmin)
+            }
+        })
+
+        return () => {
+            getAdminList();
+        }
+    }, [])
 
     var username = 'User';
 
@@ -40,7 +70,9 @@ const Home = ({ navigation, route }) => {
 
 
     useEffect(() => {
-        GetCurrentLocation();
+        if (showAddress) {
+            GetCurrentLocation();
+        }
     }, [])
 
     const GetCurrentLocation = async () => {
@@ -110,7 +142,7 @@ const Home = ({ navigation, route }) => {
                         username = (snapshot.val()[auth.currentUser.phoneNumber]['firstName']
                             + ' ' + snapshot.val()[auth.currentUser.phoneNumber]['lastName']
                         )
-                        if (route && route.params.disableNotification) {
+                        if (route && route.params && route.params.disableNotification) {
                             console.log("ok")
                         }
                         else {
@@ -145,11 +177,17 @@ const Home = ({ navigation, route }) => {
 
         setloading(true);
 
-        const unsubscribe = onAuthStateChanged(auth,async (validuser) => {
+        const unsubscribe = onAuthStateChanged(auth, async (validuser) => {
             if (validuser) {
                 const uid = validuser.uid;
                 setOrderId(uuid.v4().substring(0, 8));
                 setUser({ loggedIn: true, phoneNumber: validuser.phoneNumber })
+                setloading(false);
+                await NotificationPermission()
+                var token = (await Notifications.getExpoPushTokenAsync()).data;
+                await set(ref(database, `usersList/` + validuser.phoneNumber), {
+                    fcmToken: token,
+                })
             } else {
                 setUser({ loggedIn: false })
             }
@@ -160,6 +198,8 @@ const Home = ({ navigation, route }) => {
             unsubscribe();
         }
     }, [])
+
+
 
 
 
@@ -176,7 +216,7 @@ const Home = ({ navigation, route }) => {
 
             {
                 user.loggedIn ?
-                    (admins.includes(user.phoneNumber)) ?
+                    (adminPhoneNumbers.includes(user.phoneNumber)) ?
                         <DashboardAdmin navigation={navigation}></DashboardAdmin> :
                         user.gotoSignup ? <SignUp navigation={navigation} /> :
                             <DashboardUser
@@ -189,6 +229,7 @@ const Home = ({ navigation, route }) => {
                                 latitude={latitude}
                                 setlatitude={setlatitude}
                                 GetCurrentLocation={GetCurrentLocation}
+                                adminList={adminList}
                             ></DashboardUser>
                     :
                     <>

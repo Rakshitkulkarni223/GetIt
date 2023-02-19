@@ -334,7 +334,7 @@ const contains = (items, query) => {
                     {
                         data[index].OrderStatus === -1 ?
 
-                            <MaterialCommunityIcons name="clock-alert-outline" size={normalize(16)} color="black"
+                            <MaterialCommunityIcons name="clock-alert-outline" size={normalize(16)} color="#F4C034"
                                 onPress={() => {
                                     Alert.alert('Order Status', 'Pending', [
                                         {
@@ -345,7 +345,7 @@ const contains = (items, query) => {
                             /> :
 
                             data[index].OrderStatus === 0 ?
-                                <MaterialCommunityIcons name="clock-check-outline" size={normalize(16)} color="black" onPress={() => {
+                                <MaterialCommunityIcons name="clock-check-outline" size={normalize(16)} color="#97D414" onPress={() => {
                                     Alert.alert('Order Status', 'Confirmed', [
                                         {
                                             text: "OK",
@@ -384,7 +384,7 @@ const contains = (items, query) => {
 
                                 setloading(false)
 
-                                Alert.alert('Order Delivery Location', `Exact Location is not found. But Order Delivered to ${data[index].Location}`, [
+                                Alert.alert('Order Delivery Location', `Exact location not found, but Location Address is mentioned as  ${data[index].Location}`, [
                                     {
                                         text: 'OK',
                                     },

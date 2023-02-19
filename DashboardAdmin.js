@@ -98,6 +98,8 @@ const DashboardAdmin = ({ navigation, route }) => {
 
     const [loading, setloading] = useState(false);
 
+    
+
     // useEffect(() => {
     //     try {
     //         const phoneNumber = auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3);
@@ -130,8 +132,19 @@ const DashboardAdmin = ({ navigation, route }) => {
             navigation.setOptions({
                 headerShown: true,
                 title: 'Dashboard Admin',
+                headerStyle: {
+                    backgroundColor: '#75ACA8',
+                    // height: 210,
+                    // backgroundColor: '#6575CF',
+                },
+                headerTitleStyle: {
+                    fontSize: normalize(15),
+                    fontWeight: '600',
+                    // color: '#334D97'
+                    color: '#000'
+                },
                 headerRight: () => (
-                    <AntDesign name="logout" size={normalize(20)} color="black" onPress={() => signOut(auth).then(() => {
+                    <AntDesign name="logout" size={normalize(18)} color="#BF0505" onPress={() => signOut(auth).then(() => {
                         Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
                         navigation.reset({
                             index: 0,

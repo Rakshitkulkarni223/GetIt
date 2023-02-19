@@ -14,42 +14,65 @@ Notifications.setNotificationHandler({
   }),
 });
 
+export async function NotificationHandlerAdmin(send, expoPushToken, title, body, data) {
+
+
+  if (send) {
+    const message = {
+      to: expoPushToken,
+      sound: 'default',
+      title: title,
+      body: body,
+      data: { someData: data },
+    };
+
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+
+  }
+
+}
+
 export async function NotificationHandler(send, phoneNumber, title, body, data) {
-
-  // console.log(title, body, data)
-
-  // await Notifications.scheduleNotificationAsync({
-  //   content: {
-  //     title: title,
-  //     body: body,
-  //     data: { data: data },
-  //   },
-  //   trigger: { seconds: 1 },
-  // })
 
   var expoPushToken = ''
 
   if (send) {
 
-    onValue(ref(database, `users/${phoneNumber}/`), async (users) => {
-      expoPushToken = users.val()["fcmToken"]
-      const message = {
-        to: expoPushToken,
-        sound: 'default',
-        title: title,
-        body: body,
-        data: { someData: data },
-      };
+    onValue(ref(database, `usersList/${phoneNumber}/`), async (users) => {
+      try {
+        if (users.exists()) {
+          expoPushToken = users.val()["fcmToken"]
+          const message = {
+            to: expoPushToken,
+            sound: 'default',
+            title: title,
+            body: body,
+            data: { someData: data },
+          };
+  
+          await fetch('https://exp.host/--/api/v2/push/send', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Accept-encoding': 'gzip, deflate',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(message),
+          });
+        }
+      }
+      catch(error){
+          Alert.alert("Error",error)
+      }
 
-      await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Accept-encoding': 'gzip, deflate',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-      });
     });
   }
 
@@ -84,11 +107,9 @@ export async function NotificationPermission() {
     }
     if (finalStatus !== 'granted') {
       Alert.alert('Notification Permission Disabled', 'Please enable notification permissions to get updates about your order!');
-      return '';
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
   } else {
     Alert.alert('Device Not Found', 'Must use physical device for Push Notifications');
-    return '';
   }
 }

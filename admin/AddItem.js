@@ -217,7 +217,7 @@ const AddItem = ({ navigation }) => {
                             borderColor: '#000'
                         }}
                     >
-                        <Text style={{ marginLeft: scale(10),fontSize : normalize(13),  marginTop: verticalScale(5), fontFamily: 'sans-serif-light', color: '#EB0505' }}>Item name</Text>
+                        <Text style={{ marginLeft: scale(10),fontSize : normalize(13),  marginTop: verticalScale(5), fontFamily: 'sans-serif-light', color: '#2C3771' }}>Item name</Text>
                         <TextInput
                             style={{ marginLeft: scale(10), color: 'black', marginBottom: verticalScale(5), fontSize: normalize(14), 
                             fontFamily: ItemName ? 'sans-serif-light' : 'sans-serif-thin' }}
@@ -251,7 +251,7 @@ const AddItem = ({ navigation }) => {
                             marginLeft: scale(10),
                             marginTop: verticalScale(5),
                             fontFamily: 'sans-serif-light',
-                            color: '#EB0505',
+                            color: '#2C3771',
                             fontSize : normalize(13), 
                         }}>Item description</Text>
                         <TextInput
@@ -285,7 +285,7 @@ const AddItem = ({ navigation }) => {
                             borderColor: '#000'
                         }}
                     >
-                        <Text style={{ marginLeft: scale(10), color: '#EB0505',fontSize : normalize(13),  marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item category</Text>
+                        <Text style={{ marginLeft: scale(10), color: '#2C3771',fontSize : normalize(13),  marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Item category</Text>
                         <TextInput
                             style={{ marginLeft: scale(10), color: 'black', marginBottom: verticalScale(5), fontSize: normalize(14),
                              fontFamily: ItemCategory ? 'sans-serif-light' : 'sans-serif-thin'  }}
@@ -315,7 +315,7 @@ const AddItem = ({ navigation }) => {
                             borderColor: '#000'
                         }}
                     >
-                        <Text style={{ marginLeft: scale(10), color: '#EB0505',fontSize : normalize(13), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>
+                        <Text style={{ marginLeft: scale(10), color: '#2C3771',fontSize : normalize(13), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>
                             Item price
                         </Text>
                         <TextInput
@@ -349,7 +349,7 @@ const AddItem = ({ navigation }) => {
                             borderColor: '#000'
                         }}
                     >
-                        <Text style={{ marginLeft: scale(10), fontSize : normalize(13), marginTop: verticalScale(5), fontFamily: 'sans-serif-light', color: '#EB0505' }}>Item Image</Text>
+                        <Text style={{ marginLeft: scale(10), fontSize : normalize(13), marginTop: verticalScale(5), fontFamily: 'sans-serif-light', color: '#2C3771' }}>Item Image</Text>
                         <View style={{
                             flexDirection: 'row',
                             justifyContent: 'center',
@@ -429,7 +429,9 @@ const styles = StyleSheet.create({
         paddingVertical: verticalScale(8),
         paddingHorizontal: scale(32),
         borderRadius: scale(4),
-        elevation: scale(5),
+        elevation: scale(4),
+        // borderColor: '#902626',
+        borderWidth: scale(0.4),
         backgroundColor: '#525A87',
     },
     text: {

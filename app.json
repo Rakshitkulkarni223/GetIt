@@ -7,8 +7,8 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FGetIt_Logo.png?alt=media&token=6c4c3d0a-7b1a-4d9c-b01c-f114acb6219a",
-      "backgroundColor": "#313436"
+      "image": "https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FlogoMain.png?alt=media&token=68be1839-74da-4518-bb69-9819888bf1a8",
+      "backgroundColor": "#2E3E67"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
