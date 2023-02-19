@@ -14,7 +14,7 @@ import uuid from 'react-native-uuid';
 import DashboardUser from './DashboardUser';
 import DashboardAdmin from './DashboardAdmin';
 import LoginWithOTP from './LoginWithOTP';
-import ActivityIndicatorElement from './ActivityIndicatorElement';
+// import ActivityIndicatorElement from './ActivityIndicatorElement';
 import SignUp from './Signup';
 import * as Notifications from 'expo-notifications';
 

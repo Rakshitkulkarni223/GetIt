@@ -32,7 +32,7 @@ import { normalize } from './FontResize';
 import { AntDesign, EvilIcons, FontAwesome, FontAwesome5, Ionicons, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
 
 import { scale, moderateScale, verticalScale } from './Dimensions';
-import ActivityIndicatorElement from './ActivityIndicatorElement';
+// import ActivityIndicatorElement from './ActivityIndicatorElement';
 
 
 import { Asset } from "expo-asset";
