@@ -1,6 +1,6 @@
 import React, { createRef, useEffect, useState } from 'react';
-import { SafeAreaView, Modal, View, FlatList, StyleSheet, Text, StatusBar, TextInput, Image, Keyboard, TouchableOpacity, Alert } from 'react-native';
-import { AntDesign, MaterialCommunityIcons, Entypo, MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { SafeAreaView, Modal, View, FlatList, StyleSheet, Text, StatusBar, TextInput, Image, Keyboard, TouchableOpacity, Alert, Linking } from 'react-native';
+import { AntDesign, MaterialCommunityIcons, Entypo, MaterialIcons, Ionicons, Feather } from '@expo/vector-icons';
 import UpdateItem from '../admin/UpdateItem';
 import { app, auth, db, database } from "../Firebase";
 import { ref, set, update } from "firebase/database";
@@ -105,10 +105,10 @@ const Item = ({ setloading, id, OrderId, title, image_url, price, description, c
                     </Text>
                 </View>
             </View>
-            </View>
+        </View>
 
 
-            {/* <View style={styles.container}>
+        {/* <View style={styles.container}>
             <View style={{
                 flex: 1,
                 flexDirection: 'column',
@@ -160,8 +160,8 @@ const Item = ({ setloading, id, OrderId, title, image_url, price, description, c
                 </View>
             </View>
         </View> */}
-        </>
-    );
+    </>
+);
 
 
 const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => {
@@ -219,21 +219,21 @@ const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => 
                 </View>
                 : <></>}
         </View>
-        );
+    );
 }
 
 const handleSearch = (text, DATA, setData, setQuery, setloading) => {
 
-            setloading(true)
+    setloading(true)
 
     const formattedQuery = text;
     const filteredData = DATA.filter((items) => {
         return contains(items, formattedQuery);
     });
 
-        setData(filteredData);
-        setQuery(text);
-        setloading(false)
+    setData(filteredData);
+    setQuery(text);
+    setloading(false)
 };
 
 const contains = (items, query) => {
@@ -242,41 +242,41 @@ const contains = (items, query) => {
         items.value[0].ItemDesc.toLowerCase().includes(query)) {
         return true;
     }
-        return false;
+    return false;
 };
 
 
-        const ItemListViewCompletedOrdersUsers = ({AllOrders, loading, setloading}) => {
+const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, adminList }) => {
 
     const [update, setupdate] = useState(false);
 
-        const [ItemName, setItemName] = useState("");
-        const [ItemDesc, setItemDesc] = useState("");
-        const [ItemCategory, setItemCategory] = useState("");
-        const [ItemPrice, setItemPrice] = useState("");
-        const [ItemImage, setItemImage] = useState("");
-        const [ItemId, setItemId] = useState("");
-        const [toggle, setToggle] = useState(true);
+    const [ItemName, setItemName] = useState("");
+    const [ItemDesc, setItemDesc] = useState("");
+    const [ItemCategory, setItemCategory] = useState("");
+    const [ItemPrice, setItemPrice] = useState("");
+    const [ItemImage, setItemImage] = useState("");
+    const [ItemId, setItemId] = useState("");
+    const [toggle, setToggle] = useState(true);
 
-        const searchRef = createRef();
+    const searchRef = createRef();
 
-        const [query, setQuery] = useState('');
+    const [query, setQuery] = useState('');
 
-        const [data, setData] = useState(AllOrders);
+    const [data, setData] = useState(AllOrders);
 
-        const [displayQRCode, setdisplayQRCode] = useState(false);
+    const [displayQRCode, setdisplayQRCode] = useState(false);
 
-        const [totalamount, settotalamount] = useState('');
+    const [totalamount, settotalamount] = useState('');
 
-        const [index, setindex] = useState("");
+    const [index, setindex] = useState("");
 
-        const [visibleMap, setvisibleMap] = useState(false);
+    const [visibleMap, setvisibleMap] = useState(false);
 
-        const [latitude, setlatitude] = useState('');
-        const [longitude, setlongitude] = useState('');
+    const [latitude, setlatitude] = useState('');
+    const [longitude, setlongitude] = useState('');
 
     useEffect(() => {
-            setQuery('');
+        setQuery('');
         if (searchRef && searchRef.current) {
             searchRef.current.clear()
         }
@@ -284,18 +284,18 @@ const contains = (items, query) => {
     }, [AllOrders])
 
     useEffect(() => {
-            setvisibleMap(false);
+        setvisibleMap(false);
     }, [])
 
     const toggleFunction = (index) => {
 
-            setloading(true)
+        setloading(true)
         data[index].toggle = !data[index].toggle;
         setToggle(!toggle);
         setloading(false)
     };
 
-        const renderItem = ({item, index}) => (
+    const renderItem = ({ item, index }) => (
         <View>
             <View style={{
                 flex: 1,
@@ -376,8 +376,6 @@ const contains = (items, query) => {
                 <View>
                     <MaterialIcons name="location-pin" size={normalize(16)} color="#D5380D"
                         onPress={() => {
-
-
                             setloading(true)
 
                             if (!data[index].Longitude && !data[index].Latitude && data[index].Location !== '') {
@@ -410,13 +408,29 @@ const contains = (items, query) => {
                         }
                     />
                 </View>
-                {/* <View>
-                    <MaterialCommunityIcons name="checkbox-marked-circle" size={normalize(20)} color="green"
+
+                <View style={{
+                    justifyContent: 'center'
+                }}>
+
+                    <Ionicons name="call" size={normalize(16)} color="#413C76"
                         onPress={() => {
-                            alert(`Order Delivered To ${data[index].Location}`);
+                            Alert.alert('Call Delivery Agent', 'Do you want to call?', [
+                                {
+                                    text: "YES",
+                                    onPress: async () => {
+                                        const url = `tel://${adminList[0]["phoneNumber"]}`
+                                        await Linking.openURL(url)
+                                    },
+                                },
+                                {
+                                    text: "NO",
+                                }
+                            ])
                         }}
                     />
-                </View> */}
+
+                </View>
 
             </View>
 
@@ -446,9 +460,9 @@ const contains = (items, query) => {
             /> : <></>}
         </View>
 
-        );
+    );
 
-        return (
+    return (
 
         <>
             <ActivityIndicatorElement loading={loading} />
@@ -523,13 +537,13 @@ const contains = (items, query) => {
                     </SafeAreaView>}
         </>
 
-        )
+    )
 }
 
 
-        const styles = StyleSheet.create({
-            container: {
-            flex: 1,
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
         // height: verticalScale(190),
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -545,26 +559,26 @@ const contains = (items, query) => {
         backgroundColor: '#8DBEA2',
         elevation: scale(5),
     },
-        title_item: {
-            fontSize: normalize(13),
+    title_item: {
+        fontSize: normalize(13),
         color: '#000',
         fontWeight: "600",
     },
-        title_price: {
-            fontSize: normalize(13),
+    title_price: {
+        fontSize: normalize(13),
         color: '#000',
         fontWeight: "600",
         // paddingTop: 40
     },
-        description: {
-            fontSize: normalize(10),
+    description: {
+        fontSize: normalize(10),
         fontStyle: 'italic',
     },
-        photo: {
-            height: verticalScale(40),
+    photo: {
+        height: verticalScale(40),
         width: scale(44),
         borderRadius: scale(9)
     },
 });
 
-        export default ItemListViewCompletedOrdersUsers;
+export default ItemListViewCompletedOrdersUsers;

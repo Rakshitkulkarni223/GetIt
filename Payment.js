@@ -308,8 +308,8 @@ const PaymentGateway = ({ navigation, route }) => {
                 await NotificationHandlerAdmin(true,route.params.adminList[i]['fcmToken'], `New Order Arrived ✨🤩 Order Id: ${route.params.OrderId}`, `Delivery Location : ${route.params.displayCurrentAddress}`)
             }
 
-            await NotificationHandler(true,auth.currentUser.phoneNumber, `Order Placed ✅🎊 Order Id: ${route.params.OrderId}`, `Delivery Location : ${route.params.displayCurrentAddress}`)
-            await NotificationHandler(true,auth.currentUser.phoneNumber, `Thank you 🤩❤️`, `Please collect your order from our delivery agent.`)
+            await NotificationHandler(true,auth.currentUser.phoneNumber, `Order Placed ✅🎊 Order Id: ${route.params.OrderId}`, `Delivery Location : ${route.params.displayCurrentAddress}`,'jdfkf')
+            await NotificationHandler(true,auth.currentUser.phoneNumber, `Thank you 🤩❤️`, `Please collect your order from our delivery agent.`,'dfdf')
 
             navigation.reset({
                 index: 0,

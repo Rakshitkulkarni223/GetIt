@@ -7,7 +7,7 @@ import ItemListViewCompletedOrdersUsers from '../ListView/ItemListViewCompletedO
 import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
-const UsersCompletedOrders = ({navigation}) => {
+const UsersCompletedOrders = ({navigation, adminList}) => {
 
    const [AllOrders, setAllOrders] = useState([]);
 
@@ -139,7 +139,7 @@ const UsersCompletedOrders = ({navigation}) => {
    return (
       <>
       <ActivityIndicatorElement loading={loading}/>
-      <ItemListViewCompletedOrdersUsers AllOrders={AllOrders} loading={loading} setloading={setloading}/>
+      <ItemListViewCompletedOrdersUsers AllOrders={AllOrders} loading={loading} setloading={setloading} adminList={adminList}/>
       </>
    );
 }

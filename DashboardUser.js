@@ -43,8 +43,6 @@ const Tab = createBottomTabNavigator();
 
 function MyTabs({ navigation, OrderId , displayCurrentAddress, longitude, latitude,adminList}) {
 
-
-
     return (
         <Tab.Navigator
             initialRouteName="All Items"
@@ -65,23 +63,11 @@ function MyTabs({ navigation, OrderId , displayCurrentAddress, longitude, latitu
                 }}
             />
 
-            {/* <Tab.Screen
-                name="Pending Orders"
-                children={() => <UserPendingOrders navigation={navigation} />}
-                options={{
-                    tabBarLabel: "Pending Orders",
-                    tabBarIcon: ({ color, size }) => (
-                        // <Ionicons name="basket" color={color} size={size} />
-                        <Feather name="shopping-bag" color={color} size={normalize(size - 8)} />
-                    ),
-                }}
-            /> */}
-
             <Tab.Screen
-                name="Your Orders"
-                children={() => <UsersCompletedOrders navigation={navigation} OrderId={OrderId} />}
+                name="Orders"
+                children={() => <UsersCompletedOrders navigation={navigation} OrderId={OrderId} adminList={adminList}/>}
                 options={{
-                    tabBarLabel: "Your Orders",
+                    tabBarLabel: "Orders",
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="basket" color={color} size={normalize(size - 3)} />
                     ),
@@ -543,7 +529,7 @@ const DashboardUser = ({ navigation, OrderId, displayCurrentAddress, setdisplayC
                     }
                     // setVisible(!visible)
 
-                    console.log(address)
+                    // console.log(address)
                     // console.log(address)
                     // let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
                     setdisplayCurrentAddress(address);

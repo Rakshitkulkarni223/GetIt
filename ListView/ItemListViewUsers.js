@@ -449,8 +449,8 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
     // const [totalamount, settotalamount] = useState(0)
     const [query, setQuery] = useState('');
 
-    
-  
+
+
 
 
     const searchRef = createRef();
@@ -566,11 +566,13 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
         var totalusers = 0
 
         onValue(ref(database, `userRatings/`), (snapshot) => {
+            // console.log(snapshot)
             snapshot.forEach((child) => {
-                allrating += child.val()[id]["rating"]
-                if (child.val()[id]["rating"] !== 0) {
-                    totalusers += 1;
-                    // console.log(child.val()[id]["rating"])
+                if (child.val()[id]) {
+                    allrating += child.val()[id]["rating"]
+                    if (child.val()[id]["rating"] !== 0) {
+                        totalusers += 1;
+                    }
                 }
             })
 
@@ -624,11 +626,11 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
 
     }
 
-    useEffect(()=>{
-        console.log(adminList)
-     },[])
+    // useEffect(() => {
+    //     console.log(adminList)
+    // }, [])
 
-     
+
     const handleIncrease = (index) => {
 
         setloading(true)
@@ -756,7 +758,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                 setloading(false)
             }
             else {
-                console.log(displayCurrentAddress)
+                // console.log(displayCurrentAddress)
                 if (displayCurrentAddress) {
                     navigation.navigate("Confirm Order",
                         {
@@ -765,7 +767,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                             totalItems: totalItems,
                             longitude: longitude,
                             latitude: latitude,
-                            adminList : adminList
+                            adminList: adminList
                         }
                     )
                 }
@@ -781,7 +783,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
         }
         else {
 
-            console.log(adminList)
+            // console.log(adminList)
             navigation.navigate("Payment Gateway",
                 {
                     totalamount: totalamount,
@@ -791,7 +793,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                     totalItems: totalItems,
                     longitude: longitude,
                     latitude: latitude,
-                    adminList : adminList
+                    adminList: adminList
                 }
             )
         }
@@ -909,36 +911,36 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                                         backgroundColor: '#6B74A3',
                                         backgroundColor: !showfooter ? '#5F26B1' : '#546CB8',
                                     }}>
-                                            <TouchableOpacity onPress={checkcart}>
+                                        <TouchableOpacity onPress={checkcart}>
+                                            <View style={{
+                                                flexDirection: 'row',
+                                                justifyContent: 'flex-end',
+                                            }}>
                                                 <View style={{
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'flex-end',
+                                                    flexDirection: 'column',
+                                                    justifyContent: 'center'
                                                 }}>
-                                                    <View style={{
-                                                        flexDirection: 'column',
-                                                        justifyContent: 'center'
-                                                    }}>
-                                                        <Text style={{
-                                                            fontSize: normalize(16),
-                                                            color: '#fff',
-                                                            fontWeight: '500',
-                                                            letterSpacing: scale(0.3),
-                                                            color: showfooter ? '#fff' : '#fff',
-                                                        }}
-                                                        >
-                                                            {showfooter ? "View Cart " : "Pay and GetIt "}
-                                                        </Text>
-                                                    </View>
-
-                                                    <View style={{
-                                                        flexDirection: 'column',
-                                                        justifyContent: 'center'
-                                                    }}>
-                                                        <AntDesign name="caretright" size={normalize(10)}
-                                                            color={showfooter ? "#fff" : '#fff'} />
-                                                    </View>
+                                                    <Text style={{
+                                                        fontSize: normalize(16),
+                                                        color: '#fff',
+                                                        fontWeight: '500',
+                                                        letterSpacing: scale(0.3),
+                                                        color: showfooter ? '#fff' : '#fff',
+                                                    }}
+                                                    >
+                                                        {showfooter ? "View Cart " : "Pay and GetIt "}
+                                                    </Text>
                                                 </View>
-                                            </TouchableOpacity>
+
+                                                <View style={{
+                                                    flexDirection: 'column',
+                                                    justifyContent: 'center'
+                                                }}>
+                                                    <AntDesign name="caretright" size={normalize(10)}
+                                                        color={showfooter ? "#fff" : '#fff'} />
+                                                </View>
+                                            </View>
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
                                 // <View style={{

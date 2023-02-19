@@ -6,6 +6,15 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FNotificationIcon.png?alt=media&token=0a941cf4-87a1-4445-9bf9-16bb1b6dd8c1",
+          "color": "#000"
+        }
+      ]
+    ],
     "splash": {
       "image": "https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FlogoMain.png?alt=media&token=68be1839-74da-4518-bb69-9819888bf1a8",
       "backgroundColor": "#2E3E67"

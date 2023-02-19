@@ -369,7 +369,8 @@ const LoginWithOTP = ({ navigation }) => {
                               });
                             }
                             catch (error) {
-                              console.log(error)
+                              // console.log(error)
+                              Alert.alert("Error",`${error}`)
                             }
 
                           }

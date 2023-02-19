@@ -40,7 +40,7 @@ export async function NotificationHandlerAdmin(send, expoPushToken, title, body,
 
 }
 
-export async function NotificationHandler(send, phoneNumber, title, body, data) {
+export async function NotificationHandler(send, phoneNumber, title, body, data, navigation) {
 
   var expoPushToken = ''
 
@@ -55,7 +55,7 @@ export async function NotificationHandler(send, phoneNumber, title, body, data) 
             sound: 'default',
             title: title,
             body: body,
-            data: { someData: data },
+            data: {someData: data},
           };
   
           await fetch('https://exp.host/--/api/v2/push/send', {
@@ -79,10 +79,11 @@ export async function NotificationHandler(send, phoneNumber, title, body, data) 
 }
 
 export async function NotificationData() {
-  Notifications.addNotificationResponseReceivedListener(response => {
+  Notifications.addNotificationResponseReceivedListener(async(response) => {
     const url = response.notification.request.content.data;
     // Linking.openURL(url);
-    console.log(url)
+    // const url = await Linking.getInitialURL();
+    // console.log(url)
   });
 }
 

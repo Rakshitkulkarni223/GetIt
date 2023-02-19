@@ -143,7 +143,7 @@ const Home = ({ navigation, route }) => {
                             + ' ' + snapshot.val()[auth.currentUser.phoneNumber]['lastName']
                         )
                         if (route && route.params && route.params.disableNotification) {
-                            console.log("ok")
+                            // console.log("ok")
                         }
                         else {
                             // NotificationHandler(`Hey, ${username}`, 'welocme back', 'Great to see you again!!');
