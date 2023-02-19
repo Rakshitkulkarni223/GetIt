@@ -153,9 +153,7 @@ const SignUp = ({ navigation, route }) => {
         routes: [{
           name: 'Home',
           params: {
-            disableNotification: true, changeAddress: false, Location: route.params.displayCurrentAddress,
-            Longitude: route.params.longitude,
-            Latitude: route.params.latitude
+            disableNotification: true
           }
         }],
       });
