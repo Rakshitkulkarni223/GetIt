@@ -148,15 +148,31 @@ const SignUp = ({ navigation, route }) => {
       SaveInfo(ProfilePic, auth.currentUser.phoneNumber, firstName, lastName, DOB, email, password);
       setloading(false)
       // setgotoDashboardUser(true)
-      navigation.reset({
-        index: 0,
-        routes: [{
-          name: 'Home',
-          params: {
-            disableNotification: true
-          }
-        }],
-      });
+      if (route && route.params) {
+        navigation.reset({
+          index: 0,
+          routes: [{
+            name: 'Home',
+            params: {
+              disableNotification: true, changeAddress: false, Location: route.params.displayCurrentAddress,
+              Longitude: route.params.longitude,
+              Latitude: route.params.latitude
+            }
+          }],
+        });
+      }
+      else {
+        navigation.reset({
+          index: 0,
+          routes: [{
+            name: 'Home',
+            params: {
+              disableNotification: true
+            }
+          }],
+        });
+      }
+
     }
     catch (error) {
       setloading(false)
@@ -666,17 +682,31 @@ const SignUp = ({ navigation, route }) => {
                 route && route.params ? route.params.email === email ? email : route.params.email : '',
                 route && route.params ? route.params.password === password ? password : route.params.password : '');
               setloading(false)
-              navigation.reset({
-                index: 0,
-                routes: [{
-                  name: 'Home',
-                  params: {
-                    disableNotification: true, changeAddress: false, Location: route.params.displayCurrentAddress,
-                    Longitude: route.params.longitude,
-                    Latitude: route.params.latitude
-                  }
-                }],
-              });
+              if (route && route.params) {
+                navigation.reset({
+                  index: 0,
+                  routes: [{
+                    name: 'Home',
+                    params: {
+                      disableNotification: true, changeAddress: false, Location: route.params.displayCurrentAddress,
+                      Longitude: route.params.longitude,
+                      Latitude: route.params.latitude
+                    }
+                  }],
+                });
+              }
+              else {
+                navigation.reset({
+                  index: 0,
+                  routes: [{
+                    name: 'Home',
+                    params: {
+                      disableNotification: true
+                    }
+                  }],
+                });
+              }
+
             }}>
               <Text style={{
                 fontSize: normalize(16),
