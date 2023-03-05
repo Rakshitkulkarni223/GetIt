@@ -133,7 +133,7 @@ const Item = ({ id, setloading, OrderId, title, image_url, price, description, c
 
 
 
-const AddRemoveItem = async(add, { id, OrderId, title, image_url, price, description, category, quantity, ItemAddedDate, phoneNumber }) => {
+const AddRemoveItem = async (add, { id, OrderId, title, image_url, price, description, category, quantity, ItemAddedDate, phoneNumber }) => {
 
     if (add) {
         set(ref(database, `users/${phoneNumber}/orders/${OrderId}/items/${category}/` + id), {
@@ -150,12 +150,12 @@ const AddRemoveItem = async(add, { id, OrderId, title, image_url, price, descrip
         set(ref(database, `users/${phoneNumber}/orders/${OrderId}/orderStatus`), {
             OrderStatus: 0
         })
-        await NotificationHandler(true,phoneNumber,`Order Confimred 😍🎉 Order Id: ${OrderId}`, `Your order will be delivered soon.`)
+        await NotificationHandler(true, phoneNumber, `Order Confimred 😍🎉 Order Id: ${OrderId}`, `Your order will be delivered soon.`)
     }
     if (!add) {
         set(ref(database, `users/${phoneNumber}/orders/${OrderId}/`), {
         })
-        await NotificationHandler(true,phoneNumber,`Order Not Confimred ❌ Order Id: ${OrderId}`, `Sorry,🙁 your order has been cancelled due to some reason.`)
+        await NotificationHandler(true, phoneNumber, `Order Not Confimred ❌ Order Id: ${OrderId}`, `Sorry,🙁 your order has been cancelled due to some reason.`)
     }
 }
 
@@ -165,7 +165,11 @@ const OrderDelivered = async (delivered, { OrderId, phoneNumber, Location }) => 
             OrderStatus: 1
         })
 
-        await NotificationHandler(true,phoneNumber,`Order Delivered 🍽️😋 Order Id: ${OrderId}`, `Order delivered to ${Location}`)
+        set(ref(database, `users/${phoneNumber}/orders/${OrderId}/paymentStatus`), {
+            Paid: 1
+        })
+
+        await NotificationHandler(true, phoneNumber, `Order Delivered 🍽️😋 Order Id: ${OrderId}`, `Delivery Location: ${Location}`)
         // await NotificationHandler(true,phoneNumber,`Thank you ❤️`, ``)
 
     }
@@ -173,7 +177,11 @@ const OrderDelivered = async (delivered, { OrderId, phoneNumber, Location }) => 
         set(ref(database, `users/${phoneNumber}/orders/${OrderId}/orderStatus`), {
             OrderStatus: 2
         })
-        await NotificationHandler(true,phoneNumber,`Order Not Delivered ❌ Order Id: ${OrderId}`, `Sorry,🙁 your order has been cancelled due to some reason.`)
+
+        set(ref(database, `users/${phoneNumber}/orders/${OrderId}/paymentStatus`), {
+            Paid: 0
+        })
+        await NotificationHandler(true, phoneNumber, `Order Not Delivered ❌ Order Id: ${OrderId}`, `Sorry,🙁 your order has been cancelled due to some reason.`)
     }
 }
 
@@ -196,61 +204,248 @@ const ConfirmAllItems = (data, index, addorremove) => {
 }
 
 
-const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => {
+const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading, visible, setvisible, sortedByAmount, sortedByOrderStatus, sortedByTime, setsortedByAmount, setsortedByOrderStatus, setsortedByTime, sortedByDefault, setsortedByDefault) => {
+
+
     return (
-        <View
-            style={{
-                backgroundColor: '#fff',
-                padding: scale(3),
-                borderRadius: scale(5),
-                borderColor: 'black',
-                borderWidth: scale(1),
-                flex: 1,
-                alignItems: 'center',
-                flexDirection: 'row',
-                justifyContent: 'flex-start'
-            }}
-        >
-            <View>
-                <Ionicons name="search" size={scale(15)} color="black" />
-            </View>
-            <View>
-                <TextInput
-                    style={{
-                        paddingHorizontal: scale(10),
-                        marginRight: scale(40),
-                        fontSize: normalize(12),
-                    }}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    ref={searchRef}
-                    onSubmitEditing={Keyboard.dismiss}
-                    returnKeyType="next"
-                    cursorColor='#778899'
-                    clearButtonMode="always"
-                    letterSpacing={normalize(1.5)}
-                    onChangeText={queryText => handleSearch(queryText, DATA, setData, setQuery, setloading)}
-                    placeholder="Search Order Id"
-                />
-            </View>
-            {query ?
+        <View style={{
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+        }}>
+            <View
+                style={{
+                    backgroundColor: '#fff',
+                    padding: scale(3),
+                    borderRadius: scale(5),
+                    borderColor: 'black',
+                    borderWidth: scale(1),
+                    flex: 1,
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start'
+                }}
+            >
                 <View style={{
-                    marginLeft: scale(295),
-                    position: 'absolute'
+                    justifyContent: 'center'
                 }}>
-                    <Ionicons name="close" size={scale(18)} color="black"
-                        onPress={() => {
-                            setloading(true)
-                            setQuery('');
-                            setData(DATA)
-                            if (searchRef && searchRef.current) {
-                                searchRef.current.clear()
-                            }
-                            setloading(false)
-                        }} />
+                    <Ionicons name="search" size={scale(15)} color="black" />
                 </View>
-                : <></>}
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginHorizontal: scale(10),
+                }}>
+                    <View style={{
+                        width: '90%',
+                        flexDirection: 'row',
+                    }}>
+                        <View style={{
+                            flexDirection: 'column',
+                            justifyContent: 'center'
+                        }}>
+                            <TextInput
+                                style={{
+                                    fontSize: normalize(12),
+                                }}
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                ref={searchRef}
+                                onSubmitEditing={Keyboard.dismiss}
+                                returnKeyType="next"
+                                cursorColor='#778899'
+                                clearButtonMode="always"
+                                letterSpacing={normalize(1.5)}
+                                onChangeText={queryText => handleSearch(queryText, DATA, setData, setQuery, setloading)}
+                                placeholder="Search Order Id"
+                            />
+                        </View>
+                    </View>
+                    {query ?
+                        <View style={{
+                            justifyContent: 'center',
+                        }}>
+                            <Ionicons name="close" size={scale(18)} color="black"
+                                onPress={() => {
+                                    setloading(true)
+                                    setQuery('');
+                                    setData(DATA)
+                                    if (searchRef && searchRef.current) {
+                                        searchRef.current.clear()
+                                    }
+                                    setloading(false)
+                                }} />
+                        </View>
+                        : <></>}
+                </View>
+            </View>
+            <View style={{
+                justifyContent: 'center',
+                marginLeft: scale(5),
+            }}>
+                <MaterialIcons name="sort" size={normalize(22)} color="black" onPress={() => {
+                    setvisible(true)
+                }} />
+            </View>
+            <Modal visible={visible} transparent={true}>
+                <View style={{
+                    top: "13%",
+                    width: "42%",
+                    position: 'absolute',
+                    right: scale(15),
+                    backgroundColor: '#fff',
+                    borderWidth: scale(1),
+                    borderColor: 'black',
+                    // borderRadius: scale(10),
+                }}>
+
+                    <View style={{
+                        flexDirection: 'column',
+                        justifyContent: 'flex-start',
+                    }}>
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            paddingVertical: verticalScale(5),
+                            backgroundColor: sortedByDefault ? '#DADADA' : '#fff',
+                            paddingHorizontal: scale(5),
+                            borderBottomWidth: scale(1)
+                        }}>
+                            <Text style={{
+                                fontSize: normalize(13),
+                                letterSpacing: scale(0.4)
+                            }} onPress={() => {
+
+                                DATA.sort(function (item1, item2) {
+                                    var val1 = new Date(item1['Date']);
+                                    var val2 = new Date(item2['Date']);
+                                    if (val1 < val2) return 1;
+                                    if (val1 > val2) return -1;
+                                    return 0;
+                                });
+                                setsortedByTime(-1)
+                                setsortedByAmount(-1)
+                                setsortedByOrderStatus(-1)
+                                setsortedByDefault(1)
+                                setvisible(false)
+                            }}>🔶 Default</Text>
+                        </View>
+
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            paddingVertical: verticalScale(5),
+                            paddingHorizontal: scale(5),
+                            backgroundColor: sortedByTime !== -1 ? '#DADADA' : '#fff',
+                            borderBottomWidth: scale(1)
+                        }}>
+                            <Text style={{
+                                fontSize: normalize(13),
+                                letterSpacing: scale(0.4)
+                            }}
+                                onPress={() => {
+                                    DATA.sort(function (item1, item2) {
+                                        var val1 = new Date(item1['Date']);
+                                        var val2 = new Date(item2['Date']);
+                                        if (val1 < val2) return sortedByTime === 0 ? -1 : 1;
+                                        if (val1 > val2) return sortedByTime === 0 ? 1 : -1;
+                                        return 0;
+                                    });
+                                    if (sortedByTime === -1) {
+                                        setsortedByTime(0);
+                                    }
+                                    if (sortedByTime === 0) {
+                                        setsortedByTime(1);
+                                    }
+                                    if (sortedByTime === 1) {
+                                        setsortedByTime(0);
+                                    }
+                                    setsortedByAmount(-1)
+                                    setsortedByOrderStatus(-1)
+                                    setsortedByDefault(0)
+                                    setvisible(false)
+                                }}
+                            >⌛ By time</Text>
+                        </View>
+
+
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            paddingVertical: verticalScale(5),
+                            backgroundColor: sortedByAmount !== -1 ? '#DADADA' : '#fff',
+                            paddingHorizontal: scale(5),
+                            borderBottomWidth: scale(1)
+                        }}>
+                            <Text style={{
+                                fontSize: normalize(13),
+                                letterSpacing: scale(0.4)
+                            }} onPress={() => {
+
+                                DATA.sort(function (item1, item2) {
+                                    var val1 = new Date(item1['totalamount']);
+                                    var val2 = new Date(item2['totalamount']);
+                                    if (val1 < val2) return sortedByAmount === 0 ? -1 : 1;
+                                    if (val1 > val2) return sortedByAmount === 0 ? 1 : -1;
+                                    return 0;
+                                });
+                                if (sortedByAmount === -1) {
+                                    setsortedByAmount(0);
+                                }
+                                if (sortedByAmount === 0) {
+                                    setsortedByAmount(1);
+                                }
+                                if (sortedByAmount === 1) {
+                                    setsortedByAmount(0);
+                                }
+                                setsortedByTime(-1)
+                                setsortedByOrderStatus(-1)
+                                setsortedByDefault(0)
+                                setvisible(false)
+                            }}>💰 By amount</Text>
+                        </View>
+
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            paddingVertical: verticalScale(5),
+                            paddingHorizontal: scale(5),
+                            backgroundColor: sortedByOrderStatus !== -1 ? '#DADADA' : '#fff',
+                            // borderBottomWidth: scale(0.5)
+                        }}>
+                            <Text style={{
+                                fontSize: normalize(13),
+                                letterSpacing: scale(0.4)
+                            }} onPress={() => {
+                                DATA.sort(function (item1, item2) {
+                                    var val1 = new Date(item1['OrderStatus']);
+                                    var val2 = new Date(item2['OrderStatus']);
+                                    if (val1 < val2) return sortedByOrderStatus === 0 ? -1 : 1;
+                                    if (val1 > val2) return sortedByOrderStatus === 0 ? 1 : -1;
+                                    return 0;
+                                });
+                                // setsortedByOrderStatus(sortedByOrderStatus === -1 ? sortedByOrderStatus === 0 ? 1 : sortedByOrderStatus === 1 ? 0 :)
+                                if (sortedByOrderStatus === -1) {
+                                    setsortedByOrderStatus(0);
+                                }
+                                if (sortedByOrderStatus === 0) {
+                                    setsortedByOrderStatus(1);
+                                }
+                                if (sortedByOrderStatus === 1) {
+                                    setsortedByOrderStatus(0);
+                                }
+
+                                setsortedByTime(-1)
+                                setsortedByAmount(-1)
+                                setsortedByDefault(0)
+                                setvisible(false)
+                            }}>✅ By order status</Text>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
+
     );
 }
 
@@ -300,9 +495,16 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
 
     const searchRef = createRef();
 
+    const [visible, setvisible] = useState(false);
+
     const [index, setindex] = useState("");
 
     const [data, setData] = useState(AllOrders);
+
+    const [sortedByDefault, setsortedByDefault] = useState(1);
+    const [sortedByAmount, setsortedByAmount] = useState(-1);
+    const [sortedByTime, setsortedByTime] = useState(-1);
+    const [sortedByOrderStatus, setsortedByOrderStatus] = useState(-1);
 
     useEffect(() => {
         setvisibleMap(false);
@@ -320,6 +522,10 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
 
         setData(AllOrders)
     }, [AllOrders])
+
+    useEffect(() => {
+        setvisible(false);
+    }, [])
 
 
     const toggleFunction = (index) => {
@@ -353,7 +559,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                 marginTop: scale(10),
                 padding: scale(12),
                 borderRadius: scale(5),
-                backgroundColor: '#6381C6',
+                backgroundColor: index % 2 ? "#AEB4BB" : '#CED0D2',
                 borderWidth: scale(0.7),
                 elevation: scale(2),
             }}>
@@ -364,7 +570,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                         style={{
                             fontSize: normalize(14),
                             fontWeight: "600",
-                            color: '#fff'
+                            color: '#000'
                         }}>{index + 1}. {item.key}</Text>
                 </View>
                 <View style={{
@@ -376,7 +582,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                         style={{
                             fontSize: normalize(14),
                             fontWeight: "600",
-                            color: '#fff'
+                            color: '#000'
                         }}>₹{data[index].totalamount}</Text>
                 </View>
                 <View style={{
@@ -385,7 +591,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                     {
                         data[index].OrderStatus === -1 ?
 
-                            <MaterialCommunityIcons name="clock-alert-outline" size={normalize(16)} color="#F0C903"
+                            <MaterialCommunityIcons name="clock-alert" size={normalize(16)} color="#C5A603"
                                 onPress={() => {
                                     Alert.alert('Order Status', 'Pending', [
                                         {
@@ -396,7 +602,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                             /> :
 
                             data[index].OrderStatus === 0 ?
-                                <MaterialCommunityIcons name="clock-check-outline" size={normalize(16)} color="#B7F003" onPress={() => {
+                                <MaterialCommunityIcons name="clock-check" size={normalize(16)} color="#81A413" onPress={() => {
                                     Alert.alert('Order Status', 'Confirmed', [
                                         {
                                             text: "OK",
@@ -405,7 +611,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
 
                                 }} />
                                 : data[index].OrderStatus === 1 ?
-                                    <MaterialCommunityIcons name="check-decagram" size={normalize(16)} color="#08CE65" onPress={() => {
+                                    <MaterialCommunityIcons name="check-decagram" size={normalize(16)} color="#07BA5B" onPress={() => {
                                         Alert.alert('Order Status', 'Delivered', [
                                             {
                                                 text: "OK",
@@ -498,7 +704,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                         <View style={{
                             justifyContent: 'center'
                         }}>
-                            <Feather name="check-square" size={normalize(16)} color="#03F081"
+                            <Feather name="check-square" size={normalize(16)} color="#04D45A"
                                 onPress={() => {
 
                                     if (data[index].OrderStatus === -1) {
@@ -709,7 +915,15 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                                             fontWeight: "600",
                                             letterSpacing: scale(0.3)
                                         }}
-                                            onPress={() => handlePressQRcode(index)}>Payment Done?</Text>
+                                            onPress={() => {
+                                                handlePressQRcode(index)
+                                                OrderDelivered(1, {
+                                                    OrderId: data[index].OrderId,
+                                                    phoneNumber: data[index].phoneNumber,
+                                                    Location: data[index].Location
+                                                })
+                                            }
+                                            }>Payment Done?</Text>
                                     </View>
                                 </View>
                             </View>
@@ -744,7 +958,18 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
 
                                         </View>
                                     }
-                                    ListHeaderComponent={renderHeader(query, AllOrders, setData, setQuery, searchRef, setloading)}
+                                    ListHeaderComponent={renderHeader(query, AllOrders, setData, setQuery, searchRef, setloading,
+                                        visible,
+                                        setvisible,
+                                        sortedByAmount,
+                                        sortedByOrderStatus,
+                                        sortedByTime,
+                                        setsortedByAmount,
+                                        setsortedByOrderStatus,
+                                        setsortedByTime,
+                                        sortedByDefault,
+                                        setsortedByDefault
+                                    )}
                                 />
                                 :
                                 <View style={{

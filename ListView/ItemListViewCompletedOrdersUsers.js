@@ -85,7 +85,7 @@ const Item = ({ setloading, id, OrderId, title, image_url, price, description, c
                 <View style={{
                     justifyContent: 'center'
                 }}>
-                    <Text style={[styles.title_item, { fontWeight: '500' }]}>
+                    <Text style={[styles.title_item, { fontWeight: '500', letterSpacing: scale(0.3) }]}>
                         {quantity}
                     </Text>
                 </View>
@@ -100,7 +100,7 @@ const Item = ({ setloading, id, OrderId, title, image_url, price, description, c
                 <View style={{
                     justifyContent: 'center'
                 }}>
-                    <Text style={[styles.title_price, { fontWeight: '600' }]}>
+                    <Text style={[styles.title_price, { fontWeight: '600', letterSpacing: scale(0.3) }]}>
                         ₹{quantity * price}
                     </Text>
                 </View>
@@ -164,61 +164,246 @@ const Item = ({ setloading, id, OrderId, title, image_url, price, description, c
 );
 
 
-const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => {
+const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading, visible, setvisible, sortedByAmount, sortedByOrderStatus, sortedByTime, setsortedByAmount, setsortedByOrderStatus, setsortedByTime, sortedByDefault, setsortedByDefault) => {
     return (
-        <View
-            style={{
-                backgroundColor: '#fff',
-                padding: scale(3),
-                borderRadius: scale(5),
-                borderColor: 'black',
-                borderWidth: scale(1),
-                flex: 1,
-                alignItems: 'center',
-                flexDirection: 'row',
-                justifyContent: 'flex-start'
-            }}
-        >
-            <View>
-                <Ionicons name="search" size={scale(15)} color="black" />
-            </View>
-            <View>
-                <TextInput
-                    style={{
-                        paddingHorizontal: scale(10),
-                        marginRight: scale(40),
-                        fontSize: normalize(12),
-                    }}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    ref={searchRef}
-                    onSubmitEditing={Keyboard.dismiss}
-                    returnKeyType="next"
-                    cursorColor='#778899'
-                    clearButtonMode="always"
-                    letterSpacing={normalize(1.5)}
-                    onChangeText={queryText => handleSearch(queryText, DATA, setData, setQuery, setloading)}
-                    placeholder="Search Order Id"
-                />
-            </View>
-            {query ?
+        <View style={{
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+        }}>
+            <View
+                style={{
+                    backgroundColor: '#fff',
+                    padding: scale(3),
+                    borderRadius: scale(5),
+                    borderColor: 'black',
+                    borderWidth: scale(1),
+                    flex: 1,
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start'
+                }}
+            >
                 <View style={{
-                    marginLeft: scale(295),
-                    position: 'absolute'
+                    justifyContent: 'center'
                 }}>
-                    <Ionicons name="close" size={scale(18)} color="black"
-                        onPress={() => {
-                            setloading(true)
-                            setQuery('');
-                            setData(DATA)
-                            if (searchRef && searchRef.current) {
-                                searchRef.current.clear()
-                            }
-                            setloading(false)
-                        }} />
+                    <Ionicons name="search" size={scale(15)} color="black" />
                 </View>
-                : <></>}
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginHorizontal: scale(10),
+                }}>
+                    <View style={{
+                        width: '90%',
+                        flexDirection: 'row',
+                    }}>
+                        <View style={{
+                            flexDirection: 'column',
+                            justifyContent: 'center'
+                        }}>
+                            <TextInput
+                                style={{
+                                    fontSize: normalize(12),
+                                }}
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                ref={searchRef}
+                                onSubmitEditing={Keyboard.dismiss}
+                                returnKeyType="next"
+                                cursorColor='#778899'
+                                clearButtonMode="always"
+                                letterSpacing={normalize(1.5)}
+                                onChangeText={queryText => handleSearch(queryText, DATA, setData, setQuery, setloading)}
+                                placeholder="Search Order Id"
+                            />
+                        </View>
+                    </View>
+                    {query ?
+                        <View style={{
+                            justifyContent: 'center',
+                        }}>
+                            <Ionicons name="close" size={scale(18)} color="black"
+                                onPress={() => {
+                                    setloading(true)
+                                    setQuery('');
+                                    setData(DATA)
+                                    if (searchRef && searchRef.current) {
+                                        searchRef.current.clear()
+                                    }
+                                    setloading(false)
+                                }} />
+                        </View>
+                        : <></>}
+                </View>
+            </View>
+            <View style={{
+                justifyContent: 'center',
+                marginLeft: scale(5),
+            }}>
+                <MaterialIcons name="sort" size={normalize(22)} color="black" onPress={() => {
+                    setvisible(true)
+                }} />
+            </View>
+            <Modal visible={visible} transparent={true}>
+                <View style={{
+                    top: "13%",
+                    width: "42%",
+                    position: 'absolute',
+                    right: scale(15),
+                    backgroundColor: '#fff',
+                    borderWidth: scale(1),
+                    borderColor: 'black',
+                    // borderRadius: scale(10),
+                }}>
+
+                    <View style={{
+                        flexDirection: 'column',
+                        justifyContent: 'flex-start',
+                    }}>
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            paddingVertical: verticalScale(5),
+                            backgroundColor: sortedByDefault ? '#DADADA' : '#fff',
+                            paddingHorizontal: scale(5),
+                            borderBottomWidth: scale(1)
+                        }}>
+                            <Text style={{
+                                fontSize: normalize(13),
+                                letterSpacing: scale(0.4)
+                            }} onPress={() => {
+
+                                DATA.sort(function (item1, item2) {
+                                    var val1 = new Date(item1['Date']);
+                                    var val2 = new Date(item2['Date']);
+                                    if (val1 < val2) return 1;
+                                    if (val1 > val2) return -1;
+                                    return 0;
+                                });
+                                setsortedByTime(-1)
+                                setsortedByAmount(-1)
+                                setsortedByOrderStatus(-1)
+                                setsortedByDefault(1)
+                                setvisible(false)
+                            }}>🔶 Default</Text>
+                        </View>
+
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            paddingVertical: verticalScale(5),
+                            paddingHorizontal: scale(5),
+                            backgroundColor: sortedByTime !== -1 ? '#DADADA' : '#fff',
+                            borderBottomWidth: scale(1)
+                        }}>
+                            <Text style={{
+                                fontSize: normalize(13),
+                                letterSpacing: scale(0.4)
+                            }}
+                                onPress={() => {
+                                    DATA.sort(function (item1, item2) {
+                                        var val1 = new Date(item1['Date']);
+                                        var val2 = new Date(item2['Date']);
+                                        if (val1 < val2) return sortedByTime === 0 ? -1 : 1;
+                                        if (val1 > val2) return sortedByTime === 0 ? 1 : -1;
+                                        return 0;
+                                    });
+                                    if (sortedByTime === -1) {
+                                        setsortedByTime(0);
+                                    }
+                                    if (sortedByTime === 0) {
+                                        setsortedByTime(1);
+                                    }
+                                    if (sortedByTime === 1) {
+                                        setsortedByTime(0);
+                                    }
+                                    setsortedByAmount(-1)
+                                    setsortedByOrderStatus(-1)
+                                    setsortedByDefault(0)
+                                    setvisible(false)
+                                }}
+                            >⌛ By time</Text>
+                        </View>
+
+
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            paddingVertical: verticalScale(5),
+                            backgroundColor: sortedByAmount !== -1 ? '#DADADA' : '#fff',
+                            paddingHorizontal: scale(5),
+                            borderBottomWidth: scale(1)
+                        }}>
+                            <Text style={{
+                                fontSize: normalize(13),
+                                letterSpacing: scale(0.4)
+                            }} onPress={() => {
+
+                                DATA.sort(function (item1, item2) {
+                                    var val1 = new Date(item1['totalamount']);
+                                    var val2 = new Date(item2['totalamount']);
+                                    if (val1 < val2) return sortedByAmount === 0 ? -1 : 1;
+                                    if (val1 > val2) return sortedByAmount === 0 ? 1 : -1;
+                                    return 0;
+                                });
+                                if (sortedByAmount === -1) {
+                                    setsortedByAmount(0);
+                                }
+                                if (sortedByAmount === 0) {
+                                    setsortedByAmount(1);
+                                }
+                                if (sortedByAmount === 1) {
+                                    setsortedByAmount(0);
+                                }
+                                setsortedByTime(-1)
+                                setsortedByOrderStatus(-1)
+                                setsortedByDefault(0)
+                                setvisible(false)
+                            }}>💰 By amount</Text>
+                        </View>
+
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            paddingVertical: verticalScale(5),
+                            paddingHorizontal: scale(5),
+                            backgroundColor: sortedByOrderStatus !== -1 ? '#DADADA' : '#fff',
+                            // borderBottomWidth: scale(0.5)
+                        }}>
+                            <Text style={{
+                                fontSize: normalize(13),
+                                letterSpacing: scale(0.4)
+                            }} onPress={() => {
+                                DATA.sort(function (item1, item2) {
+                                    var val1 = new Date(item1['OrderStatus']);
+                                    var val2 = new Date(item2['OrderStatus']);
+                                    if (val1 < val2) return sortedByOrderStatus === 0 ? -1 : 1;
+                                    if (val1 > val2) return sortedByOrderStatus === 0 ? 1 : -1;
+                                    return 0;
+                                });
+                                // setsortedByOrderStatus(sortedByOrderStatus === -1 ? sortedByOrderStatus === 0 ? 1 : sortedByOrderStatus === 1 ? 0 :)
+                                if (sortedByOrderStatus === -1) {
+                                    setsortedByOrderStatus(0);
+                                }
+                                if (sortedByOrderStatus === 0) {
+                                    setsortedByOrderStatus(1);
+                                }
+                                if (sortedByOrderStatus === 1) {
+                                    setsortedByOrderStatus(0);
+                                }
+
+                                setsortedByTime(-1)
+                                setsortedByAmount(-1)
+                                setsortedByDefault(0)
+                                setvisible(false)
+                            }}>✅ By order status</Text>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
+
     );
 }
 
@@ -275,6 +460,18 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
     const [latitude, setlatitude] = useState('');
     const [longitude, setlongitude] = useState('');
 
+    const [visible, setvisible] = useState(false);
+
+    useEffect(() => {
+        setvisible(false);
+    }, [])
+
+    const [sortedByDefault, setsortedByDefault] = useState(1);
+    const [sortedByAmount, setsortedByAmount] = useState(-1);
+    const [sortedByTime, setsortedByTime] = useState(-1);
+    const [sortedByOrderStatus, setsortedByOrderStatus] = useState(-1);
+
+
     useEffect(() => {
         setQuery('');
         if (searchRef && searchRef.current) {
@@ -305,7 +502,8 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                 padding: scale(12),
                 borderWidth: scale(0.7),
                 borderRadius: scale(5),
-                backgroundColor: '#778899',
+                borderColor: "#000",
+                backgroundColor: index % 2 ? '#B9B9B9' : '#D6D5D5',
                 elevation: scale(5),
             }}>
                 <View style={{
@@ -315,7 +513,8 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                         style={{
                             fontSize: normalize(14),
                             fontWeight: "600",
-                            color: '#fff'
+                            color: '#000',
+                            letterSpacing: scale(0.3)
                         }}>{index + 1}. {item.key}</Text>
                 </View>
                 <View style={{
@@ -325,7 +524,8 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                         style={{
                             fontSize: normalize(14),
                             fontWeight: "600",
-                            color: '#fff'
+                            color: '#000',
+                            letterSpacing: scale(0.3)
                         }}>{data[index].totalamount}/-</Text>
                 </View>
                 <View style={{
@@ -334,7 +534,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                     {
                         data[index].OrderStatus === -1 ?
 
-                            <MaterialCommunityIcons name="clock-alert-outline" size={normalize(16)} color="#F4C034"
+                            <MaterialCommunityIcons name="clock-alert" size={normalize(16)} color="#C5A603"
                                 onPress={() => {
                                     Alert.alert('Order Status', 'Pending', [
                                         {
@@ -345,7 +545,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                             /> :
 
                             data[index].OrderStatus === 0 ?
-                                <MaterialCommunityIcons name="clock-check-outline" size={normalize(16)} color="#97D414" onPress={() => {
+                                <MaterialCommunityIcons name="clock-check" size={normalize(16)} color="#81A413" onPress={() => {
                                     Alert.alert('Order Status', 'Confirmed', [
                                         {
                                             text: "OK",
@@ -354,7 +554,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
 
                                 }} />
                                 : data[index].OrderStatus === 1 ?
-                                    <MaterialCommunityIcons name="check-decagram" size={normalize(16)} color="#08CE65" onPress={() => {
+                                    <MaterialCommunityIcons name="check-decagram" size={normalize(16)} color="#07BA5B" onPress={() => {
                                         Alert.alert('Order Status', 'Delivered', [
                                             {
                                                 text: "OK",
@@ -373,7 +573,9 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                                     }} />
                     }
                 </View>
-                <View>
+                <View style={{
+                    justifyContent: 'center'
+                }}>
                     <MaterialIcons name="location-pin" size={normalize(16)} color="#D5380D"
                         onPress={() => {
                             setloading(true)
@@ -413,9 +615,9 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                     justifyContent: 'center'
                 }}>
 
-                    <Ionicons name="call" size={normalize(16)} color="#413C76"
+                    <Ionicons name="call-outline" size={normalize(16)} color="#1F0666"
                         onPress={() => {
-                            Alert.alert('Call Delivery Agent', 'Do you want to call?', [
+                            Alert.alert('Call Store/Delivery Agent', 'Do you want to call?', [
                                 {
                                     text: "YES",
                                     onPress: async () => {
@@ -504,7 +706,17 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
 
                                 </View>
                             }
-                            ListHeaderComponent={renderHeader(query, AllOrders, setData, setQuery, searchRef, setloading)}
+                            ListHeaderComponent={renderHeader(query, AllOrders, setData, setQuery, searchRef, setloading,
+                                visible,
+                                setvisible,
+                                sortedByAmount,
+                                sortedByOrderStatus,
+                                sortedByTime,
+                                setsortedByAmount,
+                                setsortedByOrderStatus,
+                                setsortedByTime,
+                                sortedByDefault,
+                                setsortedByDefault)}
                         />
                             :
                             <View style={{
@@ -563,16 +775,19 @@ const styles = StyleSheet.create({
         fontSize: normalize(13),
         color: '#000',
         fontWeight: "600",
+        letterSpacing: scale(0.3)
     },
     title_price: {
         fontSize: normalize(13),
         color: '#000',
         fontWeight: "600",
+        letterSpacing: scale(0.3)
         // paddingTop: 40
     },
     description: {
         fontSize: normalize(10),
         fontStyle: 'italic',
+        letterSpacing: scale(0.4)
     },
     photo: {
         height: verticalScale(40),

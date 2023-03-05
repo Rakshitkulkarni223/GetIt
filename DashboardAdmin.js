@@ -29,6 +29,7 @@ import ConfirmedOrders from "./admin/ConfiremdOrders";
 import ActivityIndicatorElement from "./ActivityIndicatorElement";
 import { Alert } from "react-native";
 import { normalize } from "./FontResize";
+import { scale, verticalScale } from "./Dimensions";
 
 
 
@@ -40,7 +41,21 @@ function MyTabs() {
         <Tab.Navigator
             initialRouteName="View Items"
             screenOptions={{
-                tabBarActiveTintColor: '#e91e63',
+                tabBarLabelStyle: {
+                    marginBottom: verticalScale(3),
+                    fontSize: normalize(10),
+                    letterSpacing: scale(0.4),
+                    fontWeight: '400'
+                },
+                tabBarVisibilityAnimationConfig: {
+                    show: false,
+                    hide: true,
+                },
+                tabBarInactiveTintColor: '#000',
+                // tabBarInactiveBackgroundColor: '#000',
+                tabBarActiveTintColor: '#6918A9',
+                // tabBarActiveBackgroundColor: "#C3C6C5",
+                tabBarLabelPosition: 'below-icon',
                 headerShown: false
             }}
         >
@@ -133,7 +148,7 @@ const DashboardAdmin = ({ navigation, route }) => {
                 headerShown: true,
                 title: 'Dashboard Admin',
                 headerStyle: {
-                    backgroundColor: '#75ACA8',
+                    backgroundColor: '#6D9791',
                     // height: 210,
                     // backgroundColor: '#6575CF',
                 },
@@ -141,7 +156,7 @@ const DashboardAdmin = ({ navigation, route }) => {
                     fontSize: normalize(15),
                     fontWeight: '600',
                     // color: '#334D97'
-                    color: '#000'
+                    color: '#fff'
                 },
                 headerRight: () => (
                     <AntDesign name="logout" size={normalize(18)} color="#BF0505" onPress={() => signOut(auth).then(() => {
@@ -188,7 +203,8 @@ const DashboardAdmin = ({ navigation, route }) => {
         <SafeAreaView style={styles.mainBody}>
             <ActivityIndicatorElement loading={loading} />
             <NavigationContainer independent={true}>
-                <MyTabs />
+                <MyTabs 
+                />
             </NavigationContainer>
         </SafeAreaView>
     );
@@ -197,7 +213,6 @@ export default DashboardAdmin;
 
 const styles = StyleSheet.create({
     mainBody: {
-        flex: 1,
-        bottom: '0.1%',
+        flex: 1
     },
 });

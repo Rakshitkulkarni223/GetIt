@@ -17,6 +17,7 @@ import {
     KeyboardAvoidingView,
     Keyboard,
     Image,
+    StatusBar,
 } from 'react-native';
 import { createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 
@@ -191,18 +192,18 @@ const App = ({ navigation, loading, setloading, user }) => {
     const [placeholder, setPlaceholder] = useState('');
 
     const string = 'Welcome to GetIt', index = React.useRef(0);
-  
+
     useEffect(() => {
-      function tick() {
-        setPlaceholder((prev) => prev + string[index.current]);
-        index.current++;
-      }
-      if (index.current < string.length) {
-        let addChar = setInterval(tick, 100);
-        return () => clearInterval(addChar);
-      }
+        function tick() {
+            setPlaceholder((prev) => prev + string[index.current]);
+            index.current++;
+        }
+        if (index.current < string.length) {
+            let addChar = setInterval(tick, 150);
+            return () => clearInterval(addChar);
+        }
     }, [placeholder]);
-  
+
 
     return (
 
@@ -228,15 +229,15 @@ const App = ({ navigation, loading, setloading, user }) => {
                     }}>
                         {/* <Ionicons name="md-restaurant-outline" size={normalize(80)} color="#fff" /> */}
                         <Image
-                                    source={{ uri: "https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FIcon.png?alt=media&token=c2102a2d-4777-4170-895b-df792be9d172" }}
-                                    style={{
-                                        marginTop: verticalScale(5),
-                                        marginBottom: verticalScale(5),
-                                        width: scale(180),
-                                        height: verticalScale(160),
-                                        resizeMode: 'cover'
-                                    }}
-                                />
+                            source={{ uri: "https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FIcon.png?alt=media&token=c2102a2d-4777-4170-895b-df792be9d172" }}
+                            style={{
+                                marginTop: verticalScale(5),
+                                marginBottom: verticalScale(5),
+                                width: scale(180),
+                                height: verticalScale(160),
+                                resizeMode: 'cover'
+                            }}
+                        />
                     </View>
                     {/* <SimpleLineIcons name="basket" size={normalize(45)} color="#69B77F" /> */}
                 </View>

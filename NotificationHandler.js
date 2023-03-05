@@ -14,7 +14,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export async function NotificationHandlerAdmin(send, expoPushToken, title, body, data) {
+export async function NotificationHandlerAdmin(send, expoPushToken, title, body) {
 
 
   if (send) {
@@ -23,7 +23,7 @@ export async function NotificationHandlerAdmin(send, expoPushToken, title, body,
       sound: 'default',
       title: title,
       body: body,
-      data: { someData: data },
+      data: { url: `myapp://` },
     };
 
     await fetch('https://exp.host/--/api/v2/push/send', {
@@ -40,7 +40,7 @@ export async function NotificationHandlerAdmin(send, expoPushToken, title, body,
 
 }
 
-export async function NotificationHandler(send, phoneNumber, title, body, data, navigation) {
+export async function NotificationHandler(send, phoneNumber, title, body) {
 
   var expoPushToken = ''
 
@@ -55,9 +55,9 @@ export async function NotificationHandler(send, phoneNumber, title, body, data, 
             sound: 'default',
             title: title,
             body: body,
-            data: {someData: data},
+            data: {  url: `myapp://` },
           };
-  
+
           await fetch('https://exp.host/--/api/v2/push/send', {
             method: 'POST',
             headers: {
@@ -67,10 +67,11 @@ export async function NotificationHandler(send, phoneNumber, title, body, data, 
             },
             body: JSON.stringify(message),
           });
+
         }
       }
-      catch(error){
-          Alert.alert("Error",error)
+      catch (error) {
+        Alert.alert("Error", error)
       }
 
     });
@@ -79,11 +80,12 @@ export async function NotificationHandler(send, phoneNumber, title, body, data, 
 }
 
 export async function NotificationData() {
-  Notifications.addNotificationResponseReceivedListener(async(response) => {
+  Notifications.addNotificationResponseReceivedListener(async (response) => {
     const url = response.notification.request.content.data;
     // Linking.openURL(url);
+    console.log("jj")
     // const url = await Linking.getInitialURL();
-    // console.log(url)
+    console.log(url)
   });
 }
 

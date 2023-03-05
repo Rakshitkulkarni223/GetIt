@@ -326,7 +326,9 @@ const styles = StyleSheet.create({
         marginBottom: scale(9),
         marginVertical: verticalScale(0),
         borderRadius: scale(10),
-        backgroundColor: '#607BBA',
+        borderWidth: scale(0.8),
+        borderColor: "#fff",
+        backgroundColor: '#565F83',
         elevation: scale(5),
     },
     title_item: {

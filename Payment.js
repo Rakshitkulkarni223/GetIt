@@ -26,6 +26,8 @@ import ActivityIndicatorElement from "./ActivityIndicatorElement";
 import { AntDesign, Ionicons, MaterialIcons, SimpleLineIcons } from "@expo/vector-icons";
 import { NotificationHandler, NotificationHandlerAdmin } from "./NotificationHandler";
 
+import * as Notifications from 'expo-notifications';
+
 
 const PaymentGateway = ({ navigation, route }) => {
     // setData, totalamount, route.params.AllConfirmedItems, route.params.OrderId, route.params.displayCurrentAddress, setDisplayCurrentAddress, route.params.longitude, setroute.params.longitude, route.params.latitude, setroute.params.latitude 
@@ -130,7 +132,7 @@ const PaymentGateway = ({ navigation, route }) => {
                         flexDirection: 'column',
                         justifyContent: 'center'
                     }}>
-                        <Ionicons name="arrow-back-sharp" size={normalize(21)} color="white"
+                        <Ionicons name="arrow-back-sharp" size={normalize(21)} color="#fff"
                             onPress={() => {
                                 navigation.pop(2);
                             }} />
@@ -166,7 +168,7 @@ const PaymentGateway = ({ navigation, route }) => {
                                 <Text style={{
                                     fontWeight: '600',
                                     fontSize: normalize(14),
-                                    color: 'white',
+                                    color: '#000',
                                 }}
                                     onPress={() => {
                                         Alert.alert('Delivery Location', `${route.params.displayCurrentAddress}`, [
@@ -205,14 +207,8 @@ const PaymentGateway = ({ navigation, route }) => {
                 </View>,
                 title: '',
                 headerStyle: {
-                    backgroundColor: '#5C7197',
+                    backgroundColor: '#6982A9',
                 },
-                // headerTintColor: '#fff',
-                //   headerTitleStyle: {
-                //       fontSize: normalize(13),
-                //       fontWeight: '600',
-                //       color: 'black'
-                //   },
                 headerRight: () => (
                     <View style={{
                         justifyContent: 'center',
@@ -220,7 +216,7 @@ const PaymentGateway = ({ navigation, route }) => {
                         // backgroundColor: '#8931B8',
                         backgroundColor: '#5C7197',
                         // height: verticalScale(40),
-                        padding: scale(10),
+                        padding: scale(6),
                         borderRadius: scale(6),
                         // borderTopColor: 'white',
                         // borderTopWidth: scale(0.6)
@@ -266,6 +262,7 @@ const PaymentGateway = ({ navigation, route }) => {
         }
     }, [route.params.displayCurrentAddress, timer])
 
+
     const openPaymentApp = async (paymentMode) => {
 
         setloading(true)
@@ -301,21 +298,28 @@ const PaymentGateway = ({ navigation, route }) => {
                 OrderStatus: -1
             })
 
+            set(ref(database, `users/${auth.currentUser.phoneNumber}/orders/${route.params.OrderId}/paymentStatus`), {
+                Paid: 0
+            })
+
             setloading(false)
 
-            for(let i=0;i<route.params.adminList.length;i++)
-            {
-                await NotificationHandlerAdmin(true,route.params.adminList[i]['fcmToken'], `New Order Arrived ✨🤩 Order Id: ${route.params.OrderId}`, `Delivery Location : ${route.params.displayCurrentAddress}`)
+            for (let i = 0; i < route.params.adminList.length; i++) {
+                await NotificationHandlerAdmin(true, route.params.adminList[i]['fcmToken'], `New Order Arrived ✨🤩 Order Id: ${route.params.OrderId}`, `Delivery Location : ${route.params.displayCurrentAddress}`)
             }
 
-            await NotificationHandler(true,auth.currentUser.phoneNumber, `Order Placed ✅🎊 Order Id: ${route.params.OrderId}`, `Delivery Location : ${route.params.displayCurrentAddress}`,'jdfkf')
-            await NotificationHandler(true,auth.currentUser.phoneNumber, `Thank you 🤩❤️`, `Please collect your order from our delivery agent.`,'dfdf')
+            await NotificationHandler(true, auth.currentUser.phoneNumber, `Order Placed ✅🎊 Order Id: ${route.params.OrderId}`, `Delivery Location : ${route.params.displayCurrentAddress}`)
+            await NotificationHandler(true, auth.currentUser.phoneNumber, `Thank you 🤩❤️`, `Please collect your order from our delivery agent.`)
 
             navigation.reset({
                 index: 0,
-                routes: [{ name: 'Home', params: { disableNotification: true, changeAddress: false,  Location: route.params.displayCurrentAddress,
-                    Longitude: route.params.longitude,
-                    Latitude: route.params.latitude,} }],
+                routes: [{
+                    name: 'Home', params: {
+                        disableNotification: true, changeAddress: false, Location: route.params.displayCurrentAddress,
+                        Longitude: route.params.longitude,
+                        Latitude: route.params.latitude,
+                    }
+                }],
             });
         }
         catch (err) {
@@ -535,10 +539,10 @@ const PaymentGateway = ({ navigation, route }) => {
                             justifyContent: 'flex-start'
                         }}>
                             <Text style={{
-                                 fontSize: normalize(14),
-                                 color: '#fff',
-                                 fontWeight: '500',
-                                 letterSpacing: scale(0.3)
+                                fontSize: normalize(14),
+                                color: '#fff',
+                                fontWeight: '500',
+                                letterSpacing: scale(0.3)
                             }}>{route.params.AllConfirmedItems.length} items</Text>
                         </View>
                     </View>
@@ -570,7 +574,7 @@ const PaymentGateway = ({ navigation, route }) => {
                     justifyContent: 'center',
                     marginHorizontal: scale(10),
                     marginVertical: scale(5),
-                   
+
                 }}>
                     <View style={{
                         justifyContent: 'center',

@@ -24,13 +24,13 @@ const Home = ({ navigation, route }) => {
 
     const image = { uri: 'https://reactjs.org/logo-og.png' };
 
-    const [user, setUser] = useState({ loggedIn: false, gotoSignup: true });
+    const [user, setUser] = useState({ loggedIn: false, gotoSignup: route && route.params ? route.params.gotoSignup : true });
 
     const [OrderId, setOrderId] = useState("");
 
     const [loading, setloading] = useState(false);
 
-    const [displayCurrentAddress, setdisplayCurrentAddress] = useState(route && route.params ? route.params.Location  : '');
+    const [displayCurrentAddress, setdisplayCurrentAddress] = useState(route && route.params ? route.params.Location : '');
     const [longitude, setlongitude] = useState(route && route.params ? route.params.Longitude : '');
     const [latitude, setlatitude] = useState(route && route.params ? route.params.Latitude : '');
 
@@ -128,6 +128,22 @@ const Home = ({ navigation, route }) => {
             );
         }
     };
+
+    useEffect(() => {
+        Notifications.addNotificationResponseReceivedListener(async (response) => {
+            try {
+                const url = response?.notification?.request?.content?.data?.url;
+                console.log(url)
+                if (url) {
+                    Linking.openURL(url);
+                }
+            }
+            catch(error)
+            {
+
+            }
+        });
+    }, [])
 
     useEffect(() => {
 

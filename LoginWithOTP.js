@@ -6,6 +6,7 @@ import {
   Button,
   StyleSheet,
   // TouchableOpacity,
+  StatusBar,
   Platform,
   TouchableOpacity,
   Modal,
@@ -55,7 +56,12 @@ const LoginWithOTP = ({ navigation }) => {
   useEffect(() => {
     setloading(false)
     navigation.setOptions({
-      title: !verificationId ? "Login" : "",
+      headerShown: false,
+      title: !verificationId ? "" : "",
+      headerStyle: {
+        backgroundColor: '#77C98D',
+        backgroundColor: '#8297C4',
+      },
       headerLeft: () => (
         verificationId ? <Ionicons name="chevron-back-sharp" size={normalize(20)} color="black" onPress={() => {
           setVerificationId()
@@ -116,17 +122,28 @@ const LoginWithOTP = ({ navigation }) => {
       <SafeAreaView style={{
         flex: 1,
         justifyContent: 'flex-start',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        top: StatusBar.currentHeight,
       }}>
         {/* <KeyboardAvoidingView enabled> */}
         {verificationId ? <ScrollView>
-          <ActivityIndicatorElement loading={loading} />
+          <ActivityIndicatorElement loading={loading} round={true} />
           <FlashMessage ref={flashMessage} />
-
+          <View style={{
+             marginTop: verticalScale(10),
+             paddingHorizontal: scale(10),
+          }}>
+            <Ionicons name="chevron-back-sharp" size={normalize(24)} color="black" onPress={()=>{
+              setVerificationId('');
+              setVerificationCode('');
+              setPhoneNumber('');
+              setadminPhoneNumber('');
+            }}/>
+          </View>
           <View style={{
             flexDirection: 'row',
             justifyContent: 'center',
-            marginTop: verticalScale(15),
+           
           }}>
             <View style={[styles.progressBar, { backgroundColor: '#69D9B9' }]}>
               <Animated.View style={[StyleSheet.absoluteFill]} />
@@ -178,7 +195,7 @@ const LoginWithOTP = ({ navigation }) => {
             <View style={{
               flexDirection: 'row',
               justifyContent: 'center',
-              marginTop: verticalScale(20),
+              marginTop: verticalScale(30),
             }}>
               <Text style={{
                 fontSize: normalize(15),
@@ -214,7 +231,7 @@ const LoginWithOTP = ({ navigation }) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: scale(20),
-                marginTop: scale(45),
+                marginTop: verticalScale(50),
               }}>
                 <View>
                   <TextInput
@@ -370,7 +387,7 @@ const LoginWithOTP = ({ navigation }) => {
                             }
                             catch (error) {
                               // console.log(error)
-                              Alert.alert("Error",`${error}`)
+                              Alert.alert("Error", `${error}`)
                             }
 
                           }
@@ -478,6 +495,7 @@ const LoginWithOTP = ({ navigation }) => {
                         setVerificationId();
                         setVerificationCode();
                         setPhoneNumber();
+                        setadminPhoneNumber();
                         setMessage({ text: `Error: ${err.message}`, type: 'danger' });
                       }
                     }}>
@@ -492,7 +510,7 @@ const LoginWithOTP = ({ navigation }) => {
           </View>
         </ScrollView> :
           <ScrollView>
-            <ActivityIndicatorElement loading={loading} />
+            <ActivityIndicatorElement loading={loading} round={true} />
             <FlashMessage ref={flashMessage} />
 
             <View style={{
@@ -549,7 +567,7 @@ const LoginWithOTP = ({ navigation }) => {
               <View style={{
                 flexDirection: 'row',
                 justifyContent: 'center',
-                marginTop: verticalScale(20),
+                marginTop: verticalScale(30),
               }}>
                 <Text style={{
                   fontSize: normalize(15),
@@ -582,8 +600,7 @@ const LoginWithOTP = ({ navigation }) => {
                     flexDirection: 'row',
                     justifyContent: 'flex-start',
                     marginBottom: scale(20),
-                    marginTop: scale(50),
-                    // marginLeft: '2%',
+                    marginTop: verticalScale(80),
                     borderWidth: scale(1),
                     borderRadius: 3,
                     borderColor: '#808080'
@@ -600,32 +617,46 @@ const LoginWithOTP = ({ navigation }) => {
                   </View>
 
                   <View style={{
-                    // flex: 1,
-                    width: '65%',
                     flexDirection: 'row',
-                    marginLeft: scale(5),
-                    // justifyContent: 'center'
+                    justifyContent: 'space-between',
+                    marginHorizontal: scale(5),
                   }}>
-                    <TextInput
-                      style={{ fontSize: normalize(17), padding: scale(2) }}
-                      placeholder="Enter Mobile Number"
-                      cursorColor='#778899'
-                      autoCompleteType="tel"
-                      letterSpacing={normalize(1.8)}
-                      keyboardType="phone-pad"
-                      textContentType="telephoneNumber"
-                      onChangeText={setPhoneNumber}
-                      onSubmitEditing={Keyboard.dismiss}
-                    />
+
+                    <View style={{
+                      // flex: 1,
+                      width: '80%',
+                      flexDirection: 'row',
+                      // marginLeft: scale(5),
+                      // justifyContent: 'center'
+                    }}>
+                      <View style={{
+                        flexDirection: 'column',
+                        justifyContent: 'center'
+                      }}>
+                        <TextInput
+                          style={{ fontSize: normalize(16), padding: scale(2) }}
+                          placeholder="Enter Mobile Number"
+                          cursorColor='#778899'
+                          autoCompleteType="tel"
+                          letterSpacing={normalize(1.8)}
+                          keyboardType="phone-pad"
+                          textContentType="telephoneNumber"
+                          onChangeText={setPhoneNumber}
+                          onSubmitEditing={Keyboard.dismiss}
+                        />
+                      </View>
+
+                    </View>
+
+                    <View style={{
+                      justifyContent: 'center',
+                    }}>
+                      {phoneNumber && phoneNumber.length === 10 ? <Feather name="check-circle" size={normalize(16)} color="#249A5A" /> : <></>}
+                    </View>
+
+
                   </View>
 
-                  <View style={{
-                    // flex: 1,
-                    marginLeft: scale(35),
-                    justifyContent: 'center',
-                  }}>
-                    {phoneNumber && phoneNumber.length === 10 ? <Feather name="check-circle" size={normalize(18)} color="#249A5A" /> : <></>}
-                  </View>
 
                 </View>
 

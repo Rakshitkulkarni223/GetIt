@@ -45,6 +45,8 @@ const PendingOrders = () => {
                      var phoneNumber = '';
                      var OrderId = '';
 
+                     var paid = -1;
+
 
                      items = [];
                      showuser = true;
@@ -58,6 +60,13 @@ const PendingOrders = () => {
                         {
                            it.forEach((status)=>{
                               OrderStatus = status.val()
+                           })
+                        }
+
+
+                        if (it.key === "paymentStatus") {
+                           it.forEach((status) => {
+                              paid = status.val()
                            })
                         }
 
@@ -86,6 +95,7 @@ const PendingOrders = () => {
                               }
                            })
                         }
+                        
 
                         // console.log(it.key)
 
@@ -94,37 +104,41 @@ const PendingOrders = () => {
                            it.forEach((item)=>{
                               flag = true;
                               item.forEach((eachitem)=>{
-                                 // console.log(eachitem)
+                                 
                                  totalamount += eachitem.val().ItemPrice*eachitem.val().ItemQuantity;
                                  
                                  date = eachitem.val().ItemAddedDate;
-
-                                 items.push({
-                                    key:eachitem.key,
-                                    ItemCategory: item.key,
-                                    displayCategory: flag,
-                                    displayUser: showuser,
-                                    ItemName: eachitem.val().ItemName,
-                                    ItemDesc: eachitem.val().ItemDesc,
-                                    ItemCategory: eachitem.val().ItemCategory,
-                                    ItemPrice: eachitem.val().ItemPrice,
-                                    ItemImage: eachitem.val().ItemImage,
-                                    ItemQuantity: eachitem.val().ItemQuantity,
-                                    ItemAddedDate: eachitem.val().ItemAddedDate,
-                                 })
-                                 showuser = false;
-                                 flag = false;
+                                    items.push({
+                                       key:eachitem.key,
+                                       ItemCategory: item.key,
+                                       displayCategory: flag,
+                                       displayUser: showuser,
+                                       ItemName: eachitem.val().ItemName,
+                                       ItemDesc: eachitem.val().ItemDesc,
+                                       ItemCategory: eachitem.val().ItemCategory,
+                                       ItemPrice: eachitem.val().ItemPrice,
+                                       ItemImage: eachitem.val().ItemImage,
+                                       ItemQuantity: eachitem.val().ItemQuantity,
+                                       ItemAddedDate: eachitem.val().ItemAddedDate,
+                                    })
+                                    showuser = false;
+                                    flag = false;
+                                 
                               })
                            })
                      }
                      
                   })
                   data = items;
+               
+                  if (paid !== -1)
+                  {
                   orders.push({key: child.key,value: data, toggle: false,
                      totalamount: totalamount, Location: Location ,
                      Longitude: Longitude,Latitude: Latitude,
                      Date : date, OrderStatus : OrderStatus, phoneNumber: phoneNumber, OrderId: OrderId
                      });
+                  }
                })
             }
       })

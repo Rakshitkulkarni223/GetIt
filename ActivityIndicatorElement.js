@@ -26,12 +26,11 @@ import { normalize } from './FontResize';
 
 
 
-const ActivityIndicatorElement = ({ loading }) => {
+const ActivityIndicatorElement = ({ loading, round }) => {
 
     const [color, setColor] = useState('teal');
 
-    const colorArray = [ "#5C9B73", "#5C6D9B", "#899B5C", "#B37E65","#3C9B9B"
-      ];
+    const colorArray = ["#69A985", "#B98413", "#90185B", "#95604C", "#1E1890"];
 
     useEffect(() => {
         const id = setInterval(() => {
@@ -66,18 +65,14 @@ const ActivityIndicatorElement = ({ loading }) => {
             <SafeAreaView style={{
                 flex: 1,
                 flexDirection: 'column',
-                justifyContent: 'flex-start'
+                justifyContent:  'center'
             }}>
+                { round  ? <ActivityIndicator  size="large" color={color} animating={true} /> :
                 <View style={{
                     position: 'absolute', left: 0, right: 0, bottom: 0, top: 56
-                    // position: 'absolute',
-                    // flex: 0.8,
-                    // flexDirection: 'column',
-                    // justifyContent: 'flex-end',
                 }}>
-                    {/* <ActivityIndicator  size="large" color={color} animating={true} /> */}
                     <Animated.View style={lineStyle} />
-                </View>
+                </View>}
             </SafeAreaView>
         </Modal>
 

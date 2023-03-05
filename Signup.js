@@ -14,6 +14,7 @@ import {
   ScrollView,
   Modal,
   Dimensions,
+  StatusBar,
 } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -53,6 +54,8 @@ const SignUp = ({ navigation, route }) => {
   const [email, setemail] = useState(route && route.params ? route.params.email : '')
   const [password, setpassword] = useState(route && route.params ? route.params.password : '')
 
+  const [showpassword, setshowpassword] = useState(false);
+
   const [message, showMessage] = useState();
 
   const [ProfilePic, setProfilePic] = useState(route && route.params ? route.params.ProfilePic : 'https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FProfile.png?alt=media&token=9b0173fb-4b95-4783-93c7-f928cffbd788');
@@ -62,22 +65,48 @@ const SignUp = ({ navigation, route }) => {
   const [selectMode, setselectMode] = useState(false);
 
   useEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+      title: '',
+      // headerStyle: {
+      //     backgroundColor: '#3EA879',
+      //     backgroundColor: '#718A8E',
+      // }
+    })
+
+    // navigation.setOptions({
+    //   title: "",
+    //   headerStyle: {
+    //     backgroundColor: '#718A8E',
+    //     // backgroundColor: '#8297C4',
+    //   },
+    //   headerLeft: () => (
+    //     <View style={{
+    //       flex: 1,
+    //       flexDirection: 'row',
+    //       // justifyContent: 'space-around'
+    //     }}>
+    //       {route && route.params ? <Text style={{
+    //         fontSize: normalize(14),
+    //         color: '#fff',
+    //         fontWeight: '400',
+    //         letterSpacing: scale(0.8),
+    //       }}>
+    //         {"Update Profile".toUpperCase()}
+    //       </Text> :
+    //         <Text>
+    //           User Profile
+    //         </Text>}
+    //     </View>
+    //   )
+    // })
+  }, [])
+
+  useEffect(() => {
     if (route && route.params && route.params.email !== '') {
       emailValidation(route.params.email);
     }
-    navigation.setOptions({
-      headerLeft: () => <></>,
-      title: route && route.params ? "Update Profile" : "User Profile",
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        // fontWeight: 'bold',
-        fontSize: normalize(15),
-      },
-      headerStyle: {
-        backgroundColor: '#46AA66',
-        // backgroundColor: '#8297C4',
-      },
-    })
+
   }, [])
 
   const showDatePicker = () => {
@@ -291,7 +320,7 @@ const SignUp = ({ navigation, route }) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#D8DFE7' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#D8DFE7', top: StatusBar.currentHeight }}>
       <ScrollView>
 
         {route && route.params ? <View></View> :
@@ -313,6 +342,39 @@ const SignUp = ({ navigation, route }) => {
           </View>
         }
 
+        <View style={{
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'center',
+          margin: scale(10)
+          // justifyContent: 'space-around'
+        }}>
+          {route && route.params ? <Text style={{
+            fontSize: normalize(16),
+            fontWeight: '500',
+            letterSpacing: scale(0.5),
+            paddingVertical: verticalScale(1),
+            paddingHorizontal: scale(15),
+            borderBottomWidth: scale(0.7),
+            borderBottomColor: "#000",
+            color: '#000'
+          }}>
+            {"Update Profile".toUpperCase()}
+          </Text> :
+            <Text style={{
+              fontSize: normalize(18),
+              fontWeight: '500',
+              letterSpacing: scale(0.5),
+              paddingVertical: verticalScale(1),
+              paddingHorizontal: scale(15),
+              borderBottomWidth: scale(0.7),
+              borderBottomColor: "#000",
+              color: '#000'
+            }}>
+              User Profile
+            </Text>}
+        </View>
+
 
         <ActivityIndicatorElement loading={loading} />
 
@@ -320,9 +382,9 @@ const SignUp = ({ navigation, route }) => {
           <View style={{
             flex: 0.2,
             flexDirection: 'column',
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
             top: "40%",
-            backgroundColor: '#413D3D',
+            backgroundColor: '#DEDEE2',
             // height: verticalScale(30),
             borderWidth: scale(1),
             borderColor: 'black',
@@ -337,7 +399,7 @@ const SignUp = ({ navigation, route }) => {
               justifyContent: 'flex-end',
               marginLeft: scale(30),
             }}>
-              <AntDesign name="close" size={normalize(18)} color="red"
+              <AntDesign name="close" size={normalize(18)} color="#2F3032"
                 onPress={() => {
                   setselectMode(false)
                 }}
@@ -345,91 +407,22 @@ const SignUp = ({ navigation, route }) => {
             </View>
 
             <View style={{
-              flex: 1,
-              flexDirection: 'row',
+              flexDirection: 'column',
               justifyContent: 'flex-start',
-              marginLeft: scale(30),
+              marginVertical: verticalScale(15)
             }}>
 
               <View style={{
-                flexDirection: 'column',
-                justifyContent: 'center'
-              }}>
-                <Feather name="camera" size={normalize(20)} color="#715AE1" />
-              </View>
-
-              <View style={{
-                flexDirection: 'column',
-                justifyContent: 'center',
-                marginLeft: scale(12),
-              }}>
-                <TouchableOpacity onPress={openCamera}>
-                  <Text style={{
-                    fontSize: normalize(14),
-                    fontWeight: '600',
-                    letterSpacing: scale(0.3),
-                    color: '#fff'
-                  }}>Open Camera</Text>
-                </TouchableOpacity>
-              </View>
-
-            </View>
-
-
-            <View style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              marginLeft: scale(30),
-              marginBottom: !ProfilePic ? verticalScale(10) : 0,
-              // marginTop: scale(10),
-            }}>
-
-              <View style={{
-                flexDirection: 'column',
-                justifyContent: 'center'
-              }}>
-                <AntDesign name="picture" size={normalize(20)} color="#23A78D" />
-              </View>
-
-              <View style={{
-                flexDirection: 'column',
-                justifyContent: 'center',
-                marginLeft: scale(12),
-              }}>
-                <TouchableOpacity onPress={showImagePicker}>
-                  <Text style={{
-                    fontSize: normalize(14),
-                    fontWeight: '600',
-                    letterSpacing: scale(0.3),
-                    color: '#fff'
-                  }}>Select From Gallery</Text>
-                </TouchableOpacity>
-              </View>
-
-            </View>
-
-            {ProfilePic !== 'https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FProfile.png?alt=media&token=9b0173fb-4b95-4783-93c7-f928cffbd788' ?
-
-              <View style={{
-                flex: 1,
                 flexDirection: 'row',
                 justifyContent: 'flex-start',
                 marginLeft: scale(30),
-                marginBottom: verticalScale(10),
-                // marginTop: scale(10),
               }}>
 
                 <View style={{
                   flexDirection: 'column',
                   justifyContent: 'center'
                 }}>
-                  <MaterialIcons name="delete-outline" size={normalize(20)} color="#D84329"
-                    onPress={() => {
-                      setProfilePic('https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FProfile.png?alt=media&token=9b0173fb-4b95-4783-93c7-f928cffbd788')
-                      setselectMode(false)
-                    }}
-                  />
+                  <Feather name="camera" size={normalize(20)} color="#50597E" />
                 </View>
 
                 <View style={{
@@ -437,21 +430,96 @@ const SignUp = ({ navigation, route }) => {
                   justifyContent: 'center',
                   marginLeft: scale(12),
                 }}>
-                  <TouchableOpacity onPress={() => {
-                    setProfilePic('https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FProfile.png?alt=media&token=9b0173fb-4b95-4783-93c7-f928cffbd788')
-                    setselectMode(false)
-                  }}>
+                  <TouchableOpacity onPress={openCamera}>
                     <Text style={{
                       fontSize: normalize(14),
                       fontWeight: '600',
                       letterSpacing: scale(0.3),
-                      color: '#fff'
-                    }}>Remove Profile</Text>
+                      color: '#000'
+                    }}>Open Camera</Text>
                   </TouchableOpacity>
                 </View>
 
-              </View> : undefined}
+              </View>
 
+
+              <View style={{
+                // flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                marginLeft: scale(30),
+                marginVertical: ProfilePic !== 'https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FProfile.png?alt=media&token=9b0173fb-4b95-4783-93c7-f928cffbd788' ? verticalScale(10) : verticalScale(20),
+                // marginTop: scale(10),
+              }}>
+
+                <View style={{
+                  flexDirection: 'column',
+                  justifyContent: 'center'
+                }}>
+                  <AntDesign name="picture" size={normalize(20)} color="#23A78D" />
+                </View>
+
+                <View style={{
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  marginLeft: scale(12),
+                }}>
+                  <TouchableOpacity onPress={showImagePicker}>
+                    <Text style={{
+                      fontSize: normalize(14),
+                      fontWeight: '600',
+                      letterSpacing: scale(0.3),
+                      color: '#000'
+                    }}>Select From Gallery</Text>
+                  </TouchableOpacity>
+                </View>
+
+              </View>
+
+              {ProfilePic !== 'https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FProfile.png?alt=media&token=9b0173fb-4b95-4783-93c7-f928cffbd788' ?
+
+                <View style={{
+                  // flex: 1,
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  marginLeft: scale(30),
+                  // marginVertical: verticalScale(5),
+                  // marginTop: scale(10),
+                }}>
+
+                  <View style={{
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                  }}>
+                    <MaterialIcons name="delete-outline" size={normalize(20)} color="#D84329"
+                      onPress={() => {
+                        setProfilePic('https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FProfile.png?alt=media&token=9b0173fb-4b95-4783-93c7-f928cffbd788')
+                        setselectMode(false)
+                      }}
+                    />
+                  </View>
+
+                  <View style={{
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    marginLeft: scale(12),
+                  }}>
+                    <TouchableOpacity onPress={() => {
+                      setProfilePic('https://firebasestorage.googleapis.com/v0/b/getit-d33e8.appspot.com/o/assets%2FProfile.png?alt=media&token=9b0173fb-4b95-4783-93c7-f928cffbd788')
+                      setselectMode(false)
+                    }}>
+                      <Text style={{
+                        fontSize: normalize(14),
+                        fontWeight: '600',
+                        letterSpacing: scale(0.3),
+                        color: '#000'
+                      }}>Remove Profile</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                </View> : undefined}
+
+            </View>
           </View>
         </Modal>
 
@@ -463,15 +531,7 @@ const SignUp = ({ navigation, route }) => {
             flexDirection: 'row',
             justifyContent: 'center',
             marginTop: verticalScale(15),
-            // borderWidth: scale(0.5),
-            // borderRadius: scale(100),
-            // borderColor: '#4E858C',
-            //   width: scale(170),
-            //     height: verticalScale(180),
-            // padding: scale(30)
           }}>
-            {/* <FontAwesome5 name="user" size={normalize(25)} color="#4C486C" /> */}
-
             <Image
               style={{
                 width: Dimensions.get('window').width * 0.5,
@@ -510,23 +570,24 @@ const SignUp = ({ navigation, route }) => {
             />
           </View>
         </View>
-        <View style={{ padding: scale(18), marginTop: verticalScale(5) }}>
+        <View style={{ padding: scale(18), marginTop: verticalScale(10) }}>
           <View
             style={{
               borderWidth: scale(0.5),
               borderRadius: scale(5),
             }}
           >
-            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>First name</Text>
+            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), letterSpacing: scale(0.4), fontFamily: 'sans-serif-light' }}>First name</Text>
             <TextInput
               style={{
-                marginLeft: scale(10), marginBottom: verticalScale(5),
+                marginLeft: scale(10), marginBottom: verticalScale(3),
                 fontSize: normalize(14),
-                fontFamily: 'sans-serif-light',
+                fontFamily: 'sans-serif-medium',
               }}
               defaultValue={route && route.params ? route.params.firstName : ""}
               placeholder="Enter first name"
               keyboardType="default"
+              letterSpacing={scale(0.4)}
               onChangeText={(firstName) => {
                 setfirstName(firstName)
               }}
@@ -535,13 +596,14 @@ const SignUp = ({ navigation, route }) => {
               borderTopWidth: scale(0.5)
             }}>
               <Text style={{
-                marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light'
+                marginLeft: scale(10), marginTop: verticalScale(5), letterSpacing: scale(0.4), fontFamily: 'sans-serif-light'
               }}>Last name</Text>
               <TextInput
-                style={{ marginLeft: scale(10), marginBottom: verticalScale(5), fontSize: normalize(14), fontFamily: 'sans-serif-light' }}
+                style={{ marginLeft: scale(10), marginBottom: verticalScale(3), fontSize: normalize(14), fontFamily: 'sans-serif-medium' }}
                 placeholder="Enter last name"
                 defaultValue={route && route.params ? route.params.lastName : ""}
                 keyboardType="default"
+                letterSpacing={scale(0.4)}
                 onChangeText={(lastName) => {
                   setlastName(lastName)
                 }}
@@ -555,12 +617,12 @@ const SignUp = ({ navigation, route }) => {
               marginTop: verticalScale(10),
             }}
           >
-            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>DOB</Text>
+            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), letterSpacing: scale(0.4), fontFamily: 'sans-serif-light' }}>DOB</Text>
             <Text
               style={{
-                marginLeft: scale(10), marginBottom: verticalScale(5), marginTop: verticalScale(5), fontSize: normalize(14),
+                marginLeft: scale(10),marginBottom: verticalScale(3), marginTop: verticalScale(5), fontSize: normalize(14),
                 fontWeight: DOBfontweight,
-                fontFamily: 'sans-serif-light',
+                fontFamily: 'sans-serif-medium',
               }}
               onPress={showDatePicker}
             >
@@ -568,6 +630,7 @@ const SignUp = ({ navigation, route }) => {
             </Text>
             <DateTimePickerModal
               isVisible={isDatePickerVisible}
+              letterSpacing={scale(0.4)}
               mode="date"
               onConfirm={handleConfirm}
               onCancel={hideDatePicker}
@@ -580,38 +643,43 @@ const SignUp = ({ navigation, route }) => {
               marginTop: verticalScale(10),
             }}
           >
-            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Email</Text>
             <View style={{
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              alignItems: 'center'
+              flexDirection: 'column',
+              justifyContent: 'flex-start'
             }}>
+              <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), letterSpacing: scale(0.4), fontFamily: 'sans-serif-light' }}>Email</Text>
               <View style={{
-                marginRight: scale(40),
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginHorizontal: scale(10), marginBottom: verticalScale(3),
               }}>
-                <TextInput
-                  style={{
-                    marginLeft: scale(10),
-                    marginBottom: verticalScale(5),
-                    fontSize: normalize(14),
-                    fontFamily: 'sans-serif-light'
-                  }}
-                  placeholder="email@address.com"
-                  keyboardType="default"
-                  defaultValue={route && route.params ? route.params.email : ""}
-                  onChangeText={(email) => {
-                    emailValidation(email)
-                  }}
-                />
-              </View>
-              <View style={{
-                marginLeft: scale(290),
-                position: 'absolute',
-                alignItems: 'center'
-              }}>
-                {validatedEmail ?
-                  <Ionicons name="checkmark-circle-outline" size={normalize(18)} color="green" />
-                  : <MaterialIcons name="error-outline" size={normalize(18)} color="red" />}
+                <View style={{
+                  width: '85%',
+                  justifyContent: 'center'
+                }}>
+                  <TextInput
+                    style={{
+                      fontSize: normalize(14),
+                      fontFamily: 'sans-serif-medium'
+                    }}
+                    placeholder="email@address.com"
+                    keyboardType="default"
+                    letterSpacing={scale(0.4)}
+                    defaultValue={route && route.params ? route.params.email : ""}
+                    onChangeText={(email) => {
+                      emailValidation(email)
+                    }}
+                  />
+                </View>
+
+                <View style={{
+                  justifyContent: 'center'
+                }}>
+                  {validatedEmail ?
+                    <Ionicons name="checkmark-circle-outline" size={normalize(16)} color="green" />
+                    : <MaterialIcons name="error-outline" size={normalize(16)} color="red" />}
+                </View>
+
               </View>
             </View>
           </View>
@@ -623,22 +691,51 @@ const SignUp = ({ navigation, route }) => {
               marginTop: verticalScale(10),
             }}
           >
-            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Password</Text>
-            <TextInput
-              style={{
-                marginLeft: scale(10),
-                marginBottom: verticalScale(5),
-                fontSize: normalize(14),
-                fontFamily: 'sans-serif-light'
-              }}
-              placeholder={route && route.params ? "Password cannot be updated here" : "Must have atleast 6 characters"}
-              keyboardType="default"
-              secureTextEntry
-              editable={route && route.params ? false : true}
-              onChangeText={(password) => {
-                setpassword(password)
-              }}
-            />
+
+            <View style={{
+              flexDirection: 'column',
+              justifyContent: 'flex-start'
+            }}>
+              <Text style={{ marginLeft: scale(10), letterSpacing: scale(0.4), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Password</Text>
+              <View style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginHorizontal: scale(10),marginBottom: verticalScale(3),
+              }}>
+                <View style={{
+                  width: '85%',
+                  justifyContent: 'center'
+                }}>
+
+                  <TextInput
+                    style={{
+                      fontSize: normalize(14),
+                      fontFamily: 'sans-serif-medium'
+                    }}
+                    placeholder={route && route.params ? route.params.password === '' ? "Must have atleast 6 characters" : "Password cannot be updated here" : "Must have atleast 6 characters"}
+                    keyboardType="default"
+                    secureTextEntry={!showpassword}
+                    letterSpacing={scale(0.4)}
+                    editable={route && route.params ? route.params.password === '' ? true : false : true}
+                    onChangeText={(password) => {
+                      setpassword(password)
+                    }}
+                  />
+                </View>
+                <View style={{
+                  justifyContent: 'center'
+                }}>
+                  <Ionicons name={showpassword ? "eye-outline" : "eye-off-outline"} size={normalize(16)} color={showpassword ? "#14B26D" : "#D80A20"} onPress={() => {
+                    if (!(route && route.params && route.params.password !== '')) {
+                      setshowpassword(!showpassword);
+                    }
+                  }} />
+                </View>
+              </View>
+
+            </View>
+
+
           </View>
           {message ? (
             <Text
@@ -654,16 +751,16 @@ const SignUp = ({ navigation, route }) => {
           <View style={{
             marginTop: verticalScale(20),
           }}>
-            <Pressable style={styles.button} onPress={handleSubmitButton}>
+            <TouchableOpacity style={styles.button} onPress={handleSubmitButton}>
               <Text style={styles.text}>
-                {route && route.params ? "Update Profile" : "Save Profile"}
+                Save Profile
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
           <View style={{
             marginTop: verticalScale(20),
           }}>
-            <Pressable style={{
+            <TouchableOpacity style={{
               alignItems: 'center',
               justifyContent: 'center',
               paddingVertical: verticalScale(8),
@@ -690,7 +787,8 @@ const SignUp = ({ navigation, route }) => {
                     params: {
                       disableNotification: true, changeAddress: false, Location: route.params.displayCurrentAddress,
                       Longitude: route.params.longitude,
-                      Latitude: route.params.latitude
+                      Latitude: route.params.latitude,
+                      gotoSignup: false,
                     }
                   }],
                 });
@@ -701,7 +799,8 @@ const SignUp = ({ navigation, route }) => {
                   routes: [{
                     name: 'Home',
                     params: {
-                      disableNotification: true
+                      disableNotification: true,
+                      gotoSignup: false,
                     }
                   }],
                 });
@@ -715,7 +814,7 @@ const SignUp = ({ navigation, route }) => {
                 letterSpacing: scale(0.5),
                 color: 'black',
               }}>Not Now</Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -750,7 +849,7 @@ const styles = StyleSheet.create({
     fontSize: normalize(16),
     lineHeight: verticalScale(20),
     fontWeight: 'bold',
-    letterSpacing: scale(0.5),
+    letterSpacing: scale(0.8),
     color: 'white',
   },
 });

@@ -10,7 +10,7 @@ import { scale } from '../Dimensions';
 
 import { normalize } from '../FontResize';
 
-const ViewItems = () => {
+const ViewItems = ({navigation}) => {
 
    const [AllItems, setAllItems] = useState([]);
 

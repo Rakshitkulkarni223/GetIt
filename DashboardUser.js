@@ -13,6 +13,7 @@ import {
     KeyboardAvoidingView,
     Alert,
     Modal,
+    StatusBar,
 } from "react-native";
 
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -41,35 +42,43 @@ import * as Location from 'expo-location';
 
 const Tab = createBottomTabNavigator();
 
-function MyTabs({ navigation, OrderId , displayCurrentAddress, longitude, latitude,adminList}) {
+function MyTabs({ navigation, OrderId, displayCurrentAddress, longitude, latitude, adminList }) {
 
     return (
         <Tab.Navigator
             initialRouteName="All Items"
             screenOptions={{
-                tabBarActiveTintColor: '#e91e63',
+                tabBarLabelStyle: {
+                    marginBottom: verticalScale(3),
+                    fontSize: normalize(10),
+                    letterSpacing: scale(0.4),
+                    fontWeight: '400'
+                },
+                tabBarInactiveTintColor: '#000',
+                tabBarActiveTintColor: '#393B72',
+                tabBarLabelPosition: 'below-icon',
                 headerShown: false
             }}
         >
             <Tab.Screen
                 name="All Items"
                 children={() => <ViewItems navigation={navigation} OrderId={OrderId} displayCurrentAddress={displayCurrentAddress} longitude={longitude} adminList={adminList}
-                latitude={latitude}/>}
+                    latitude={latitude} />}
                 options={{
                     tabBarLabel: "All Items",
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="preview" color={color} size={normalize(size - 6)} />
+                        <MaterialCommunityIcons name={color !== '#000' ? "view-list": "view-list-outline"} size={normalize(size-5)} color={color} />
                     ),
                 }}
             />
 
             <Tab.Screen
                 name="Orders"
-                children={() => <UsersCompletedOrders navigation={navigation} OrderId={OrderId} adminList={adminList}/>}
+                children={() => <UsersCompletedOrders navigation={navigation} OrderId={OrderId} adminList={adminList} />}
                 options={{
                     tabBarLabel: "Orders",
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="basket" color={color} size={normalize(size - 3)} />
+                        <Ionicons name={color !== '#000' ? "basket" : "basket-outline"} color={color} size={color !== '#000' ? normalize(size-4) : normalize(size-6)} />
                     ),
                 }}
             />
@@ -77,12 +86,12 @@ function MyTabs({ navigation, OrderId , displayCurrentAddress, longitude, latitu
             <Tab.Screen
                 name="Profile"
                 children={() => <UserAccountDetails navigation={navigation} displayCurrentAddress={displayCurrentAddress}
-                longitude={longitude}
-                latitude={latitude} />}
+                    longitude={longitude}
+                    latitude={latitude} />}
                 options={{
                     tabBarLabel: "Profile",
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="account-circle" color={color} size={normalize(size - 5)} />
+                        <MaterialCommunityIcons name={color !== '#000' ? "account-circle": "account-circle-outline"} color={color} size={normalize(size - 7)} />
                     ),
                 }}
             />
@@ -94,7 +103,7 @@ function MyTabs({ navigation, OrderId , displayCurrentAddress, longitude, latitu
 
 const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
 
-    
+
 
     return (
         <Modal visible={visible} transparent={true} style={{
@@ -128,19 +137,19 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
                     <View style={{
                         justifyContent: 'center'
                     }}>
-                        <Feather name="chevron-down" size={normalize(20)} color="black" onPress={toggle}/>
+                        <Feather name="chevron-down" size={normalize(20)} color="black" onPress={toggle} />
                     </View>
                     <View style={{
                         paddingLeft: scale(5),
                         justifyContent: 'center'
                     }}>
                         <Text style={{
-                             fontSize: normalize(15),
-                             lineHeight: scale(18),
-                             letterSpacing: scale(0.5),
-                             color: 'black',
+                            fontSize: normalize(15),
+                            lineHeight: scale(18),
+                            letterSpacing: scale(0.5),
+                            color: 'black',
                         }}
-                        onPress={toggle}>
+                            onPress={toggle}>
                             Select a location
                         </Text>
                     </View>
@@ -407,7 +416,7 @@ const DashboardUser = ({ navigation, OrderId, displayCurrentAddress, setdisplayC
                         flexDirection: 'column',
                         justifyContent: 'center'
                     }}>
-                        <Ionicons name="ios-location-sharp" size={normalize(17)} color="red" onPress={() => setVisible(!visible)} />
+                        <Ionicons name="ios-location-sharp" size={normalize(17)} color="#D00B0B" onPress={() => setVisible(!visible)} />
                     </View>
                     <View style={{
                         flexDirection: 'column',
@@ -436,7 +445,7 @@ const DashboardUser = ({ navigation, OrderId, displayCurrentAddress, setdisplayC
                                         flexDirection: 'row',
                                         justifyContent: 'flex-start',
                                     }}>
-                                        <Text style={{ fontSize: normalize(10),fontWeight: '500',color: 'white' }} onPress={() => setVisible(!visible)}>{addressNextLine}</Text>
+                                        <Text style={{ fontSize: normalize(10), fontWeight: '500', color: 'white' }} onPress={() => setVisible(!visible)}>{addressNextLine}</Text>
                                     </View>
                                 </>
                                 : <View style={{
@@ -460,24 +469,19 @@ const DashboardUser = ({ navigation, OrderId, displayCurrentAddress, setdisplayC
                 </View>,
                 title: '',
                 headerStyle: {
-                    backgroundColor: '#77C98D',
                     backgroundColor: '#8297C4',
+                    backgroundColor: '#6982A9',
                 },
-                // headerTintColor: '#fff',
-                // headerTitleStyle: {
-                //     fontSize: normalize(13),
-                //     fontWeight: '600',
-                //     color: 'black'
-                // },
                 headerRight: () => (
-                    <AntDesign name="logout" size={normalize(18)} color="#BF0505" onPress={() => signOut(auth).then(() => {
-                        setloading(false)
-                        Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
-                        navigation.replace('Main')
-                    }).catch((error) => {
-                        setloading(false)
-                        Alert.alert(`${phoneNumber}`, 'Logout Unsuccessfull!');
-                    })} />
+                    // <AntDesign name="logout" size={normalize(18)} color="#BF0505" onPress={() => signOut(auth).then(() => {
+                    //     setloading(false)
+                    //     Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
+                    //     navigation.replace('Main')
+                    // }).catch((error) => {
+                    //     setloading(false)
+                    //     Alert.alert(`${phoneNumber}`, 'Logout Unsuccessfull!');
+                    // })} />
+                    <></>
                 ),
 
             })
@@ -612,21 +616,19 @@ const DashboardUser = ({ navigation, OrderId, displayCurrentAddress, setdisplayC
         }
     }
 
-
-
-
     return (
 
         <SafeAreaView style={styles.mainBody}>
+
             <ActivityIndicatorElement loading={loading} />
             <NavigationContainer independent={true}>
-                <MyTabs 
-                navigation={navigation} 
-                OrderId={OrderId} 
-                displayCurrentAddress={displayCurrentAddress}
-                longitude={longitude}
-                latitude={latitude}
-                adminList={adminList}
+                <MyTabs
+                    navigation={navigation}
+                    OrderId={OrderId}
+                    displayCurrentAddress={displayCurrentAddress}
+                    longitude={longitude}
+                    latitude={latitude}
+                    adminList={adminList}
                 />
             </NavigationContainer>
             <ModalInput
@@ -661,7 +663,6 @@ export default DashboardUser;
 const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
-        bottom: '0.15%',
         justifyContent: "center",
         backgroundColor: "#307ecc",
         // backgroundColor: '#fff',

@@ -252,7 +252,7 @@ const ConfiremdOrders = ({ navigation, route }) => {
                   flexDirection: 'column',
                   justifyContent: 'center'
                }}>
-                  <Ionicons name="arrow-back-sharp" size={normalize(21)} color="black"
+                  <Ionicons name="arrow-back-sharp" size={normalize(21)} color="#fff"
                      onPress={() => {
                         navigation.goBack();
                      }} />
@@ -261,7 +261,7 @@ const ConfiremdOrders = ({ navigation, route }) => {
                   flexDirection: 'column',
                   justifyContent: 'center'
                }}>
-                  <Ionicons name="ios-location-sharp" size={normalize(17)} color="red" onPress={() => {
+                  <Ionicons name="ios-location-sharp" size={normalize(17)} color="#D00B0B" onPress={() => {
                      Alert.alert('Delivery Location', `${route.params.displayCurrentAddress}`, [
                         {
                            text: 'Want to change?',
@@ -327,7 +327,7 @@ const ConfiremdOrders = ({ navigation, route }) => {
             headerTitle: '',
             headerStyle: {
                backgroundColor: '#77C98D',
-               backgroundColor: '#8297C4',
+               backgroundColor: '#6982A9',
            },
             // headerTintColor: '#fff',
             // headerTitleStyle: {
@@ -336,14 +336,15 @@ const ConfiremdOrders = ({ navigation, route }) => {
             //     color: 'black'
             // },
             headerRight: () => (
-               <AntDesign name="logout" size={normalize(18)} color="#BF0505" onPress={() => signOut(auth).then(() => {
-                  setloading(false)
-                  Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
-                  navigation.replace('Main')
-               }).catch((error) => {
-                  setloading(false)
-                  Alert.alert(`${phoneNumber}`, 'Logout Unsuccessfull!');
-               })} />
+               // <AntDesign name="logout" size={normalize(18)} color="#BF0505" onPress={() => signOut(auth).then(() => {
+               //    setloading(false)
+               //    Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
+               //    navigation.replace('Main')
+               // }).catch((error) => {
+               //    setloading(false)
+               //    Alert.alert(`${phoneNumber}`, 'Logout Unsuccessfull!');
+               // })} />
+               <></>
             ),
 
          })
@@ -400,7 +401,6 @@ export default ConfiremdOrders;
 const styles = StyleSheet.create({
    mainBody: {
       flex: 1,
-      bottom: '0.1%',
       //   justifyContent: "center",
       backgroundColor: "white",
       //   alignContent: "center",

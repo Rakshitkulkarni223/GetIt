@@ -174,10 +174,10 @@ const AddItem = ({ navigation }) => {
     const handleSubmitButton = async () => {
         showMessage("");
 
-        if (!ItemName) return alert("Please enter Item Name.");
-        if (!ItemPrice) return alert("Please enter Item Price per Plate.");
-        if (!ItemCategory) return alert("Please enter Item Category.");
-        if (!ItemImage) return alert("Please upload Item Image.");
+        if (!ItemName) return Alert.alert("Item Name","Please enter Item Name.");
+        if (!ItemPrice) return Alert.alert("Item Price","Please enter Item Price per Plate.");
+        if (!ItemCategory) return Alert.alert("Item Category","Please enter Item Category.");
+        if (!ItemImage) return Alert.alert("Item Image","Please upload Item Image.");
 
         setloading(true)
 
