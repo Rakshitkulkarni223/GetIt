@@ -808,7 +808,6 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
             <SafeAreaView style={{
                 flex: 1,
                 backgroundColor: '#fff',
-                // backgroundColor: 'white'
             }}>
                 {
                     DATA.length !== 0 ?

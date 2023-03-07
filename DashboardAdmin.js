@@ -45,16 +45,14 @@ function MyTabs() {
                     marginBottom: verticalScale(3),
                     fontSize: normalize(10),
                     letterSpacing: scale(0.4),
-                    fontWeight: '400'
+                    fontWeight: '500'
                 },
                 tabBarVisibilityAnimationConfig: {
                     show: false,
                     hide: true,
                 },
                 tabBarInactiveTintColor: '#000',
-                // tabBarInactiveBackgroundColor: '#000',
-                tabBarActiveTintColor: '#6918A9',
-                // tabBarActiveBackgroundColor: "#C3C6C5",
+                tabBarActiveTintColor: '#6D9791',
                 tabBarLabelPosition: 'below-icon',
                 headerShown: false
             }}
@@ -65,7 +63,7 @@ function MyTabs() {
                 options={{
                     tabBarLabel: 'Add Item',
                     tabBarIcon: ({ color, size }) => (
-                        <Octicons name="diff-added" color={color} size={size - 5} />
+                        <Ionicons name={color !== "#000" ? "ios-add-circle" : "ios-add-circle-outline"} size={normalize(size-6)} color={color} />
                     ),
                 }}
             />
@@ -75,7 +73,7 @@ function MyTabs() {
                 options={{
                     tabBarLabel: 'View Items',
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="preview" color={color} size={size-2} />
+                        <MaterialCommunityIcons name={color !== '#000' ? "view-list": "view-list-outline"} size={normalize(size-5)} color={color} />
                     ),
                 }}
             />
@@ -85,21 +83,10 @@ function MyTabs() {
                 options={{
                     tabBarLabel: 'Orders',
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="md-basket" size={size} color={color} />
+                        <Ionicons name={color !== "#000" ? "md-basket" : "md-basket-outline"} size={color !== '#000' ? normalize(size-4) : normalize(size-6)} color={color} />
                     ),
                 }}
             />
-            {/* <Tab.Screen
-                name="Confiremd Orders"
-                component={ConfirmedOrders}
-                options={{
-                    tabBarLabel: 'Confiremd Orders',
-                    tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons name="check-circle" color={color} size={size} />
-                    ),
-                }}
-            /> */}
-
         </Tab.Navigator>
     );
 }

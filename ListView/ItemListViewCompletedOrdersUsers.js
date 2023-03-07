@@ -504,7 +504,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                 borderRadius: scale(5),
                 borderColor: "#000",
                 backgroundColor: index % 2 ? '#B9B9B9' : '#D6D5D5',
-                elevation: scale(5),
+                elevation: scale(3),
             }}>
                 <View style={{
                     justifyContent: 'center'
@@ -674,7 +674,8 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
 
                     <SafeAreaView style={{
                         flex: 1,
-                        padding: scale(15),
+                        paddingHorizontal: scale(15),
+                        paddingTop: scale(15),
                         backgroundColor: '#E1DFDF',
                     }}>
                         {AllOrders.length !== 0 ? <FlatList
@@ -741,7 +742,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                                         color: '#000',
                                         fontSize: normalize(15)
                                     }}>
-                                        You haven't ordered anything yet 🙁.
+                                        You haven't ordered anything yet!
                                     </Text>
                                 }
                             </View>

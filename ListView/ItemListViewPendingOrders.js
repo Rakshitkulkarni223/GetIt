@@ -826,7 +826,8 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                 visibleMap ? <GoogleMap Longitude={longitude} Latitude={latitude} setvisibleMap={setvisibleMap} /> :
                     <SafeAreaView style={{
                         flex: 1,
-                        padding: scale(15),
+                        paddingHorizontal: scale(15),
+                        paddingTop: scale(15),
                         backgroundColor: '#DFDFDF',
                     }}>
                         {displayQRCode && data[index].OrderStatus === 0 ?

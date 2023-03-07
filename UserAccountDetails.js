@@ -142,13 +142,14 @@ const UserAccountDetails = ({ navigation, displayCurrentAddress, longitude, lati
                         justifyContent: 'center'
                     }}>
                         <Ionicons name="power" size={normalize(18)} color="#BF0505" onPress={async () => {
+                            const phoneNumber = auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3);
                             await signOut(auth).then(() => {
                                 setloading(false)
-                                Alert.alert(`${auth.currentUser.phoneNumber}`, 'Logout Successfull!');
+                                Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
                                 navigation.replace('Main')
                             }).catch((error) => {
                                 setloading(false)
-                                Alert.alert(`${auth.currentUser.phoneNumber}`, 'Logout Unsuccessfull!');
+                                Alert.alert(`${phoneNumber}`, 'Logout Unsuccessfull!');
                             })
                         }} />
                     </View>
@@ -163,13 +164,14 @@ const UserAccountDetails = ({ navigation, displayCurrentAddress, longitude, lati
                                 color: '#BF0505'
                             }}
                             onPress={async () => {
+                                const phoneNumber = auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3);
                                 await signOut(auth).then(() => {
                                     setloading(false)
-                                    Alert.alert(`${auth.currentUser.phoneNumber}`, 'Logout Successfull!');
+                                    Alert.alert(`${phoneNumber}`, 'Logout Successfull!');
                                     navigation.replace('Main')
                                 }).catch((error) => {
                                     setloading(false)
-                                    Alert.alert(`${auth.currentUser.phoneNumber}`, 'Logout Unsuccessfull!');
+                                    Alert.alert(`${phoneNumber}`, 'Logout Unsuccessfull!');
                                 })
                             }}
                         >Logout</Text>

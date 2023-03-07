@@ -28,15 +28,15 @@ import { normalize } from './FontResize';
 
 const ActivityIndicatorElement = ({ loading, round }) => {
 
-    const [color, setColor] = useState('teal');
+    const [color, setColor] = useState('#6863C2');
 
-    const colorArray = ["#69A985", "#B98413", "#90185B", "#95604C", "#1E1890"];
+    const colorArray = ["#6863C2"];
 
     useEffect(() => {
         const id = setInterval(() => {
             var index = Math.floor(Math.random() * colorArray.length);
             // console.log(index)
-            setColor((colorArray[index]))
+            setColor((colorArray[0]))
         }, 500);
         return () => clearInterval(id);
     }, []);
@@ -67,12 +67,14 @@ const ActivityIndicatorElement = ({ loading, round }) => {
                 flexDirection: 'column',
                 justifyContent:  'center'
             }}>
-                { round  ? <ActivityIndicator  size="large" color={color} animating={true} /> :
+                <ActivityIndicator  size="large" color={color} animating={true} /> 
+                {/* { round  ? 
+                :
                 <View style={{
                     position: 'absolute', left: 0, right: 0, bottom: 0, top: 56
                 }}>
                     <Animated.View style={lineStyle} />
-                </View>}
+                </View>} */}
             </SafeAreaView>
         </Modal>
 

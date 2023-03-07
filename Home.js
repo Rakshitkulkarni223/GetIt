@@ -133,7 +133,7 @@ const Home = ({ navigation, route }) => {
         Notifications.addNotificationResponseReceivedListener(async (response) => {
             try {
                 const url = response?.notification?.request?.content?.data?.url;
-                console.log(url)
+                // console.log(url)
                 if (url) {
                     Linking.openURL(url);
                 }
