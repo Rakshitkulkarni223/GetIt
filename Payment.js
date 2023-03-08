@@ -142,7 +142,7 @@ const PaymentGateway = ({ navigation, route }) => {
                         justifyContent: 'center'
                     }}>
                         <Ionicons name="ios-location-sharp" size={normalize(17)} color="#D41636" onPress={() => {
-                            Alert.alert('Delivery Location', `${route.params.displayCurrentAddress}`, [
+                            Alert.alert('Delivery Location 📌', `${route.params.displayCurrentAddress}`, [
                                 {
                                     text: 'Want to change?',
                                     onPress: () => navigation.pop(2),
@@ -171,7 +171,7 @@ const PaymentGateway = ({ navigation, route }) => {
                                     color: '#000',
                                 }}
                                     onPress={() => {
-                                        Alert.alert('Delivery Location', `${route.params.displayCurrentAddress}`, [
+                                        Alert.alert('Delivery Location 📌', `${route.params.displayCurrentAddress}`, [
                                             {
                                                 text: 'Want to change?',
                                                 onPress: () => navigation.pop(2),
@@ -190,7 +190,7 @@ const PaymentGateway = ({ navigation, route }) => {
                             justifyContent: 'flex-start',
                         }}>
                             <Text style={{ fontSize: normalize(10), color: 'white', }} onPress={() => {
-                                Alert.alert('Delivery Location', `${route.params.displayCurrentAddress}`, [
+                                Alert.alert('Delivery Location 📌', `${route.params.displayCurrentAddress}`, [
                                     {
                                         text: 'Want to change?',
                                         onPress: () => navigation.pop(2),
@@ -305,10 +305,10 @@ const PaymentGateway = ({ navigation, route }) => {
             setloading(false)
 
             for (let i = 0; i < route.params.adminList.length; i++) {
-                await NotificationHandlerAdmin(true, route.params.adminList[i]['fcmToken'], `New Order Arrived ✨🤩 Order Id: ${route.params.OrderId}`, `Delivery Location : ${route.params.displayCurrentAddress}`)
+                await NotificationHandlerAdmin(true, route.params.adminList[i]['fcmToken'], `New Order Arrived ✨🤩 Order Id: ${route.params.OrderId}`, `Delivery Location 📌: ${route.params.displayCurrentAddress}`)
             }
 
-            await NotificationHandler(true, auth.currentUser.phoneNumber, `Order Placed ✅🎊 Order Id: ${route.params.OrderId}`, `Delivery Location : ${route.params.displayCurrentAddress}`)
+            await NotificationHandler(true, auth.currentUser.phoneNumber, `Order Placed ✅🎊 Order Id: ${route.params.OrderId}`, `Delivery Location 📌: ${route.params.displayCurrentAddress}`)
             await NotificationHandler(true, auth.currentUser.phoneNumber, `Thank you 🤩❤️`, `Please collect your order from our delivery agent.`)
 
             navigation.reset({

@@ -6,7 +6,7 @@ import ItemsListViewUsers from '../ListView/ItemListViewUsers';
 import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
-const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, latitude , adminList}) => {
+const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, latitude, adminList }) => {
 
    const [AllItems, setAllItems] = useState([]);
 
@@ -18,18 +18,35 @@ const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, lati
 
    var adminRatings = '';
 
-   var ratings = '';
+   var ratings = {};
+   var totalNumberOfUsers = {};
 
- 
-
+   var eachRatings = {};
 
    useEffect(() => {
-      const getRating = onValue(ref(database, `userRatings/${auth.currentUser.phoneNumber}/`),
+      const getRating = onValue(ref(database, `userRatings/`),
          (snapshot) => {
             if (snapshot.exists()) {
-               ratings = snapshot.val();
+               eachRatings = snapshot.val();
+               snapshot.forEach((child) => {
+                  child.forEach((item_id) => {
+                     item_id.forEach((item_with_rating) => {
+                        if(!ratings[item_id.key])
+                        {
+                           ratings[item_id.key] = 0
+                           totalNumberOfUsers[item_id.key] = 0;
+                        }
+                        ratings[item_id.key] += item_with_rating.val()
+                        if(item_with_rating.val()!==0)
+                        {
+                           totalNumberOfUsers[item_id.key] += 1
+                        }
+                     })
+                  })
+               })
             }
-         })
+         }
+      )
       return () => {
          getRating();
       }
@@ -52,8 +69,6 @@ const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, lati
 
       setloading(true)
 
-      // console.log(auth.currentUser.uid)
-
       const getitems = onValue(itemsList, (snapshot) => {
 
          var items = [];
@@ -62,21 +77,23 @@ const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, lati
             count = true;
             child.forEach((it) => {
                var ItemRating = 0;
-               var ItemTotalRating = 0
+               var ItemTotalRating = ratings[it.key];
 
-               var totalUsers = 0;
+               var totalUsers = totalNumberOfUsers[it.key];
 
                var RatedBefore = false;
 
-               if (ratings && ratings[it.key] !== undefined) {
-                  ItemRating = ratings[it.key]["rating"]
+               // console.log(Object.keys(ratings).length,totalNumberOfUsers[it.key])
+    
+               if (eachRatings && eachRatings[auth.currentUser.phoneNumber][it.key] !== undefined) {
+                  ItemRating = eachRatings[auth.currentUser.phoneNumber][it.key]["rating"]
                   RatedBefore = true;
                }
 
-               if (adminRatings && adminRatings[it.key] !== undefined) {
-                  ItemTotalRating = adminRatings[it.key]["Rating"]
-                  totalUsers = adminRatings[it.key]["TotalUsers"]
-               }
+               // if (adminRatings && adminRatings[it.key] !== undefined) {
+               //    ItemTotalRating = adminRatings[it.key]["Rating"]
+               //    totalUsers = adminRatings[it.key]["TotalUsers"]
+               // }
 
                items.push({
                   displaycategory: count,

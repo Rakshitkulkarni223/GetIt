@@ -534,9 +534,9 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                     {
                         data[index].OrderStatus === -1 ?
 
-                            <MaterialCommunityIcons name="clock-alert" size={normalize(16)} color="#A08703"
+                            <MaterialCommunityIcons name="clock-alert" size={normalize(16)} color="#BFA103"
                                 onPress={() => {
-                                    Alert.alert('Order Status', 'Pending', [
+                                    Alert.alert('🟥 Order Status', 'Pending...⏳', [
                                         {
                                             text: "OK",
                                         }
@@ -546,7 +546,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
 
                             data[index].OrderStatus === 0 ?
                                 <MaterialCommunityIcons name="clock-check" size={normalize(16)} color="#81A413" onPress={() => {
-                                    Alert.alert('Order Status', 'Confirmed', [
+                                    Alert.alert('🟨 Order Status ', 'Confirmed! 😍🎊', [
                                         {
                                             text: "OK",
                                         }
@@ -555,7 +555,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                                 }} />
                                 : data[index].OrderStatus === 1 ?
                                     <MaterialCommunityIcons name="check-decagram" size={normalize(16)} color="#07BA5B" onPress={() => {
-                                        Alert.alert('Order Status', 'Delivered', [
+                                        Alert.alert('🟩 Order Status', 'Delivered. ✅', [
                                             {
                                                 text: "OK",
                                             }
@@ -564,7 +564,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                                     }} />
                                     :
                                     <MaterialCommunityIcons name="cancel" size={normalize(16)} color="#E52727" onPress={() => {
-                                        Alert.alert('Order Status', 'Not Delivered (cancelled)', [
+                                        Alert.alert('Order Status ❎', 'Not Delivered (cancelled) ✖️', [
                                             {
                                                 text: "OK",
                                             }
@@ -584,7 +584,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
 
                                 setloading(false)
 
-                                Alert.alert('Order Delivery Location', `Exact location not found, but Location Address is mentioned as  ${data[index].Location}`, [
+                                Alert.alert('Order Delivery Location 📌', `Exact location not found, but Location Address is mentioned as  ${data[index].Location}`, [
                                     {
                                         text: 'OK',
                                     },
@@ -596,7 +596,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                                 setlatitude(data[index].Latitude);
                                 setloading(false)
 
-                                Alert.alert('Order Delivery Location', `${data[index].Location}`, [
+                                Alert.alert('Order Delivery Location 📌', `${data[index].Location}`, [
                                     {
                                         text: 'OK',
                                     },

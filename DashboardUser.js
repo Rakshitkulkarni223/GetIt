@@ -471,7 +471,7 @@ const DashboardUser = ({ navigation, OrderId, displayCurrentAddress, setdisplayC
                 title: '',
                 headerStyle: {
                     backgroundColor: '#8297C4',
-                    backgroundColor: '#67C18A',
+                    backgroundColor: '#7FA09D',
                 },
                 headerRight: () => (
                     // <AntDesign name="logout" size={normalize(18)} color="#BF0505" onPress={() => signOut(auth).then(() => {

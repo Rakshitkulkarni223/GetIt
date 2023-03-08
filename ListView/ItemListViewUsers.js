@@ -289,10 +289,10 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                             borderTopRightRadius: scale(4),
                                             borderBottomRightRadius: scale(4),
                                             backgroundColor: '#C2C8C5',
-                                            backgroundColor: '#3EB579',
+                                            backgroundColor: '#529D96',
                                             borderLeftWidth: scale(0.6),
                                         }}>
-                                            <Ionicons name="md-add-outline" size={scale(18)} color="#000"
+                                            <Ionicons name="md-add-outline" size={scale(18)} color="#fff"
                                                 onPress={() => handleIncrease(index)}
                                                 style={{
                                                     textAlign: 'center',
@@ -791,14 +791,14 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
 
             <SafeAreaView style={{
                 flex: 1,
-                backgroundColor: '#fff',
+                backgroundColor: '#D7D7DA',
             }}>
                 {
                     DATA.length !== 0 ?
                         <SafeAreaView style={{
                             flex: 1,
                             backgroundColor: '#3B3636',
-                            backgroundColor: '#EAEAEA'
+                            backgroundColor: '#D7D7DA'
                         }}>
                             <FlatList
                                 data={data}
@@ -832,8 +832,6 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                                 ListHeaderComponent={renderHeader(query, DATA, setData, setQuery, searchRef, setloading)}
                             />
 
-
-
                             {(totalamount !== 0) ?
                                 <View style={{
                                     flexDirection: 'row',
@@ -848,7 +846,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                                         paddingVertical: scale(5),
                                         paddingHorizontal: scale(13),
                                         backgroundColor: '#706F71',
-                                        backgroundColor: !showfooter ? '#67C18A' : '#67C18A',
+                                        backgroundColor: !showfooter ? '#61A39D' : '#61A39D',
                                     }}>
                                         <View style={{
                                             flexDirection: 'column',
@@ -892,7 +890,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                                         paddingVertical: scale(5),
                                         paddingHorizontal: scale(13),
                                         backgroundColor: '#6B74A3',
-                                        backgroundColor: !showfooter ? '#67C18A' : '#67C18A',
+                                        backgroundColor: !showfooter ? '#61A39D' : '#61A39D',
                                     }}>
                                         <TouchableOpacity onPress={checkcart}>
                                             <View style={{
@@ -981,6 +979,7 @@ const styles = StyleSheet.create({
         borderWidth: scale(0.9),
         backgroundColor: '#BDF3CB',
         backgroundColor: '#565F83',
+        borderColor: '#fff',
         elevation: scale(3),
     },
     title_item: {

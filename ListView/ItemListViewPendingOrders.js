@@ -169,7 +169,7 @@ const OrderDelivered = async (delivered, { OrderId, phoneNumber, Location }) => 
             Paid: 1
         })
 
-        await NotificationHandler(true, phoneNumber, `Order Delivered 🍽️😋 Order Id: ${OrderId}`, `Delivery Location: ${Location}`)
+        await NotificationHandler(true, phoneNumber, `Order Delivered 🍽️😋 Order Id: ${OrderId}`, `Delivery Location 📌: ${Location}`)
         // await NotificationHandler(true,phoneNumber,`Thank you ❤️`, ``)
 
     }
@@ -643,7 +643,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
 
                             if (data[index].OrderStatus === 1 || data[index].OrderStatus === 2) {
                                 setloading(false)
-                                Alert.alert('Order Delivery Location', `${data[index].Location}`, [
+                                Alert.alert('Order Delivery Location 📌', `${data[index].Location}`, [
                                     {
                                         text: 'OK',
                                     },
@@ -653,7 +653,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                             if (data[index].OrderStatus === -1 || data[index].OrderStatus === 0) {
                                 if (!data[index].Longitude && !data[index].Latitude && data[index].Location !== '') {
                                     setloading(false)
-                                    Alert.alert('Exact Location Not Found', `But Location Address is mentioned as ${data[index].Location}`, [
+                                    Alert.alert('Exact Location Not Found 📌', `But Location Address is mentioned as ${data[index].Location}`, [
                                         {
                                             text: 'Want to Call?',
                                             onPress: async () => {
@@ -675,7 +675,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
 
                                     setlatitude(data[index].Latitude);
 
-                                    Alert.alert('Order Delivery Location', `${data[index].Location}`, [
+                                    Alert.alert('Order Delivery Location 📌', `${data[index].Location}`, [
                                         {
                                             text: 'Want to Call?',
                                             onPress: async () => {
@@ -725,7 +725,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                                     }
 
                                     if (data[index].OrderStatus === 0) {
-                                        Alert.alert('Order Delivered?', `Delivery Location: ${data[index].Location}`, [
+                                        Alert.alert('Order Delivered?', `Delivery Location 📌: ${data[index].Location}`, [
                                             {
                                                 text: "No, Not Delivered",
                                                 onPress: () => {
@@ -761,7 +761,6 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
 
                         <MaterialIcons name="delete-outline" size={normalize(18)} color="#E5453B"
                             onPress={() => {
-
 
                                 Alert.alert('All items selected', 'Do you want cancel all items?', [
                                     {
