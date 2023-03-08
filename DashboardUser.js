@@ -57,7 +57,8 @@ function MyTabs({ navigation, OrderId, displayCurrentAddress, longitude, latitud
                 tabBarInactiveTintColor: '#000',
                 tabBarActiveTintColor: '#393B72',
                 tabBarLabelPosition: 'below-icon',
-                headerShown: false
+                headerShown: false,
+                tabBarHideOnKeyboard: true
             }}
         >
             <Tab.Screen
@@ -470,7 +471,7 @@ const DashboardUser = ({ navigation, OrderId, displayCurrentAddress, setdisplayC
                 title: '',
                 headerStyle: {
                     backgroundColor: '#8297C4',
-                    backgroundColor: '#6982A9',
+                    backgroundColor: '#67C18A',
                 },
                 headerRight: () => (
                     // <AntDesign name="logout" size={normalize(18)} color="#BF0505" onPress={() => signOut(auth).then(() => {

@@ -327,7 +327,7 @@ const ConfiremdOrders = ({ navigation, route }) => {
             headerTitle: '',
             headerStyle: {
                backgroundColor: '#77C98D',
-               backgroundColor: '#6982A9',
+               backgroundColor: '#67C18A',
            },
             // headerTintColor: '#fff',
             // headerTitleStyle: {

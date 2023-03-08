@@ -17,9 +17,9 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
         fontWeight: "600",
         marginLeft: scale(15),
         marginTop: scale(10),
-        color: 'black',
+        color: '#000',
         letterSpacing: scale(0.5),
-        paddingRight: scale(15),
+        // paddingRight: scale(15),
     }}>{category.toUpperCase()}</Text> : <></>}
         <View>
 
@@ -29,7 +29,7 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                     flex: 1,
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    paddingRight: scale(8),
+                    paddingRight: scale(20),
                 }}>
                     <View>
                         <Text style={styles.title_item}>
@@ -49,7 +49,7 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                 <FontAwesome
                                     name='star-o'
                                     size={normalize(15)}
-                                    color="black"
+                                    color="#fff"
                                 // style={{ paddingLeft: scale(1) }}
                                 />
                                 :
@@ -62,7 +62,8 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                         }
                         <Text style={{
                             paddingLeft: scale(2),
-                            textAlignVertical: 'center'
+                            textAlignVertical: 'center',
+                            color: '#fff'
                         }}>
                             <Text style={{
                                 fontWeight: '600'
@@ -77,7 +78,6 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                         flexDirection: 'row',
                         justifyContent: 'flex-start'
                     }}>
-                        {/* <FontAwesome name="rupee" size={normalize(15)} color="black" /> */}
                         <Text style={styles.title_price}>
                             ₹{price}
                         </Text>
@@ -87,7 +87,6 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                             flexDirection: 'row',
                             justifyContent: 'flex-start'
                         }}>
-                            {/* <FontAwesome name="rupee" size={normalize(18)} color="black" style={{ paddingTop: scale(12), }} /> */}
                             <Text style={styles.total_item_price}>
                                 ₹{ItemQuantity * price}
                             </Text>
@@ -99,7 +98,7 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                     flex: 1,
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    // alignItems: 'center',
+                    alignItems: 'center',
                 }}
                 >
                     <View style={{ borderWidth: scale(1), borderRadius: scale(10) }}>
@@ -132,7 +131,7 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                     <FontAwesome
                                         name={ratingOne}
                                         size={normalize(15)}
-                                        color={ratingOne === 'star-o' ? "black" : "#f1c40f"}
+                                        color={ratingOne === 'star-o' ? "#fff" : "#f1c40f"}
                                         onPress={() => {
                                             RateItem(index, 1)
                                         }}
@@ -140,7 +139,7 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                     <FontAwesome
                                         name={ratingTwo}
                                         size={normalize(15)}
-                                        color={ratingTwo === 'star-o' ? "black" : "#f1c40f"}
+                                        color={ratingTwo === 'star-o' ? "#fff" : "#f1c40f"}
                                         onPress={() => {
                                             RateItem(index, 2)
                                         }}
@@ -149,7 +148,7 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                     <FontAwesome
                                         name={ratingThree}
                                         size={normalize(15)}
-                                        color={ratingThree === 'star-o' ? "black" : "#f1c40f"}
+                                        color={ratingThree === 'star-o' ? "#fff" : "#f1c40f"}
                                         onPress={() => {
                                             RateItem(index, 3)
                                         }}
@@ -158,7 +157,7 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                     <FontAwesome
                                         name={ratingFour}
                                         size={normalize(15)}
-                                        color={ratingFour === 'star-o' ? "black" : "#f1c40f"}
+                                        color={ratingFour === 'star-o' ? "#fff" : "#f1c40f"}
                                         onPress={() => {
                                             RateItem(index, 4)
                                         }}
@@ -167,7 +166,7 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                     <FontAwesome
                                         name={ratingFive}
                                         size={normalize(15)}
-                                        color={ratingFive === 'star-o' ? "black" : "#f1c40f"}
+                                        color={ratingFive === 'star-o' ? "#fff" : "#f1c40f"}
                                         onPress={() => {
                                             RateItem(index, 5)
                                         }}
@@ -182,22 +181,23 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                 justifyContent: 'center',
                                 paddingRight: scale(2),
                             }}>
-                                <Text>Rate </Text>
-                                <Text style={{ fontWeight: '600' }}>{title}</Text>
+                                <Text style={{
+                                    color: '#fff'
+                                }}>Rate </Text>
+                                <Text style={{ fontWeight: '600',color: '#fff' }}>{title}</Text>
                             </View>
                         </View> : <></>}
 
                     <View style={{
                         flexDirection: 'row',
-                        // justifyContent: 'space-between',
                         justifyContent: 'flex-end',
                         position: 'absolute',
-                        marginTop: verticalScale(115),
+                        marginTop: verticalScale(80),
                         borderWidth: scale(1),
-                        height: scale(22),
+                        height: scale(20),
                         alignItems: 'center',
                         marginLeft: scale(38),
-                        width: scale(80),
+                        width: scale(70),
                         borderColor: 'black',
                         backgroundColor: 'white',
                         borderWidth: scale(0.5),
@@ -210,29 +210,18 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                     <View
                                         style={{
                                             flexDirection: 'row',
-                                            // justifyContent: 'center',
-                                            // position: 'absolute',
-                                            // marginTop: verticalScale(115),
-                                            // borderWidth: scale(1),
-                                            // height: scale(22),
-                                            // marginLeft: scale(38),
-                                            // width: scale(80),
-                                            // borderColor: 'black',
-                                            // backgroundColor: 'white',
-                                            // borderWidth: scale(0.5),
-                                            // borderRadius: scale(5),
-                                            // elevation: scale(10),
+                                            justifyContent: 'center'
                                         }}
                                     >
                                         <View style={{
                                             justifyContent: 'center',
                                             flex: 1,
-                                            backgroundColor: '#5324A6',
+                                            backgroundColor: '#fff',
                                             borderTopLeftRadius: scale(4),
-                                            borderBottomLeftRadius: scale(4)
+                                            borderBottomLeftRadius: scale(4),
                                         }}
                                         >
-                                            <AntDesign name="minus" size={scale(20)} color="white"
+                                            <AntDesign name="minus" size={scale(18)} color="#F00707"
                                                 onPress={() => handleDecrease(index)}
                                                 style={{
                                                     textAlign: 'center',
@@ -246,13 +235,13 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                                     StyleSheet.absoluteFill,
                                                     {
                                                         fontWeight: '600',
-                                                        fontSize: normalize(15),
-                                                        backgroundColor: '#fff',
-                                                        // borderLeftWidth: scale(0.5),
-                                                        // borderRightWidth: scale(0.5),
+                                                        fontSize: normalize(13),
+                                                        backgroundColor: '#C2C8C5',
                                                         color: "black",
                                                         textAlign: 'center',
                                                         textAlignVertical: 'center',
+                                                        borderLeftWidth: scale(0.5),
+                                                        borderRightWidth: scale(0.5)
                                                     }
                                                 ]
                                             }>{ItemQuantity}</Text>
@@ -264,10 +253,10 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                             alignItems: 'center',
                                             borderTopRightRadius: scale(4),
                                             borderBottomRightRadius: scale(4),
-                                            backgroundColor: '#5324A6',
+                                            backgroundColor: '#fff',
                                         }}
                                         >
-                                            <Ionicons name="md-add-outline" size={scale(20)} color="white"
+                                            <Ionicons name="md-add-outline" size={scale(18)} color="#000"
                                                 onPress={() => handleIncrease(index)}
                                                 style={{
                                                     textAlign: 'center',
@@ -282,33 +271,28 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                     }}>
                                         <View style={{
                                             marginRight: scale(10),
-                                            // borderWidth: scale(1),
-                                            justifyContent: 'center'
+                                            justifyContent: 'center',
+                                            
                                         }}>
                                             <Text style={{
                                                 textAlignVertical: 'center',
                                                 textAlign: 'center',
                                                 color: "black",
-                                                fontSize: normalize(15),
+                                                fontSize: normalize(13),
                                                 fontWeight: "600",
                                                 letterSpacing: scale(0.4),
                                             }} onPress={() => handleIncrease(index)}>Add</Text>
                                         </View>
                                         <View style={{
-                                            //  flex: 1, 
-                                            // justifyContent: 'center',
-                                            // alignItems: 'center',
-                                            // marginRight: scale(3),
                                             paddingLeft: scale(2.5),
                                             paddingRight: scale(3),
                                             borderTopRightRadius: scale(4),
                                             borderBottomRightRadius: scale(4),
-                                            // alignItems: 'center',
-                                            backgroundColor: '#5324A6',
+                                            backgroundColor: '#C2C8C5',
+                                            backgroundColor: '#3EB579',
                                             borderLeftWidth: scale(0.6),
-                                            // backgroundColor: '#852FD2'
                                         }}>
-                                            <Ionicons name="md-add-outline" size={scale(20)} color="white"
+                                            <Ionicons name="md-add-outline" size={scale(18)} color="#000"
                                                 onPress={() => handleIncrease(index)}
                                                 style={{
                                                     textAlign: 'center',
@@ -563,7 +547,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
 
         var allrating = 0;
 
-        var totalusers = 0
+        var totalusers = 0;
 
         onValue(ref(database, `userRatings/`), (snapshot) => {
             // console.log(snapshot)
@@ -855,7 +839,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                                     flexDirection: 'row',
                                     justifyContent: 'space-between',
                                     borderTopWidth: scale(0.7),
-                                    borderColor: '#fff'
+                                    borderColor: '#000'
                                 }}>
                                     <View style={{
                                         flex: 1,
@@ -864,7 +848,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                                         paddingVertical: scale(5),
                                         paddingHorizontal: scale(13),
                                         backgroundColor: '#706F71',
-                                        backgroundColor: !showfooter ? '#5F26B1' : '#546CB8',
+                                        backgroundColor: !showfooter ? '#67C18A' : '#67C18A',
                                     }}>
                                         <View style={{
                                             flexDirection: 'column',
@@ -908,7 +892,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                                         paddingVertical: scale(5),
                                         paddingHorizontal: scale(13),
                                         backgroundColor: '#6B74A3',
-                                        backgroundColor: !showfooter ? '#5F26B1' : '#546CB8',
+                                        backgroundColor: !showfooter ? '#67C18A' : '#67C18A',
                                     }}>
                                         <TouchableOpacity onPress={checkcart}>
                                             <View style={{
@@ -942,89 +926,6 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                                // <View style={{
-                                //     justifyContent: 'space-between',
-                                //     flexDirection: 'row',
-                                //     backgroundColor: !showfooter ? '#7526B8' : '#546CB8',
-                                //     height: verticalScale(40),
-                                //     borderTopColor: 'white',
-                                //     borderTopWidth: scale(0.6)
-                                // }}>
-                                //     <View
-                                //         style={{
-                                //             justifyContent: 'center',
-                                //         }}
-                                //     >
-                                //         <View style={{
-                                //             flexDirection: 'column',
-                                //             // justifyContent: 'flex-start'
-                                //         }}>
-                                //             <Text style={{
-                                //                 fontSize: normalize(10),
-                                //                 paddingHorizontal: scale(15),
-                                //                 color: !showfooter ? 'white' : 'white',
-                                //                 // fontWeight: '600',
-                                //                 letterSpacing: scale(0.4),
-                                //                 fontFamily: 'sans-serif-medium'
-                                //             }}>
-                                //                 {showfooter ? totalItems : totalConfirmedItems} items
-                                //             </Text>
-                                //             <Text style={{
-                                //                 fontSize: normalize(15),
-                                //                 paddingHorizontal: scale(15),
-                                //                 color: !showfooter ? 'white' : 'white',
-                                //                 fontWeight: '600',
-                                //                 letterSpacing: scale(0.4),
-                                //             }} >₹{totalamount}</Text></View>
-                                //     </View>
-
-                                //     <View
-                                //         style={{
-                                //             justifyContent: 'center',
-                                //             paddingHorizontal: scale(20)
-                                //         }}
-                                //     >
-                                //         <View style={{
-                                //             flexDirection: 'row',
-                                //             alignItems: 'center',
-                                //             borderWidth: scale(0.6),
-                                //             borderRadius: scale(5),
-                                //             backgroundColor: 'white',
-                                //             borderColor: 'white',
-                                //             paddingVertical: verticalScale(4),
-                                //             paddingHorizontal: scale(10)
-                                //         }}>
-                                //             <TouchableOpacity onPress={checkcart}>
-                                //                 <View style={{
-                                //                     flexDirection: 'row',
-                                //                     justifyContent: 'center'
-                                //                 }}>
-                                //                     <View style={{
-                                //                         justifyContent: 'center',
-
-                                //                     }}>
-                                //                         <Text style={{
-                                //                             textAlign: 'center',
-                                //                             fontSize: normalize(15),
-                                //                             color: showfooter ? 'black' : '#D34386',
-                                //                             fontWeight: '600',
-                                //                             letterSpacing: scale(0.4),
-                                //                             fontFamily: 'sans-serif-medium'
-                                //                         }} > {showfooter ? "View Cart" : "Pay and GetIt"}
-                                //                         </Text>
-                                //                     </View>
-                                //                     <View style={{
-                                //                         justifyContent: 'center',
-                                //                         paddingLeft: scale(5)
-                                //                     }}>
-                                //                         <AntDesign name="caretright" size={normalize(10)}
-                                //                             color={showfooter ? "black" : '#D34386'} />
-                                //                     </View>
-                                //                 </View>
-                                //             </TouchableOpacity>
-                                //         </View>
-                                //     </View>
-                                // </View> 
                                 : <></>}
 
                         </SafeAreaView>
@@ -1068,36 +969,34 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: scale(10),
-        // paddingBottom: scale(15),
+        paddingVertical: scale(10),
+        paddingLeft: scale(10),
+        paddingRight: scale(0),
         marginLeft: scale(15),
         marginRight: scale(15),
         marginTop: scale(8),
         marginBottom: scale(9),
         marginVertical: verticalScale(0),
         borderRadius: scale(8),
-        // borderBottomWidth: scale(1),
-        // borderLeftWidth: scale(1),
         borderWidth: scale(0.9),
-        // borderBottomColor: '#000',
-        backgroundColor: '#ffe4e1',
         backgroundColor: '#BDF3CB',
-        elevation: scale(5),
+        backgroundColor: '#565F83',
+        elevation: scale(3),
     },
     title_item: {
         fontSize: normalize(13),
-        color: '#000',
+        color: '#fff',
         fontWeight: "600",
     },
     title_price: {
         fontSize: normalize(13),
-        color: '#000',
+        color: '#fff',
         fontWeight: "600",
         // paddingTop: 40
     },
     total_item_price: {
         fontSize: normalize(18),
-        color: '#000',
+        color: '#fff',
         paddingTop: scale(10),
     },
     container_addremove: {
@@ -1120,10 +1019,11 @@ const styles = StyleSheet.create({
     description: {
         fontSize: normalize(10),
         fontStyle: 'italic',
+        color: '#fff'
     },
     photo: {
-        height: verticalScale(126),
-        width: scale(144),
+        height: verticalScale(90),
+        width: scale(100),
         borderRadius: scale(9)
     },
 });

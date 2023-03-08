@@ -54,7 +54,8 @@ function MyTabs() {
                 tabBarInactiveTintColor: '#000',
                 tabBarActiveTintColor: '#6D9791',
                 tabBarLabelPosition: 'below-icon',
-                headerShown: false
+                headerShown: false,
+                tabBarHideOnKeyboard: true
             }}
         >
             <Tab.Screen

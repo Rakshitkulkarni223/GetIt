@@ -141,7 +141,7 @@ const UserAccountDetails = ({ navigation, displayCurrentAddress, longitude, lati
                     <View style={{
                         justifyContent: 'center'
                     }}>
-                        <Ionicons name="power" size={normalize(18)} color="#BF0505" onPress={async () => {
+                        <Ionicons name="power" size={normalize(17)} color="#BF0505" onPress={async () => {
                             const phoneNumber = auth.currentUser.phoneNumber.slice(0, 3) + ' ' + auth.currentUser.phoneNumber.slice(3);
                             await signOut(auth).then(() => {
                                 setloading(false)
@@ -160,7 +160,7 @@ const UserAccountDetails = ({ navigation, displayCurrentAddress, longitude, lati
                             style={{
                                 textAlignVertical: 'center',
                                 fontSize: verticalScale(14),
-                                marginLeft: scale(11),
+                                marginLeft: scale(12),
                                 color: '#BF0505'
                             }}
                             onPress={async () => {

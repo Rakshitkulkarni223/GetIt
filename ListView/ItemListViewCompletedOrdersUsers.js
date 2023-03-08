@@ -534,7 +534,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                     {
                         data[index].OrderStatus === -1 ?
 
-                            <MaterialCommunityIcons name="clock-alert" size={normalize(16)} color="#C5A603"
+                            <MaterialCommunityIcons name="clock-alert" size={normalize(16)} color="#A08703"
                                 onPress={() => {
                                     Alert.alert('Order Status', 'Pending', [
                                         {
