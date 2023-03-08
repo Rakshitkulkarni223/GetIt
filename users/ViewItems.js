@@ -77,9 +77,19 @@ const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, lati
             count = true;
             child.forEach((it) => {
                var ItemRating = 0;
-               var ItemTotalRating = ratings[it.key];
+               var ItemTotalRating = 0;
 
-               var totalUsers = totalNumberOfUsers[it.key];
+               var totalUsers = 0;
+
+               if(totalNumberOfUsers && totalNumberOfUsers[it.key] !== undefined)
+               {
+                  totalUsers = totalNumberOfUsers[it.key];
+               }
+
+               if(ratings && ratings[it.key] !== undefined)
+               {
+                  ItemTotalRating = ratings[it.key];
+               }
 
                var RatedBefore = false;
 
