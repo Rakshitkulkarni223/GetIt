@@ -27,8 +27,8 @@ const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, lati
       const getRating = onValue(ref(database, `userRatings/`),
          (snapshot) => {
             if (snapshot.exists()) {
-               eachRatings = snapshot.val();
                snapshot.forEach((child) => {
+                  eachRatings[child.key] = child.val()
                   child.forEach((item_id) => {
                      item_id.forEach((item_with_rating) => {
                         if(!ratings[item_id.key])
@@ -81,12 +81,12 @@ const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, lati
 
                var totalUsers = 0;
 
-               if(totalNumberOfUsers && totalNumberOfUsers[it.key] !== undefined)
+               if(totalNumberOfUsers && totalNumberOfUsers[it.key])
                {
                   totalUsers = totalNumberOfUsers[it.key];
                }
 
-               if(ratings && ratings[it.key] !== undefined)
+               if(ratings && ratings[it.key])
                {
                   ItemTotalRating = ratings[it.key];
                }
@@ -94,11 +94,14 @@ const ViewItems = ({ navigation, OrderId, displayCurrentAddress, longitude, lati
                var RatedBefore = false;
 
                // console.log(Object.keys(ratings).length,totalNumberOfUsers[it.key])
-    
-               if (eachRatings && eachRatings[auth.currentUser.phoneNumber][it.key] !== undefined) {
+
+               
+               if (eachRatings && eachRatings[auth.currentUser.phoneNumber] && eachRatings[auth.currentUser.phoneNumber][it.key]) {
                   ItemRating = eachRatings[auth.currentUser.phoneNumber][it.key]["rating"]
                   RatedBefore = true;
                }
+
+               
 
                // if (adminRatings && adminRatings[it.key] !== undefined) {
                //    ItemTotalRating = adminRatings[it.key]["Rating"]

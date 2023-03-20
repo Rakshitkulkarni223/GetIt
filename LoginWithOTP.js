@@ -38,7 +38,7 @@ import { AntDesign, Feather, MaterialIcons, FontAwesome5, Ionicons, MaterialComm
 import { NotificationPermission } from './NotificationHandler';
 
 
-const LoginWithOTP = ({ navigation }) => {
+const LoginWithOTP = ({ navigation, route }) => {
   // Ref or state management hooks
   const recaptchaVerifier = useRef(null);
   const [phoneNumber, setPhoneNumber] = useState();
@@ -119,31 +119,32 @@ const LoginWithOTP = ({ navigation }) => {
 
   return (
     <>
+      <StatusBar style="auto" />
       <SafeAreaView style={{
         flex: 1,
         justifyContent: 'flex-start',
         flexDirection: 'column',
-        top: StatusBar.currentHeight,
+        // top: StatusBar.currentHeight,
       }}>
         {/* <KeyboardAvoidingView enabled> */}
         {verificationId ? <ScrollView>
           <ActivityIndicatorElement loading={loading} round={true} />
           <FlashMessage ref={flashMessage} />
           <View style={{
-             marginTop: verticalScale(10),
-             paddingHorizontal: scale(10),
+            marginTop: verticalScale(10),
+            paddingHorizontal: scale(10),
           }}>
-            <Ionicons name="chevron-back-sharp" size={normalize(24)} color="black" onPress={()=>{
+            <Ionicons name="chevron-back-sharp" size={normalize(24)} color="black" onPress={() => {
               setVerificationId('');
               setVerificationCode('');
               setPhoneNumber('');
               setadminPhoneNumber('');
-            }}/>
+            }} />
           </View>
           <View style={{
             flexDirection: 'row',
             justifyContent: 'center',
-           
+
           }}>
             <View style={[styles.progressBar, { backgroundColor: '#69D9B9' }]}>
               <Animated.View style={[StyleSheet.absoluteFill]} />
@@ -373,16 +374,15 @@ const LoginWithOTP = ({ navigation }) => {
                           }
                           else {
                             try {
-
-                              await NotificationPermission()
-                              var token = (await Notifications.getExpoPushTokenAsync()).data;
-                              await set(ref(database, `adminList/` + '+91' + adminPhoneNumber), {
-                                fcmToken: token,
-                              })
+                              // await NotificationPermission()
+                              // var token = (await Notifications.getExpoPushTokenAsync()).data;
+                              // await set(ref(database, `adminList/` + '+91' + adminPhoneNumber), {
+                              //   fcmToken: token,
+                              // })
                               Alert.alert("Login as Admin", 'Please login with your registered admin mobile number.')
                               navigation.reset({
                                 index: 0,
-                                routes: [{ name: "LoginWithOTP" }],
+                                routes: [{ name: "LoginWithOTP", params: { adminLoggedIn: true } }],
                               });
                             }
                             catch (error) {
@@ -414,7 +414,6 @@ const LoginWithOTP = ({ navigation }) => {
                     setloading(true)
                     try {
                       const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
-                      await signInWithCredential(auth, credential);
 
                       if (admins.includes('+91' + phoneNumber)) {
                         setloading(false)
@@ -422,11 +421,20 @@ const LoginWithOTP = ({ navigation }) => {
                       }
                       else {
                         setloading(false)
-                        await NotificationPermission()
+                        await signInWithCredential(auth, credential);
+                        await NotificationPermission();
                         var token = (await Notifications.getExpoPushTokenAsync()).data;
-                        await set(ref(database, `usersList/` + '+91' + phoneNumber), {
-                          fcmToken: token,
-                        })
+
+                        if (route && route.params && route.params.adminLoggedIn) {
+                          await set(ref(database, `adminList/` + '+91' + phoneNumber), {
+                            fcmToken: token,
+                          })
+                        }
+                        else {
+                          await set(ref(database, `usersList/` + '+91' + phoneNumber), {
+                            fcmToken: token,
+                          })
+                        }
                         navigation.reset({
                           index: 0,
                           routes: [{ name: "Home" }],
@@ -434,11 +442,11 @@ const LoginWithOTP = ({ navigation }) => {
                       }
                     } catch (err) {
                       setloading(false)
-                      await NotificationPermission()
-                      var token = (await Notifications.getExpoPushTokenAsync()).data;
-                      await set(ref(database, `usersList/` + '+91' + phoneNumber), {
-                        fcmToken: token,
-                      })
+                      // await NotificationPermission()
+                      // var token = (await Notifications.getExpoPushTokenAsync()).data;
+                      // await set(ref(database, `usersList/` + '+91' + phoneNumber), {
+                      //   fcmToken: token,
+                      // })
                       setMessage({ text: `Error: ${err.message}`, type: 'danger' });
                     }
                   }}

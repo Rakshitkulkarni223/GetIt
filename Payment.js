@@ -226,7 +226,7 @@ const PaymentGateway = ({ navigation, route }) => {
                             justifyContent: 'center',
                         }}>
                             {timer === '00:00s' ? (
-                                // NotificationHandler(auth.currentUser.phoneNumber,`Order Not Placed ❌🙁 Order Id: ${route.params.OrderId}`, `Payment gateway expired, Please Re-order and GetIt.`),
+                                // NotificationHandler(true,auth.currentUser.phoneNumber,`Order Not Placed ❌🙁 Order Id: ${route.params.OrderId}`, `Payment gateway expired, Please Re-order and GetIt.`),
                                 Alert.alert('Order Not Confirmed', `Payment gateway expired, Please Re-order and GetIt.`, [
                                     {
                                         text: 'Ok',

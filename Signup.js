@@ -320,7 +320,7 @@ const SignUp = ({ navigation, route }) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#D8DFE7', top: StatusBar.currentHeight }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#D8DFE7'}}>
       <ScrollView>
 
         {route && route.params ? <View></View> :
@@ -409,7 +409,7 @@ const SignUp = ({ navigation, route }) => {
             <View style={{
               flexDirection: 'column',
               justifyContent: 'flex-start',
-              marginVertical: verticalScale(15)
+              marginVertical: verticalScale(10)
             }}>
 
               <View style={{
@@ -577,12 +577,13 @@ const SignUp = ({ navigation, route }) => {
               borderRadius: scale(5),
             }}
           >
-            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), letterSpacing: scale(0.4), fontFamily: 'sans-serif-light' }}>First name</Text>
+            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), letterSpacing: scale(0.4), 
+              fontWeight: '200',}}>First name</Text>
             <TextInput
               style={{
                 marginLeft: scale(10), marginBottom: verticalScale(3),
                 fontSize: normalize(14),
-                fontFamily: 'sans-serif-medium',
+                fontWeight: '400', 
               }}
               defaultValue={route && route.params ? route.params.firstName : ""}
               placeholder="Enter first name"
@@ -596,10 +597,15 @@ const SignUp = ({ navigation, route }) => {
               borderTopWidth: scale(0.5)
             }}>
               <Text style={{
-                marginLeft: scale(10), marginTop: verticalScale(5), letterSpacing: scale(0.4), fontFamily: 'sans-serif-light'
+                marginLeft: scale(10), marginTop: verticalScale(5), letterSpacing: scale(0.4), 
+                // fontFamily: 'sans-serif-thin'
+                fontWeight: '200'
               }}>Last name</Text>
               <TextInput
-                style={{ marginLeft: scale(10), marginBottom: verticalScale(3), fontSize: normalize(14), fontFamily: 'sans-serif-medium' }}
+                style={{ marginLeft: scale(10), marginBottom: verticalScale(3), fontSize: normalize(14), 
+                  // fontFamily: 'sans-serif-light'
+                  fontWeight: '400', 
+                }}
                 placeholder="Enter last name"
                 defaultValue={route && route.params ? route.params.lastName : ""}
                 keyboardType="default"
@@ -617,12 +623,14 @@ const SignUp = ({ navigation, route }) => {
               marginTop: verticalScale(10),
             }}
           >
-            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), letterSpacing: scale(0.4), fontFamily: 'sans-serif-light' }}>DOB</Text>
+            <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), letterSpacing: scale(0.4), 
+               fontWeight: '200', 
+              }}>DOB</Text>
             <Text
               style={{
-                marginLeft: scale(10),marginBottom: verticalScale(3), marginTop: verticalScale(5), fontSize: normalize(14),
+                marginLeft: scale(10),marginBottom: verticalScale(3), marginTop: verticalScale(2), fontSize: normalize(14),
                 fontWeight: DOBfontweight,
-                fontFamily: 'sans-serif-medium',
+                fontWeight: '400', 
               }}
               onPress={showDatePicker}
             >
@@ -647,7 +655,7 @@ const SignUp = ({ navigation, route }) => {
               flexDirection: 'column',
               justifyContent: 'flex-start'
             }}>
-              <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), letterSpacing: scale(0.4), fontFamily: 'sans-serif-light' }}>Email</Text>
+              <Text style={{ marginLeft: scale(10), marginTop: verticalScale(5), letterSpacing: scale(0.4),fontWeight: '200',}}>Email</Text>
               <View style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
@@ -660,7 +668,7 @@ const SignUp = ({ navigation, route }) => {
                   <TextInput
                     style={{
                       fontSize: normalize(14),
-                      fontFamily: 'sans-serif-medium'
+                      fontWeight: '400', 
                     }}
                     placeholder="email@address.com"
                     keyboardType="default"
@@ -696,7 +704,7 @@ const SignUp = ({ navigation, route }) => {
               flexDirection: 'column',
               justifyContent: 'flex-start'
             }}>
-              <Text style={{ marginLeft: scale(10), letterSpacing: scale(0.4), marginTop: verticalScale(5), fontFamily: 'sans-serif-light' }}>Password</Text>
+              <Text style={{ marginLeft: scale(10), letterSpacing: scale(0.4), marginTop: verticalScale(5), fontWeight: '200', }}>Password</Text>
               <View style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
@@ -710,7 +718,7 @@ const SignUp = ({ navigation, route }) => {
                   <TextInput
                     style={{
                       fontSize: normalize(14),
-                      fontFamily: 'sans-serif-medium'
+                      fontWeight: '400', 
                     }}
                     placeholder={route && route.params ? route.params.password === '' ? "Must have atleast 6 characters" : "Password cannot be updated here" : "Must have atleast 6 characters"}
                     keyboardType="default"

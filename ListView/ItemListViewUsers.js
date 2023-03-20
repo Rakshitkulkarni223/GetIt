@@ -67,10 +67,10 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                         }}>
                             <Text style={{
                                 fontWeight: '600'
-                            }}>{avgRating}/5, </Text>
-                            <Text style={{
+                            }}>{avgRating}/5</Text>
+                            {/* <Text style={{
                                 fontWeight: '400'
-                            }}>{totalUsers}</Text>
+                            }}>{totalUsers}</Text> */}
                         </Text>
                     </View>
 

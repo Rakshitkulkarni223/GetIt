@@ -69,7 +69,7 @@ const UserProfile = ({ navigation, route }) => {
     return (
         <>
             <SafeAreaView
-                style={{ flex: 1, backgroundColor: '#D8E0E7', top: StatusBar.currentHeight }}
+                style={{ flex: 1, backgroundColor: '#D8E0E7' }}
             >
                 <ScrollView>
                     <ActivityIndicatorElement loading={loading} />

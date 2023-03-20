@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react'
 import { Dimensions, Image } from 'react-native';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';
@@ -9,7 +10,7 @@ const AboutUs = ({ navigation }) => {
     const [loading, setloading] = useState(false);
     useEffect(() => {
         navigation.setOptions({
-            headerShown: true,
+            headerShown: false,
             title: "",
             headerStyle: {
                 backgroundColor: '#77C98D',
@@ -28,11 +29,22 @@ const AboutUs = ({ navigation }) => {
                 justifyContent: 'flex-start'
             }}
             >
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start',
+                    marginHorizontal: scale(10),
+                    marginTop: verticalScale(5),
+                }}>
+                    <Ionicons name="ios-arrow-back" size={normalize(22)} color="#fff" onPress={() => {
+                        navigation.goBack()
+                    }} />
+                </View>
 
                 <View style={{
                     flexDirection: 'row',
                     justifyContent: 'center',
-                    marginVertical: verticalScale(20)
+                    marginTop: verticalScale(5),
+                    marginBottom: verticalScale(10)
                 }}>
                     <Text style={{
                         fontSize: normalize(20),
@@ -94,7 +106,7 @@ const AboutUs = ({ navigation }) => {
                     <Text style={{
                         fontSize: normalize(16),
                         fontWeight: '300',
-                        letterSpacing: scale(0.5),
+                        letterSpacing: scale(0.3),
                         color: '#fff'
                     }}>
                         If you're looking 👁️ for a convenient way to get your favorite food 😋 delivered right to your door 🏠,
@@ -102,7 +114,7 @@ const AboutUs = ({ navigation }) => {
                             fontWeight: '600',
                             letterSpacing: scale(0.5)
                         }}>
-                        GetIt 🤩✨{"\n\n"}
+                            GetIt 🤩✨{"\n\n"}
                         </Text>
                         No more waiting⌛in line at the restaurant or fighting traffic!
                         With just a few clicks of a button, you can have hot ♨️ and delicious meals delivered directly to your location📍

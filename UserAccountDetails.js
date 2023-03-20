@@ -15,7 +15,7 @@ const UserAccountDetails = ({ navigation, displayCurrentAddress, longitude, lati
 
     return (
         <SafeAreaView
-            style={{ flex: 1, backgroundColor: '#D4D7D6' }}
+            style={{ flex: 1, backgroundColor: '#D4D7D6'}}
         >
             <ActivityIndicatorElement loading={loading} />
             <View

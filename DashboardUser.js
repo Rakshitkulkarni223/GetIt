@@ -209,7 +209,7 @@ const ModalInput = ({ setvalues, onSubmit, visible, values, toggle }) => {
                             onChangeText={(housename) =>
                                 setvalues.sethousename(housename)
                             }
-                            autoFocus
+                            // autoFocus
                             placeholder={'Enter compartment/house name..'}
                             ref={values.houseNameRef}
                             clearButtonMode="always"

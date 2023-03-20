@@ -28,9 +28,9 @@ import { normalize } from './FontResize';
 
 const ActivityIndicatorElement = ({ loading, round }) => {
 
-    const [color, setColor] = useState('#6863C2');
+    const [color, setColor] = useState('#525A87');
 
-    const colorArray = ["#6863C2"];
+    const colorArray = ["#525A87"];
 
     useEffect(() => {
         const id = setInterval(() => {

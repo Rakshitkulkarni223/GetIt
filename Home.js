@@ -22,9 +22,7 @@ import { getToken, NotificationData, NotificationHandler, NotificationPermission
 
 const Home = ({ navigation, route }) => {
 
-    const image = { uri: 'https://reactjs.org/logo-og.png' };
-
-    const [user, setUser] = useState({ loggedIn: false, gotoSignup: route && route.params ? route.params.gotoSignup : true });
+    const [user, setUser] = useState({ loggedIn: route && route.params ? true : false, gotoSignup: route && route.params ? route.params.gotoSignup : true });
 
     const [OrderId, setOrderId] = useState("");
 
@@ -41,11 +39,12 @@ const Home = ({ navigation, route }) => {
 
     const [adminPhoneNumbers, setadminPhoneNumbers] = useState([]);
 
+    var allAdmins = [];
+    var phoneNumbersAdmin = [];
+
     useEffect(() => {
 
         const getAdminList = onValue(ref(database, `adminList/`), (snapshot) => {
-            var allAdmins = [];
-            var phoneNumbersAdmin = [];
             if (snapshot.exists()) {
                 snapshot.forEach((child) => {
                     phoneNumbersAdmin.push(child.key)
@@ -138,8 +137,7 @@ const Home = ({ navigation, route }) => {
                     Linking.openURL(url);
                 }
             }
-            catch(error)
-            {
+            catch (error) {
 
             }
         });
@@ -175,10 +173,7 @@ const Home = ({ navigation, route }) => {
                     setloading(false)
                     setUser({ loggedIn: true, phoneNumber: auth.currentUser.phoneNumber, gotoSignup: true })
                 }
-            }, {
-                onlyOnce: true
             })
-
             return () => {
                 addInfoUser()
             }
@@ -201,9 +196,11 @@ const Home = ({ navigation, route }) => {
                 setloading(false);
                 await NotificationPermission()
                 var token = (await Notifications.getExpoPushTokenAsync()).data;
-                await set(ref(database, `usersList/` + validuser.phoneNumber), {
-                    fcmToken: token,
-                })
+                if (!phoneNumbersAdmin.includes(validuser.phoneNumber)) {
+                    await set(ref(database, `usersList/` + validuser.phoneNumber), {
+                        fcmToken: token,
+                    })
+                }
             } else {
                 setUser({ loggedIn: false })
             }

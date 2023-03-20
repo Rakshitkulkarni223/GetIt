@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react'
 import { Dimensions, Image, Linking } from 'react-native';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';
@@ -10,7 +11,7 @@ const ContactUs = ({ navigation }) => {
 
     useEffect(() => {
         navigation.setOptions({
-            headerShown: true,
+            headerShown: false,
             title: "",
             headerStyle: {
                 backgroundColor: '#77C98D',
@@ -29,11 +30,22 @@ const ContactUs = ({ navigation }) => {
                 justifyContent: 'flex-start'
             }}
             >
+                 <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start',
+                    marginHorizontal: scale(10),
+                    marginTop: verticalScale(5),
+                }}>
+                    <Ionicons name="ios-arrow-back" size={normalize(22)} color="#fff" onPress={() => {
+                        navigation.goBack()
+                    }} />
+                </View>
 
                 <View style={{
                     flexDirection: 'row',
                     justifyContent: 'center',
-                    marginVertical: verticalScale(20)
+                    marginTop: verticalScale(5),
+                    marginBottom: verticalScale(10),
                 }}>
                     <Text style={{
                         fontSize: normalize(18),
