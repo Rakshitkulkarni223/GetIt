@@ -298,10 +298,10 @@ const ItemsListViewAdmin = ({ DATA, loading, setloading }) => {
                                 <Text style={{
                                     fontWeight: '600',
                                     letterSpacing: scale(0.5),
-                                    color: 'white',
+                                    color: '#000',
                                     fontSize: normalize(15)
                                 }}>
-                                    No items
+                                    No Items
                                 </Text>
                             }
                         </View>

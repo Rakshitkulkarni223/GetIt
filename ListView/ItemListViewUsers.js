@@ -948,10 +948,10 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                                     // padding: scale(34),
                                     fontWeight: '600',
                                     letterSpacing: scale(0.5),
-                                    color: 'white',
+                                    color: '#000',
                                     fontSize: normalize(15)
                                 }}>
-                                    No items
+                                    No Items
                                 </Text>
                             }
                         </View>
