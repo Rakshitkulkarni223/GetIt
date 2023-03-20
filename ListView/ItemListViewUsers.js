@@ -24,7 +24,7 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
         <View>
 
             <View style={[styles.container,
-            { paddingBottom: showfooter ? verticalScale(10) : verticalScale(18) }]}>
+            { paddingBottom: showfooter ? verticalScale(10) : verticalScale(10) }]}>
                 <View style={{
                     flex: 1,
                     flexDirection: 'column',
@@ -42,10 +42,11 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
 
                     <View style={{
                         flexDirection: 'row',
-                        justifyContent: 'flex-start'
+                        justifyContent: 'flex-start',
+                        // paddingVertical: showfooter ? verticalScale(0) : verticalScale(10)
                     }}>
                         {
-                            avgRating === 0 ?
+                            avgRating === 0?
                                 <FontAwesome
                                     name='star-o'
                                     size={normalize(15)}
@@ -68,9 +69,6 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                             <Text style={{
                                 fontWeight: '600'
                             }}>{avgRating}/5</Text>
-                            {/* <Text style={{
-                                fontWeight: '400'
-                            }}>{totalUsers}</Text> */}
                         </Text>
                     </View>
 
@@ -179,33 +177,38 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                             <View style={{
                                 flexDirection: 'row',
                                 justifyContent: 'center',
-                                paddingRight: scale(2),
+                                paddingRight: scale(8),
                             }}>
                                 <Text style={{
-                                    color: '#fff'
+                                    color: '#fff',
                                 }}>Rate </Text>
-                                <Text style={{ fontWeight: '600',color: '#fff' }}>{title}</Text>
+                                <Text style={{ fontWeight: '600', color: '#fff', }}>{title}</Text>
                             </View>
-                        </View> : <></>}
+                        </View> : <View style={{
+                            justifyContent: 'center',
+                            marginTop: verticalScale(40)
+                        }}>
+                        </View>
+                        }
 
-                    <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'flex-end',
-                        position: 'absolute',
-                        marginTop: verticalScale(80),
-                        borderWidth: scale(1),
-                        height: scale(20),
-                        alignItems: 'center',
-                        marginLeft: scale(38),
-                        width: scale(70),
-                        borderColor: 'black',
-                        backgroundColor: 'white',
-                        borderWidth: scale(0.5),
-                        borderRadius: scale(5),
-                        elevation: scale(10),
-                    }}>
+                    <>
                         {(qtyhandlervisible && showfooter) ?
-                            <>
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-end',
+                                position: 'absolute',
+                                marginTop: verticalScale(80),
+                                borderWidth: scale(1),
+                                height: scale(20),
+                                alignItems: 'center',
+                                marginLeft: scale(38),
+                                width: scale(70),
+                                borderColor: 'black',
+                                backgroundColor: 'white',
+                                borderWidth: scale(0.5),
+                                borderRadius: scale(5),
+                                elevation: scale(10),
+                            }}>
                                 {ItemQuantity > 0 ?
                                     <View
                                         style={{
@@ -272,7 +275,7 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                                         <View style={{
                                             marginRight: scale(10),
                                             justifyContent: 'center',
-                                            
+
                                         }}>
                                             <Text style={{
                                                 textAlignVertical: 'center',
@@ -302,7 +305,7 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
 
                                     </View>
                                 }
-                            </>
+                            </View>
                             :
                             <></>
                         }
@@ -311,27 +314,28 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                             <View style={{
                                 flexDirection: 'column',
                                 justifyContent: 'center',
+                                alignContent: 'center',
                                 position: 'absolute',
-                                marginTop: verticalScale(-12),
+                                marginTop: verticalScale(80),
                                 borderWidth: scale(1),
-                                height: scale(23),
+                                height: scale(20),
                                 marginLeft: scale(40),
-                                width: scale(80),
+                                width: scale(70),
                                 borderRadius: scale(5),
                                 borderColor: 'black',
                                 backgroundColor: 'white',
                                 borderWidth: scale(0.5),
                                 elevation: scale(10),
                             }}>
-                                <Text style={{
-                                    textAlignVertical: 'center',
-                                    textAlign: 'center',
-                                    color: "black",
-                                    fontSize: normalize(15),
-                                    fontWeight: "600"
-                                }}>{ItemQuantity} qty</Text>
+                                    <Text style={{
+                                        textAlignVertical: 'center',
+                                        textAlign: 'center',
+                                        color: "black",
+                                        fontSize: normalize(14),
+                                        fontWeight: "600"
+                                    }}>{ItemQuantity} qty</Text>
                             </View> : <></>}
-                    </View>
+                    </>
                 </View>
             </View>
         </View>

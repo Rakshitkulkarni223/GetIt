@@ -119,7 +119,7 @@ const LoginWithOTP = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar style="auto" />
+      <StatusBar style="dark-content" />
       <SafeAreaView style={{
         flex: 1,
         justifyContent: 'flex-start',
