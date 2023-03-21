@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef } from 'react';
+import React, { useState, useEffect, createRef, useCallback, memo } from 'react';
 import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, Alert, TextInput, Keyboard, ActivityIndicator, Modal } from 'react-native';
 import { AntDesign, EvilIcons, FontAwesome, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import { app, auth, db, database } from "../Firebase";
@@ -10,8 +10,7 @@ import { normalize } from '../FontResize';
 import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
-
-const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating, TotalRating, RateItem, setItemCategory, showfooter, handleIncrease, qtyhandlervisible, handleDecrease, setItemName, setItemImage, setItemDesc, setItemPrice, id, ItemQuantity, title, image_url, price, description, category, displaycategory, setratingOne, ratingOne, setratingTwo, ratingTwo, setratingThree, ratingThree, setratingFour, ratingFour, setratingFive, ratingFive }) => (
+const Item = memo(({ setloading, index, setItemId, avgRating, totalUsers, UserRating, TotalRating, RateItem, setItemCategory, showfooter, handleIncrease, qtyhandlervisible, handleDecrease, setItemName, setItemImage, setItemDesc, setItemPrice, id, ItemQuantity, title, image_url, price, description, category, displaycategory, setratingOne, ratingOne, setratingTwo, ratingTwo, setratingThree, ratingThree, setratingFour, ratingFour, setratingFive, ratingFive }) => (
     <>{displaycategory ? <Text style={{
         fontSize: normalize(13),
         fontWeight: "600",
@@ -42,11 +41,10 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
 
                     <View style={{
                         flexDirection: 'row',
-                        justifyContent: 'flex-start',
-                        // paddingVertical: showfooter ? verticalScale(0) : verticalScale(10)
+                        justifyContent: 'flex-start'
                     }}>
                         {
-                            avgRating === 0?
+                            avgRating === 0 ?
                                 <FontAwesome
                                     name='star-o'
                                     size={normalize(15)}
@@ -99,14 +97,10 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                     alignItems: 'center',
                 }}
                 >
-                    <View style={{ borderWidth: scale(1), borderRadius: scale(10) }}>
-                        <Image source={{ uri: image_url }} style={styles.photo}
-                            onLoadStart={() => {
-                                setloading(true)
-                            }}
-                            onLoadEnd={() => {
-                                setloading(false)
-                            }}
+                    <View>
+                        <Image source={{
+                            uri: image_url
+                        }} style={styles.photo}
                         />
                     </View>
                     {showfooter ?
@@ -177,23 +171,22 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                             <View style={{
                                 flexDirection: 'row',
                                 justifyContent: 'center',
-                                paddingRight: scale(8),
+                                paddingRight: scale(2),
                             }}>
                                 <Text style={{
-                                    color: '#fff',
+                                    color: '#fff'
                                 }}>Rate </Text>
-                                <Text style={{ fontWeight: '600', color: '#fff', }}>{title}</Text>
+                                <Text style={{ fontWeight: '600', color: '#fff' }}>{title}</Text>
                             </View>
-                        </View> : <View style={{
-                            justifyContent: 'center',
+                        </View> : 
+                        <View style={{
                             marginTop: verticalScale(40)
                         }}>
-                        </View>
-                        }
+                            </View>}
 
                     <>
                         {(qtyhandlervisible && showfooter) ?
-                            <View style={{
+                            <View  style={{
                                 flexDirection: 'row',
                                 justifyContent: 'flex-end',
                                 position: 'absolute',
@@ -314,33 +307,32 @@ const Item = ({ setloading, index, setItemId, avgRating, totalUsers, UserRating,
                             <View style={{
                                 flexDirection: 'column',
                                 justifyContent: 'center',
-                                alignContent: 'center',
                                 position: 'absolute',
                                 marginTop: verticalScale(80),
                                 borderWidth: scale(1),
-                                height: scale(20),
+                                height: scale(23),
                                 marginLeft: scale(40),
-                                width: scale(70),
+                                width: scale(80),
                                 borderRadius: scale(5),
                                 borderColor: 'black',
                                 backgroundColor: 'white',
                                 borderWidth: scale(0.5),
                                 elevation: scale(10),
                             }}>
-                                    <Text style={{
-                                        textAlignVertical: 'center',
-                                        textAlign: 'center',
-                                        color: "black",
-                                        fontSize: normalize(14),
-                                        fontWeight: "600"
-                                    }}>{ItemQuantity} qty</Text>
+                                <Text style={{
+                                    textAlignVertical: 'center',
+                                    textAlign: 'center',
+                                    color: "black",
+                                    fontSize: normalize(15),
+                                    fontWeight: "600"
+                                }}>{ItemQuantity} qty</Text>
                             </View> : <></>}
                     </>
                 </View>
             </View>
         </View>
     </>
-);
+));
 
 const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => {
     return (
@@ -638,7 +630,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
             settotalItems(totalItems + 1)
         }
 
-        set(ref(database, `users/${auth.currentUser.phoneNumber}/orders/${OrderId}/items/${category}/` + id), {
+        set(ref(database, `Allorders/${auth.currentUser.phoneNumber}/orders/${OrderId}/items/${category}/` + id), {
             ItemId: id,
             ItemName: title,
             ItemPrice: price,
@@ -678,7 +670,7 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
         }
 
 
-        set(ref(database, `users/${auth.currentUser.phoneNumber}/orders/${OrderId}/items/${category}/` + id), {
+        set(ref(database, `Allorders/${auth.currentUser.phoneNumber}/orders/${OrderId}/items/${category}/` + id), {
             ItemId: id,
             ItemName: title,
             ItemPrice: price,
@@ -788,6 +780,15 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
 
     }
 
+    const getItemLayout = useCallback(
+        (data, index) => (
+            {
+                length: 100,
+                offset: 100 * index,
+                index
+            }), []
+    );
+
 
     return (
         <>
@@ -806,6 +807,8 @@ const ItemsListViewUsers = ({ navigation, DATA, OrderId, qtyhandler, showfooter,
                         }}>
                             <FlatList
                                 data={data}
+                                getItemLayout={getItemLayout}
+                                initialNumToRender={5}
                                 renderItem={renderItem}
                                 ListEmptyComponent={
                                     <View style={{
@@ -1027,6 +1030,9 @@ const styles = StyleSheet.create({
     photo: {
         height: verticalScale(90),
         width: scale(100),
+        overflow: "hidden",
+        borderWidth: scale(0.8),
+        borderColor: "#000",
         borderRadius: scale(9)
     },
 });

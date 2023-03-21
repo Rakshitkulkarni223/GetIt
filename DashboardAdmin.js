@@ -52,7 +52,7 @@ function MyTabs() {
                     hide: true,
                 },
                 tabBarInactiveTintColor: '#000',
-                tabBarActiveTintColor: '#6D9791',
+                tabBarActiveTintColor: '#56A280',
                 tabBarLabelPosition: 'below-icon',
                 headerShown: false,
                 tabBarHideOnKeyboard: true

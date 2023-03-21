@@ -538,6 +538,7 @@ const SignUp = ({ navigation, route }) => {
                 height: Dimensions.get('window').width * 0.5,
                 borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
                 borderWidth: scale(1),
+                overflow: "hidden",
                 borderColor: '#3F999E',
                 resizeMode: 'cover'
               }}
@@ -851,7 +852,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(32),
     borderRadius: scale(4),
     elevation: scale(4),
-    backgroundColor: 'black',
+    borderWidth: scale(0.7),
+    backgroundColor: '#000',
+    borderColor: 'white',
   },
   text: {
     fontSize: normalize(16),

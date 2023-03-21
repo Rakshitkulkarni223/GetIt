@@ -39,12 +39,6 @@ const Item = ({ setloading, id, OrderId, title, image_url, price, description, c
                 }}>
                     <View>
                         <Image source={{ uri: image_url }} style={styles.photo}
-                            onLoadStart={() => {
-                                setloading(true)
-                            }}
-                            onLoadEnd={() => {
-                                setloading(false)
-                            }}
                         />
                     </View>
                     <View style={{
@@ -534,7 +528,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                     {
                         data[index].OrderStatus === -1 ?
 
-                            <MaterialCommunityIcons name="clock-alert" size={normalize(16)} color="#BFA103"
+                            <MaterialCommunityIcons name="clock-alert" size={normalize(16)} color="#A89009"
                                 onPress={() => {
                                     Alert.alert('🟥 Order Status', 'Pending...⏳', [
                                         {
@@ -545,7 +539,7 @@ const ItemListViewCompletedOrdersUsers = ({ AllOrders, loading, setloading, admi
                             /> :
 
                             data[index].OrderStatus === 0 ?
-                                <MaterialCommunityIcons name="clock-check" size={normalize(16)} color="#81A413" onPress={() => {
+                                <MaterialCommunityIcons name="clock-check" size={normalize(16)} color="#0AA560" onPress={() => {
                                     Alert.alert('🟨 Order Status ', 'Confirmed! 😍🎊', [
                                         {
                                             text: "OK",
@@ -793,6 +787,9 @@ const styles = StyleSheet.create({
     photo: {
         height: verticalScale(40),
         width: scale(44),
+        overflow: "hidden",
+        borderWidth: scale(0.8),
+        borderColor: "#000",
         borderRadius: scale(9)
     },
 });

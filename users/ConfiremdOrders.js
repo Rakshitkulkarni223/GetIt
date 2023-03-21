@@ -120,7 +120,7 @@ const ConfiremdOrders = ({ navigation, route }) => {
 
    const [OrderId, setOrderId] = useState(route.params.OrderId);
 
-   const [itemsList, setitemsList] = useState(ref(database, `users/${auth.currentUser.phoneNumber}/orders/${OrderId}/items/`));
+   const [itemsList, setitemsList] = useState(ref(database, `Allorders/${auth.currentUser.phoneNumber}/orders/${OrderId}/items/`));
 
    const [totalamount, settotalamount] = useState(0);
 

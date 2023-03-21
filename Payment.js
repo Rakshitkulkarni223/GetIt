@@ -274,7 +274,7 @@ const PaymentGateway = ({ navigation, route }) => {
 
             for (var i = 0; i < route.params.AllConfirmedItems.length; i++) {
 
-                update(ref(database, `users/${auth.currentUser.phoneNumber}/orders/${route.params.OrderId}/items/${route.params.AllConfirmedItems[i]["ItemCategory"]}/` + route.params.AllConfirmedItems[i]["key"]), {
+                set(ref(database, `users/${auth.currentUser.phoneNumber}/orders/${route.params.OrderId}/items/${route.params.AllConfirmedItems[i]["ItemCategory"]}/` + route.params.AllConfirmedItems[i]["key"]), {
                     ItemId: route.params.AllConfirmedItems[i]["key"],
                     ItemName: route.params.AllConfirmedItems[i]["ItemName"],
                     ItemPrice: route.params.AllConfirmedItems[i]["ItemPrice"],
@@ -283,6 +283,9 @@ const PaymentGateway = ({ navigation, route }) => {
                     ItemCategory: route.params.AllConfirmedItems[i]["ItemCategory"],
                     ItemQuantity: route.params.AllConfirmedItems[i]["ItemQuantity"],
                     ItemAddedDate: route.params.AllConfirmedItems[i]["ItemAddedDate"],
+                });
+
+                set(ref(database, `Allorders/${auth.currentUser.phoneNumber}/orders/${route.params.OrderId}/items/${route.params.AllConfirmedItems[i]["ItemCategory"]}/` + route.params.AllConfirmedItems[i]["key"]), {
                 });
             }
 
@@ -345,7 +348,6 @@ const PaymentGateway = ({ navigation, route }) => {
                     flex: 1,
                     flexDirection: 'column',
                     justifyContent: 'center',
-                    // borderWidth: scale(1)
                 }}>
                     <Image source={{ uri: ItemImage }} style={styles.photo}
                     />
@@ -706,6 +708,9 @@ const styles = StyleSheet.create({
     photo: {
         height: verticalScale(30),
         width: scale(30),
+        overflow: "hidden",
+        borderWidth: scale(0.6),
+        borderColor: "#000",
         borderRadius: scale(4)
     },
 })

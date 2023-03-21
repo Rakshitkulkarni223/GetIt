@@ -37,12 +37,6 @@ const Item = ({ id, setloading, OrderId, title, image_url, price, description, c
                 }}>
                     <View>
                         <Image source={{ uri: image_url }} style={styles.photo}
-                            onLoadStart={() => {
-                                setloading(true)
-                            }}
-                            onLoadEnd={() => {
-                                setloading(false)
-                            }}
                         />
                     </View>
                     <View style={{
@@ -591,7 +585,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                     {
                         data[index].OrderStatus === -1 ?
 
-                            <MaterialCommunityIcons name="clock-alert" size={normalize(16)} color="#C5A603"
+                            <MaterialCommunityIcons name="clock-alert" size={normalize(16)} color="#A89009"
                                 onPress={() => {
                                     Alert.alert('Order Status', 'Pending', [
                                         {
@@ -602,7 +596,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                             /> :
 
                             data[index].OrderStatus === 0 ?
-                                <MaterialCommunityIcons name="clock-check" size={normalize(16)} color="#81A413" onPress={() => {
+                                <MaterialCommunityIcons name="clock-check" size={normalize(16)} color="#0AA560" onPress={() => {
                                     Alert.alert('Order Status', 'Confirmed', [
                                         {
                                             text: "OK",
@@ -704,7 +698,7 @@ const ItemsListViewPendingOrders = ({ AllItems, AllOrders, loading, setloading }
                         <View style={{
                             justifyContent: 'center'
                         }}>
-                            <Feather name="check-square" size={normalize(16)} color="#04D45A"
+                            <Feather name="check-square" size={normalize(16)} color="#0AA560"
                                 onPress={() => {
 
                                     if (data[index].OrderStatus === -1) {
@@ -1021,23 +1015,23 @@ const styles = StyleSheet.create({
         // marginVertical: verticalScale(0),
         borderWidth: scale(0.7),
         borderRadius: scale(10),
-        backgroundColor: '#63C683',
+        backgroundColor: '#8DBEA2',
         elevation: scale(5),
     },
     title_item: {
         fontSize: normalize(13),
-        color: '#fff',
+        color: '#000',
         fontWeight: '600'
     },
     title_price: {
         fontSize: normalize(13),
-        color: '#fff',
+        color: '#000',
         fontWeight: '600'
         // paddingTop: 40
     },
     total_item_price: {
         fontSize: normalize(20),
-        color: '#fff',
+        color: '#000',
         paddingTop: scale(10),
     },
     container_addremove: {
@@ -1060,12 +1054,15 @@ const styles = StyleSheet.create({
     description: {
         fontSize: normalize(10),
         fontStyle: 'italic',
-        color: '#fff'
+        color: '#000'
     },
     photo: {
         height: verticalScale(40),
         width: scale(44),
-        borderRadius: scale(9)
+        overflow: "hidden",
+        borderWidth: scale(0.8),
+        borderColor: "#000",
+        borderRadius: scale(9),
     },
 });
 

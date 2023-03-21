@@ -128,6 +128,7 @@ const UserProfile = ({ navigation, route }) => {
                                         borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
                                         borderWidth: scale(1),
                                         borderColor: '#869BAD',
+                                        overflow: "hidden",
                                         resizeMode: 'cover'
                                     }}
                                     source={{
@@ -377,8 +378,8 @@ const UserProfile = ({ navigation, route }) => {
                                     borderRadius: scale(4),
                                     elevation: scale(3),
                                     borderWidth: scale(1),
-                                    borderColor: '#000',
-                                    backgroundColor: '#3EA879',
+                                    borderColor: '#fff',
+                                    backgroundColor: '#000',
 
                                 }} onPress={() => {
                                     navigation.reset({

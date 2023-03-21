@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from 'react';
+import React, { createRef, memo, useCallback, useEffect, useState } from 'react';
 import { SafeAreaView, SectionList, View, FlatList, StyleSheet, Text, TextInput, StatusBar, Image, Keyboard, KeyboardAvoidingView, Modal } from 'react-native';
 import { AntDesign, Ionicons, EvilIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import UpdateItem from '../admin/UpdateItem';
@@ -11,7 +11,7 @@ import { scale, moderateScale, verticalScale } from '../Dimensions';
 import ActivityIndicatorElement from '../ActivityIndicatorElement';
 
 
-const Item = ({ setloading, setItemId, setupdate, setItemCategory, setItemName, setItemImage, setItemDesc, setItemPrice, id, title, image_url, price, description, category, displaycategory }) => (
+const Item = memo(({ setloading, setItemId, setupdate, setItemCategory, setItemName, setItemImage, setItemDesc, setItemPrice, id, title, image_url, price, description, category, displaycategory }) => (
     <>{displaycategory ? <Text style={{
         fontSize: normalize(13),
         fontWeight: "600",
@@ -41,7 +41,7 @@ const Item = ({ setloading, setItemId, setupdate, setItemCategory, setItemName, 
                     marginTop: scale(3),
                     alignItems: 'flex-start'
                 }}>
-                    <AntDesign name="edit" size={scale(18)} color="#1CDCB0" onPress={(e) => {
+                    <AntDesign name="edit" size={scale(18)} color="#43BFA3" onPress={(e) => {
                         setItemName(title);
                         setItemDesc(description);
                         setItemImage(image_url);
@@ -79,17 +79,11 @@ const Item = ({ setloading, setItemId, setupdate, setItemCategory, setItemName, 
                 justifyContent: 'center'
             }}>
                 <Image source={{ uri: image_url }} style={styles.photo}
-                    onLoadStart={() => {
-                        setloading(true)
-                    }}
-                    onLoadEnd={() => {
-                        setloading(false)
-                    }}
                 />
             </View>
         </View>
     </>
-);
+));
 
 const renderHeader = (query, DATA, setData, setQuery, searchRef, setloading) => {
     return (
@@ -230,6 +224,15 @@ const ItemsListViewAdmin = ({ DATA, loading, setloading }) => {
         />
     );
 
+    const getItemLayout = useCallback(
+        (data, index) => (
+            {
+                length: 100,
+                offset: 100 * index,
+                index
+            }), []
+    );
+
     return (
         <SafeAreaView style={{
             flex: 1,
@@ -248,6 +251,8 @@ const ItemsListViewAdmin = ({ DATA, loading, setloading }) => {
                             <FlatList
                                 data={data}
                                 renderItem={renderItem}
+                                getItemLayout={getItemLayout}
+                                initialNumToRender={5}
                                 keyExtractor={(item) => item.key}
                                 ListEmptyComponent={
                                     <View style={{
@@ -373,6 +378,9 @@ const styles = StyleSheet.create({
     photo: {
         height: verticalScale(100),
         width: scale(110),
+        overflow: "hidden",
+        borderWidth: scale(0.8),
+        borderColor: "#000",
         borderRadius: scale(9)
     },
 });

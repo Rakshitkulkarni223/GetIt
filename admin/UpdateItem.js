@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
         borderRadius: scale(4),
         elevation: scale(4),
         borderWidth: scale(0.5),
-        backgroundColor: '#43B69F',
+        backgroundColor: '#3EA879',
     },
     text: {
         fontSize: normalize(16),
@@ -447,7 +447,11 @@ const styles = StyleSheet.create({
         marginBottom: verticalScale(5),
         width: scale(150),
         height: verticalScale(120),
-        resizeMode: 'cover'
+        resizeMode: 'cover',
+        overflow: "hidden",
+        borderWidth: scale(0.8),
+        borderColor: "#000",
+        borderRadius: scale(9)
     },
 });
 
